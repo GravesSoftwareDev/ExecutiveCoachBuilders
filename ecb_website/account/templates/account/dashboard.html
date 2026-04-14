@@ -1,8 +1,9 @@
-{% extends "base.html" %}
+{% extends "account/portal_base.html" %}
 
 {% block title %}Dashboard - Executive Coach Builders{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
     <h1 class="dashboard-title">Welcome to Your Dashboard, {{ user.first_name|default:user.username }}!</h1>
+</div>
 {% endblock %}

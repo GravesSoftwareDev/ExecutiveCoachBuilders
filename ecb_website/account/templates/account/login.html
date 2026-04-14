@@ -1,0 +1,27 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Login - Executive Coach Builders{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h1 class="login-title">Welcome Back!</h1>
+    <p class="login-subtitle">Please enter your credentials to access your dashboard.</p>
+    {% if form.errors %}
+    <div class="alert alert-danger" role="alert">
+        Invalid username or password. Please try again.
+    </div>
+    {% endif %}
+    <form method="post" action="{% url 'login' %}" class="login-form">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_username" class="form-label">Username</label>
+            <input type="text" name="username" maxlength="254" autofocus required id="id_username" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="id_password" class="form-label">Password</label>
+            <input type="password" name="password" required id="id_password" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-gold w-100">Sign In</button>
+    </form>
+</div>
+{% endblock %}

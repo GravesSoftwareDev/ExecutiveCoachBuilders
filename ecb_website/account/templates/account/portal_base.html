@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Executive Coach Builders{% endblock %}</title>
+    <title>{% block title %}Employee Portal - Executive Coach Builders{% endblock %}</title>
 
     {% comment %} Google Fonts {% endcomment %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,43 +32,34 @@
         >
         <div class="brand-text">
             <span class="brand-name">Executive Coach Builders</span>
-            <span class="brand-tagline">50th Anniversary &nbsp;&bull;&nbsp; Excellence in Coaching</span>
+            <span class="brand-tagline">Employee Portal</span>
         </div>
     </header>
 
-    {% comment %} Navbar {% endcomment %}
-    <nav id="main-nav" class="navbar navbar-expand-lg">
-        <div class="container-fluid px-4">
-
-            <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#navbarMain"
-                    aria-controls="navbarMain" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarMain">
-
-                {% comment %} Primary Links {% endcomment %}
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {% block nav_home %}{% endblock %}" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% block nav_about %}{% endblock %}" href="/about/">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% block nav_services %}{% endblock %}" href="/services/">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% block nav_coaches %}{% endblock %}" href="/coaches/">Our Coaches</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% block nav_contact %}{% endblock %}" href="/contact/">Contact</a>
-                    </li>
-                </ul>
-
-            </div>
+    {% comment %} Portal Navbar {% endcomment %}
+    <nav id="main-nav" class="navbar">
+        <div class="container-fluid px-4 d-flex justify-content-end">
+            {% if user.is_authenticated %}
+            <ul class="navbar-nav nav-auth flex-row align-items-center gap-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}">
+                        <i class="bi bi-person-circle me-1"></i>{{ user.first_name|default:user.username }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <form method="post" action="{% url 'logout' %}" style="margin:0;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-gold">Sign Out</button>
+                    </form>
+                </li>
+            </ul>
+            {% else %}
+            <ul class="navbar-nav nav-auth">
+                <li class="nav-item">
+                    <span class="portal-label">Employee Portal</span>
+                </li>
+            </ul>
+            {% endif %}
         </div>
     </nav>
 

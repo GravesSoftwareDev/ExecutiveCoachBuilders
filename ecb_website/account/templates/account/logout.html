@@ -1,0 +1,12 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Signed Out - Executive Coach Builders{% endblock %}
+
+{% block content %}
+<div class="portal-card text-center">
+    <i class="bi bi-box-arrow-right portal-card-icon"></i>
+    <h1 class="portal-card-title">You've Been Signed Out</h1>
+    <p class="portal-card-subtitle">Thank you for using the Employee Portal.</p>
+    <a href="{% url 'login' %}" class="btn btn-gold px-4">Sign Back In</a>
+</div>
+{% endblock %}
