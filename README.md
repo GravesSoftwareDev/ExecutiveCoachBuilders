@@ -3,6 +3,10 @@
 A Django-based web application for Executive Coach Builders, providing internal tools for managing leads and employee accounts.
 
 ---
+## Dev Admin Account
+
+#### Username: test_user
+#### Password: Test123!
 
 ## Prerequisites
 
