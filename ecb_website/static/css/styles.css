@@ -22,33 +22,45 @@ body {
 /* ─── Top Banner ─────────────────────────────────────── */
 #top-banner {
     background-color: var(--ecb-black);
-    border-bottom: 3px solid var(--ecb-gold);
-    padding: 12px 32px;
+    border-bottom: 4px solid var(--ecb-gold);
+    padding: 32px 32px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+#top-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+#top-banner .brand-center {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 10px;
+    position: relative;
 }
 
 #top-banner .brand-logo {
-    height: 64px;
-    width: 64px;
+    height: 160px;
+    width: 160px;
     object-fit: contain;
-    flex-shrink: 0;
-}
-
-#top-banner .brand-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
+    filter: drop-shadow(0 0 16px rgba(201,168,76,0.55));
 }
 
 #top-banner .brand-name {
     font-family: 'Playfair Display', serif;
     font-weight: 600;
-    font-size: 1.65rem;
+    font-size: 1.75rem;
     color: var(--ecb-gold);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    text-shadow: 0 2px 12px rgba(201,168,76,0.2);
+    line-height: 1;
 }
 
 #top-banner .brand-tagline {
@@ -56,9 +68,8 @@ body {
     font-weight: 300;
     font-size: 0.65rem;
     color: #888;
-    letter-spacing: 0.28em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    margin-top: 2px;
 }
 
 /* ─── Navbar ─────────────────────────────────────────── */
@@ -276,6 +287,112 @@ body {
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ecb-black);
+}
+
+/* ─── Home Page ──────────────────────────────────────── */
+.home-hero {
+    border-bottom: none;
+}
+
+.home-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--ecb-black);
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+}
+
+.home-hero-subtitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    color: #555;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+.home-divider {
+    border: none;
+    border-top: 1px solid #ddd;
+}
+
+.home-section-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ecb-black);
+}
+
+.home-card {
+    background-color: var(--ecb-off-white);
+    border: 1px solid #ddd;
+    border-top: 3px solid var(--ecb-gold);
+    padding: 32px 28px;
+    text-align: center;
+}
+
+.home-card-icon {
+    font-size: 2rem;
+    color: var(--ecb-gold);
+    display: block;
+    margin-bottom: 14px;
+}
+
+.home-card-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ecb-black);
+    margin-bottom: 10px;
+}
+
+.home-card-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.88rem;
+    color: #555;
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+
+.home-callout {
+    background-color: var(--ecb-black);
+    border-top: 3px solid var(--ecb-gold);
+    border-bottom: 3px solid var(--ecb-gold);
+}
+
+.home-callout-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ecb-gold-dark);
+    margin-bottom: 8px;
+}
+
+.home-callout-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ecb-gold);
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+}
+
+.home-callout-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 300;
+    color: #aaa;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
 }
 
 /* ─── Flash Messages ─────────────────────────────────── */

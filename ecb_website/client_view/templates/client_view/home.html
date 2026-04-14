@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Executive Coach Builders{% endblock %}
+
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+
+{% comment %} Hero Section {% endcomment %}
+<section class="home-hero text-center py-5 mb-5">
+    <h1 class="home-hero-title">Luxury Coaches Built to Last</h1>
+    <p class="home-hero-subtitle">
+        Handcrafted executive motorcoaches engineered for comfort, style, and the
+        open road &mdash; celebrating 50 years of American craftsmanship.
+    </p>
+    <a href="/services/" class="btn btn-gold mt-3">Explore Our Coaches</a>
+</section>
+
+{% comment %} Divider {% endcomment %}
+<hr class="home-divider mb-5">
+
+{% comment %} Feature Cards {% endcomment %}
+<section class="mb-5">
+    <h2 class="home-section-title text-center mb-4">Why Executive Coach Builders</h2>
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="home-card h-100">
+                <i class="bi bi-tools home-card-icon"></i>
+                <h3 class="home-card-title">Expert Craftsmanship</h3>
+                <p class="home-card-text">
+                    Every coach is built by skilled tradespeople with decades of
+                    experience in custom motorcoach construction.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="home-card h-100">
+                <i class="bi bi-stars home-card-icon"></i>
+                <h3 class="home-card-title">Premium Interiors</h3>
+                <p class="home-card-text">
+                    Fully customizable interiors featuring premium materials,
+                    bespoke layouts, and state-of-the-art amenities.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="home-card h-100">
+                <i class="bi bi-shield-check home-card-icon"></i>
+                <h3 class="home-card-title">Built to Standard</h3>
+                <p class="home-card-text">
+                    Every vehicle meets or exceeds federal safety standards,
+                    backed by our industry-leading warranty and service network.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% comment %} Anniversary Callout {% endcomment %}
+<section class="home-callout text-center py-5 mb-5">
+    <p class="home-callout-label">Est. 1976 &nbsp;&bull;&nbsp; 50th Anniversary</p>
+    <h2 class="home-callout-title">Half a Century on the Road</h2>
+    <p class="home-callout-text">
+        From our first build to today, Executive Coach Builders has remained
+        committed to delivering the finest luxury motorcoaches in the industry.
+    </p>
+    <a href="/about/" class="btn btn-gold mt-2">Our Story</a>
+</section>
+
+{% endblock %}
