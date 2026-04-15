@@ -1,6 +1,7 @@
 build/
 *.sqlite3
 ./index.html
+*.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
