@@ -17,6 +17,8 @@ body {
     font-weight: 400;
     color: #222;
     margin: 0;
+    /* Prevents horizontal scrollbar from full-bleed sections that use 100vw */
+    overflow-x: hidden;
 }
 
 /* ─── Top Banner ─────────────────────────────────────── */
@@ -393,6 +395,931 @@ body {
     max-width: 520px;
     margin: 0 auto;
     line-height: 1.7;
+}
+
+/* ─── Vehicle Carousel ───────────────────────────────── */
+
+/* Outer wrapper clips the scrolling track and adds fade edges */
+.vehicle-carousel-wrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+/* Left fade — softens the entry edge */
+.vehicle-carousel-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 80px;
+    background: linear-gradient(to right, var(--ecb-white), transparent);
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Right fade — softens the exit edge */
+.vehicle-carousel-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; right: 0;
+    width: 80px;
+    background: linear-gradient(to left, var(--ecb-white), transparent);
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Outer row that holds the prev/next buttons on either side of the wrapper */
+.carousel-outer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Prev / Next control buttons */
+.carousel-ctrl {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background-color: var(--ecb-off-white);
+    border: 1px solid var(--ecb-gold-dark);
+    color: var(--ecb-gold-dark);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 0;
+}
+
+.carousel-ctrl:hover {
+    background-color: var(--ecb-gold);
+    color: var(--ecb-black);
+    border-color: var(--ecb-gold);
+}
+
+/* The scrolling flex row — JS drives translateX; no CSS animation needed */
+.vehicle-carousel-track {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    will-change: transform;
+}
+
+/* Individual vehicle card — also used as an <a> tag so reset link styles */
+.vehicle-carousel-card {
+    width: 280px;
+    flex-shrink: 0;
+    background-color: var(--ecb-off-white);
+    border: 1px solid #ddd;
+    border-top: 3px solid var(--ecb-gold);
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    transition: border-top-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vehicle-carousel-card:hover {
+    border-top-color: var(--ecb-gold-dark);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+}
+
+/* Card hero image — fixed height so all cards line up */
+.vehicle-carousel-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.vehicle-carousel-card-body {
+    padding: 18px 20px;
+}
+
+/* Small gold category label above the name */
+.vehicle-carousel-card-category {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ecb-gold-dark);
+    margin-bottom: 6px;
+}
+
+/* Vehicle name in Oswald caps */
+.vehicle-carousel-card-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ecb-black);
+    margin-bottom: 6px;
+}
+
+/* Optional tagline in muted Open Sans */
+.vehicle-carousel-card-tagline {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.82rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+/* ─── Anniversary Video ──────────────────────────────── */
+
+/* Pulls the section outside Bootstrap's container to span full viewport width */
+.home-video-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+}
+
+/* Dark wrapper with gold borders — keeps it on-brand without being loud */
+.home-video-section {
+    background-color: var(--ecb-black);
+    border-top: 3px solid var(--ecb-gold-dark);
+    border-bottom: 3px solid var(--ecb-gold-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Video fills the width; object-fit:contain shows the full frame, black fills letterbox */
+.home-video-player {
+    width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Understated gold caption below the video */
+.home-video-caption {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ecb-gold-dark);
+    margin: 14px 0;
+}
+
+/* ─── Vehicle Grid Cards ─────────────────────────────── */
+
+/* Full-card link — resets anchor styles */
+.vehicle-grid-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--ecb-off-white);
+    border: 1px solid #ddd;
+    border-top: 3px solid var(--ecb-gold);
+    overflow: hidden;
+    text-decoration: none;
+    transition: border-top-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vehicle-grid-card:hover {
+    border-top-color: var(--ecb-gold-dark);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+}
+
+/* Fixed-height image so all cards align in the grid */
+.vehicle-grid-card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.vehicle-grid-card-body {
+    padding: 18px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Capacity line with icon — sits at the bottom of the card body */
+.vehicle-grid-card-capacity {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.78rem;
+    color: #888;
+    margin-top: auto;
+    padding-top: 10px;
+    margin-bottom: 0;
+}
+
+/* ─── Dashboard Cards ────────────────────────────────── */
+
+.dashboard-subtitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* Clickable card linking to a portal section */
+.dashboard-card {
+    display: block;
+    background-color: var(--ecb-off-white);
+    border: 1px solid #ddd;
+    border-top: 3px solid var(--ecb-gold);
+    padding: 32px 28px;
+    text-decoration: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+    border-top-color: var(--ecb-gold-dark);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.dashboard-card-icon {
+    font-size: 2rem;
+    color: var(--ecb-gold);
+    display: block;
+    margin-bottom: 14px;
+}
+
+.dashboard-card-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ecb-black);
+    margin-bottom: 10px;
+}
+
+.dashboard-card-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.88rem;
+    color: #555;
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+
+/* ─── Fleet Management ───────────────────────────────── */
+
+.fleet-container {
+    padding: 8px 0 48px;
+    max-width: 1000px;
+}
+
+/* Page header row — title + primary action button */
+.fleet-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.fleet-page-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ecb-black);
+    margin-bottom: 4px;
+}
+
+.fleet-page-subtitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.88rem;
+    color: #666;
+    margin-bottom: 0;
+}
+
+/* Breadcrumb link back to the list */
+.fleet-breadcrumb {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ecb-gold-dark);
+    text-decoration: none;
+}
+
+.fleet-breadcrumb:hover {
+    color: var(--ecb-gold);
+}
+
+/* Blue-grey info box explaining rules */
+.fleet-info-box {
+    background-color: #f3f4f6;
+    border-left: 4px solid var(--ecb-gold);
+    padding: 20px 24px;
+}
+
+.fleet-info-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ecb-black);
+    margin-bottom: 10px;
+}
+
+.fleet-info-list {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.85rem;
+    color: #444;
+    line-height: 1.7;
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+/* ── Vehicle List Table ── */
+
+.fleet-table-wrapper {
+    overflow-x: auto;
+}
+
+.fleet-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.875rem;
+}
+
+.fleet-table thead tr {
+    background-color: var(--ecb-black);
+    color: var(--ecb-gold);
+}
+
+.fleet-table th {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    white-space: nowrap;
+}
+
+.fleet-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+    color: #333;
+}
+
+.fleet-table tbody tr:hover {
+    background-color: var(--ecb-off-white);
+}
+
+.fleet-vehicle-name {
+    font-weight: 600;
+    color: var(--ecb-black);
+    display: block;
+}
+
+.fleet-vehicle-tagline {
+    font-size: 0.78rem;
+    color: #888;
+    display: block;
+    margin-top: 2px;
+}
+
+/* Status badges */
+.fleet-badge-published,
+.fleet-badge-draft,
+.fleet-badge-bestseller {
+    display: inline-block;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+}
+
+.fleet-badge-published {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.fleet-badge-draft {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.fleet-badge-bestseller {
+    background-color: rgba(201,168,76,0.15);
+    color: var(--ecb-gold-dark);
+    border: 1px solid var(--ecb-gold-dark);
+}
+
+/* Row action links */
+.fleet-actions {
+    white-space: nowrap;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.fleet-action-edit,
+.fleet-action-delete {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+}
+
+.fleet-action-edit  { color: var(--ecb-gold-dark); }
+.fleet-action-edit:hover { color: var(--ecb-gold); }
+
+.fleet-action-delete  { color: #c0392b; }
+.fleet-action-delete:hover { color: #96281b; }
+
+/* Empty state */
+.fleet-empty {
+    text-align: center;
+    padding: 64px 32px;
+    background-color: var(--ecb-off-white);
+    border: 1px dashed #ccc;
+}
+
+.fleet-empty-icon {
+    font-size: 3rem;
+    color: #bbb;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.fleet-empty-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.95rem;
+    color: #888;
+}
+
+/* ── Vehicle Form ── */
+
+/* One bordered section per logical group of fields */
+.fleet-form-section {
+    background-color: var(--ecb-off-white);
+    border: 1px solid #ddd;
+    border-top: 3px solid var(--ecb-gold);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+}
+
+.fleet-form-section-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ecb-black);
+    margin-bottom: 6px;
+}
+
+.fleet-form-section-hint {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.82rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Individual field wrapper */
+.fleet-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fleet-field.has-error input,
+.fleet-field.has-error select,
+.fleet-field.has-error textarea {
+    border-color: #c0392b;
+}
+
+.fleet-field-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #444;
+    margin-bottom: 0;
+}
+
+.fleet-required {
+    color: var(--ecb-gold-dark);
+}
+
+/* Style all form inputs consistently */
+.fleet-field input,
+.fleet-field select,
+.fleet-field textarea {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9rem;
+    color: #222;
+    background-color: var(--ecb-white);
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 9px 12px;
+    width: 100%;
+    transition: border-color 0.2s ease;
+}
+
+.fleet-field input:focus,
+.fleet-field select:focus,
+.fleet-field textarea:focus {
+    outline: none;
+    border-color: var(--ecb-gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+}
+
+.fleet-field-hint {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.76rem;
+    color: #888;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.fleet-field-error {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.76rem;
+    color: #c0392b;
+    margin-bottom: 0;
+}
+
+/* Current hero image thumbnail */
+.fleet-current-image {
+    display: inline-block;
+}
+
+.fleet-image-preview {
+    display: block;
+    height: 140px;
+    width: auto;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+/* Gallery image formset row */
+.fleet-formset-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.fleet-formset-row:last-child {
+    border-bottom: none;
+}
+
+.fleet-formset-thumb img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    flex-shrink: 0;
+}
+
+/* Remove / mark-for-delete button on each gallery row */
+.fleet-formset-remove-btn {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #c0392b;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+}
+
+.fleet-formset-remove-btn:hover {
+    color: #96281b;
+    text-decoration: underline;
+}
+
+/* "Add Another Photo" button — understated, below the rows */
+.fleet-add-photo-btn {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ecb-gold-dark);
+    background: none;
+    border: 1px dashed var(--ecb-gold-dark);
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    display: inline-block;
+}
+
+.fleet-add-photo-btn:hover {
+    color: var(--ecb-gold);
+    border-color: var(--ecb-gold);
+}
+
+/* Publishing checkbox row */
+.fleet-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.fleet-checkbox-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+/* Form bottom action bar */
+.fleet-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding-top: 8px;
+}
+
+.fleet-cancel-link {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.82rem;
+    color: #888;
+    text-decoration: none;
+}
+
+.fleet-cancel-link:hover {
+    color: #444;
+}
+
+/* ── Delete Confirmation ── */
+
+.fleet-delete-card {
+    max-width: 520px;
+    margin: 48px auto;
+    background-color: var(--ecb-off-white);
+    border: 1px solid #ddd;
+    border-top: 3px solid #c0392b;
+    padding: 48px 40px;
+    text-align: center;
+}
+
+.fleet-delete-icon {
+    font-size: 2.8rem;
+    color: #c0392b;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.fleet-delete-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ecb-black);
+    margin-bottom: 12px;
+}
+
+.fleet-delete-body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.92rem;
+    color: #555;
+    line-height: 1.65;
+    margin-bottom: 32px;
+}
+
+.fleet-delete-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.fleet-btn-danger {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background-color: #c0392b;
+    color: var(--ecb-white);
+    border: 1px solid #96281b;
+    border-radius: 0;
+    padding: 10px 24px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.fleet-btn-danger:hover {
+    background-color: #96281b;
+    color: var(--ecb-white);
+}
+
+/* ─── Vehicle Detail Page ────────────────────────────── */
+
+/* Full-width hero image with overlaid text */
+.vd-hero {
+    position: relative;
+    width: 100%;
+    max-height: 480px;
+    overflow: hidden;
+    background-color: var(--ecb-black);
+}
+
+.vd-hero-img {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    display: block;
+    opacity: 0.75;
+}
+
+/* Text sits in the bottom-left of the hero image */
+.vd-hero-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32px 36px;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+}
+
+.vd-hero-category {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ecb-gold);
+    margin-bottom: 6px;
+}
+
+.vd-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--ecb-white);
+    margin-bottom: 8px;
+    line-height: 1.1;
+}
+
+.vd-hero-tagline {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    color: #ddd;
+    margin-bottom: 0;
+}
+
+/* Section heading shared across detail sections */
+.vd-section {
+    border-left: 3px solid var(--ecb-gold);
+    padding-left: 20px;
+}
+
+.vd-section-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ecb-black);
+    margin-bottom: 12px;
+}
+
+.vd-body-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.75;
+    margin-bottom: 0;
+}
+
+/* Bulleted features list */
+.vd-feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.vd-feature-item {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.92rem;
+    color: #444;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Gold bullet before each feature */
+.vd-feature-item::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--ecb-gold);
+    flex-shrink: 0;
+}
+
+/* Right-column specs card */
+.vd-specs-card {
+    background-color: var(--ecb-off-white);
+    border: 1px solid #ddd;
+    border-top: 3px solid var(--ecb-gold);
+    padding: 28px 24px;
+    position: sticky;
+    top: 24px;
+}
+
+.vd-specs-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ecb-black);
+    margin-bottom: 18px;
+}
+
+.vd-spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    gap: 12px;
+}
+
+.vd-spec-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    white-space: nowrap;
+}
+
+.vd-spec-value {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ecb-black);
+    text-align: right;
+}
+
+.vd-spec-divider {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+.vd-back-link {
+    display: block;
+    text-align: center;
+    margin-top: 14px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.78rem;
+    color: #888;
+    text-decoration: none;
+}
+
+.vd-back-link:hover {
+    color: var(--ecb-gold-dark);
+}
+
+/* Photo gallery — responsive grid */
+.vd-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.vd-gallery-item {
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background-color: #eee;
+}
+
+.vd-gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.vd-gallery-img:hover {
+    transform: scale(1.04);
 }
 
 /* ─── Flash Messages ─────────────────────────────────── */

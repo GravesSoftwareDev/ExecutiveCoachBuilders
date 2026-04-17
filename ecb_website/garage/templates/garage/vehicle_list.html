@@ -1,0 +1,98 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Fleet Management - Executive Coach Builders{% endblock %}
+
+{% block nav_fleet %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    {% comment %} Page Header {% endcomment %}
+    <div class="fleet-page-header">
+        <div>
+            <h1 class="fleet-page-title">Fleet Management</h1>
+            <p class="fleet-page-subtitle">
+                Add, edit, or remove vehicles from the public website. Changes take effect immediately
+                for published vehicles.
+            </p>
+        </div>
+        <a href="{% url 'garage:vehicle_add' %}" class="btn btn-gold">
+            <i class="bi bi-plus-lg me-1"></i> Add Vehicle
+        </a>
+    </div>
+
+    {% comment %} Quick-reference guide {% endcomment %}
+    <div class="fleet-info-box mb-4">
+        <h2 class="fleet-info-title"><i class="bi bi-info-circle me-2"></i>How Display Order Works</h2>
+        <ul class="fleet-info-list">
+            <li><strong>Display Order 0</strong> — Vehicle appears in the <strong>Best Sellers</strong> carousel on the home page, as well as its category carousel.</li>
+            <li><strong>Display Order 1+</strong> — Vehicle appears only in its category carousel, sorted lowest-number-first.</li>
+            <li><strong>Unpublished</strong> — Vehicle is saved as a draft and hidden from the public site entirely.</li>
+        </ul>
+    </div>
+
+    {% comment %} Vehicle table {% endcomment %}
+    {% if vehicles %}
+    <div class="fleet-table-wrapper">
+        <table class="fleet-table">
+            <thead>
+                <tr>
+                    <th>Vehicle</th>
+                    <th>Category</th>
+                    <th>Capacity</th>
+                    <th class="text-center">Order</th>
+                    <th class="text-center">Published</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vehicle in vehicles %}
+                <tr>
+                    <td>
+                        <span class="fleet-vehicle-name">{{ vehicle.name }}</span>
+                        {% if vehicle.tagline %}
+                        <span class="fleet-vehicle-tagline">{{ vehicle.tagline }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ vehicle.get_category_display }}</td>
+                    <td>{{ vehicle.passenger_capacity|default:"—" }}</td>
+                    <td class="text-center">
+                        {% comment %} Highlight order=0 so staff know it's a best seller {% endcomment %}
+                        {% if vehicle.display_order == 0 %}
+                        <span class="fleet-badge-bestseller">★ Featured</span>
+                        {% else %}
+                        {{ vehicle.display_order }}
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if vehicle.is_published %}
+                        <span class="fleet-badge-published">Live</span>
+                        {% else %}
+                        <span class="fleet-badge-draft">Draft</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center fleet-actions">
+                        <a href="{% url 'garage:vehicle_edit' vehicle.pk %}" class="fleet-action-edit">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a href="{% url 'garage:vehicle_delete' vehicle.pk %}" class="fleet-action-delete">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    {% comment %} Empty state when no vehicles have been added yet {% endcomment %}
+    <div class="fleet-empty">
+        <i class="bi bi-truck fleet-empty-icon"></i>
+        <p class="fleet-empty-text">No vehicles in the fleet yet.</p>
+        <a href="{% url 'garage:vehicle_add' %}" class="btn btn-gold mt-2">Add Your First Vehicle</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

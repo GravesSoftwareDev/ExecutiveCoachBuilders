@@ -16,8 +16,67 @@
     <a href="/services/" class="btn btn-gold mt-3">Explore Our Coaches</a>
 </section>
 
+{% comment %} Anniversary Video — full-width, breaks out of Bootstrap container {% endcomment %}
+<div class="home-video-bleed mb-5">
+    <div class="home-video-section">
+        <video
+            class="home-video-player"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata">
+            <source src="/media/anniversary_video.mp4" type="video/mp4">
+        </video>
+        <p class="home-video-caption">Est. 1976 &nbsp;&bull;&nbsp; 50th Anniversary</p>
+    </div>
+</div>
+
 {% comment %} Divider {% endcomment %}
 <hr class="home-divider mb-5">
+
+{% comment %} Best Sellers carousel — vehicles with display_order=0 {% endcomment %}
+{% if best_sellers %}
+{% include "client_view/_carousel.html" with title="Best Sellers" vehicles=best_sellers %}
+<hr class="home-divider mb-5">
+{% endif %}
+
+{% comment %} One carousel per category that has published vehicles {% endcomment %}
+{% for label, vehicles in category_groups %}
+{% include "client_view/_carousel.html" with title=label vehicles=vehicles %}
+{% if not forloop.last %}<hr class="home-divider mb-5">{% endif %}
+{% endfor %}
+
+{% comment %} Browse All Vehicles grid {% endcomment %}
+{% if all_vehicles %}
+<hr class="home-divider mb-5">
+<section class="mb-5">
+    <h2 class="home-section-title text-center mb-4">Browse All Vehicles</h2>
+    <div class="row g-4">
+        {% for vehicle in all_vehicles %}
+        <div class="col-sm-6 col-md-4 col-xl-3">
+            <a href="{% url 'client_view:vehicle_detail' vehicle.slug %}" class="vehicle-grid-card h-100">
+                <img src="{{ vehicle.hero_image.url }}" alt="{{ vehicle.name }}" class="vehicle-grid-card-img">
+                <div class="vehicle-grid-card-body">
+                    {% comment %} Category label in gold caps {% endcomment %}
+                    <p class="vehicle-carousel-card-category">{{ vehicle.get_category_display }}</p>
+                    {% comment %} Vehicle name {% endcomment %}
+                    <h3 class="vehicle-carousel-card-name">{{ vehicle.name }}</h3>
+                    {% if vehicle.tagline %}
+                    <p class="vehicle-carousel-card-tagline">{{ vehicle.tagline }}</p>
+                    {% endif %}
+                    {% if vehicle.passenger_capacity %}
+                    <p class="vehicle-grid-card-capacity">
+                        <i class="bi bi-people me-1"></i>{{ vehicle.passenger_capacity }}
+                    </p>
+                    {% endif %}
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
 
 {% comment %} Feature Cards {% endcomment %}
 <section class="mb-5">

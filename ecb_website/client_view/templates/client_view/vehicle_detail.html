@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}{{ vehicle.name }} - Executive Coach Builders{% endblock %}
+
+{% block nav_coaches %}active{% endblock %}
+
+{% block content %}
+
+{% comment %} Hero banner — full-width image with the vehicle name overlaid {% endcomment %}
+<div class="vd-hero mb-5">
+    <img src="{{ vehicle.hero_image.url }}" alt="{{ vehicle.name }}" class="vd-hero-img">
+    <div class="vd-hero-overlay">
+        <p class="vd-hero-category">{{ vehicle.get_category_display }}</p>
+        <h1 class="vd-hero-title">{{ vehicle.name }}</h1>
+        {% if vehicle.tagline %}
+        <p class="vd-hero-tagline">{{ vehicle.tagline }}</p>
+        {% endif %}
+    </div>
+</div>
+
+{% comment %} Main content columns {% endcomment %}
+<div class="row g-5 mb-5">
+
+    {% comment %} Left — description and features {% endcomment %}
+    <div class="col-lg-8">
+
+        {% if vehicle.description %}
+        <section class="vd-section mb-4">
+            <h2 class="vd-section-title">Overview</h2>
+            <p class="vd-body-text">{{ vehicle.description }}</p>
+        </section>
+        {% endif %}
+
+        {% if vehicle.feature_list %}
+        <section class="vd-section">
+            <h2 class="vd-section-title">Features</h2>
+            <ul class="vd-feature-list">
+                {% for feature in vehicle.feature_list %}
+                <li class="vd-feature-item">{{ feature }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+    </div>
+
+    {% comment %} Right — specs card and CTA {% endcomment %}
+    <div class="col-lg-4">
+        <div class="vd-specs-card">
+            <h2 class="vd-specs-title">Specifications</h2>
+
+            <div class="vd-spec-row">
+                <span class="vd-spec-label">Type</span>
+                <span class="vd-spec-value">{{ vehicle.get_category_display }}</span>
+            </div>
+
+            {% if vehicle.passenger_capacity %}
+            <div class="vd-spec-row">
+                <span class="vd-spec-label">Capacity</span>
+                <span class="vd-spec-value">{{ vehicle.passenger_capacity }}</span>
+            </div>
+            {% endif %}
+
+            <hr class="vd-spec-divider">
+
+            <a href="/contact/" class="btn btn-gold w-100 text-center">
+                Request a Quote
+            </a>
+            <a href="{% url 'client_view:home' %}" class="vd-back-link">
+                <i class="bi bi-arrow-left me-1"></i> Back to Fleet
+            </a>
+        </div>
+    </div>
+
+</div>
+
+{% comment %} Gallery grid — only renders when gallery images exist {% endcomment %}
+{% if gallery %}
+<section class="mb-5">
+    <h2 class="home-section-title mb-4">Gallery</h2>
+    <div class="vd-gallery">
+        {% for photo in gallery %}
+        <div class="vd-gallery-item">
+            <img src="{{ photo.image.url }}"
+                 alt="{{ photo.alt_text|default:vehicle.name }}"
+                 class="vd-gallery-img">
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

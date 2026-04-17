@@ -7,4 +7,6 @@ urlpatterns = [
     path('', views.home, name = 'home'),
     path('about/', views.about, name = 'about'),
     path('contact/', views.contact, name = 'contact'),
+    # Vehicle detail page — /coaches/<slug>/
+    path('coaches/<slug:slug>/', views.vehicle_detail, name='vehicle_detail'),
 ]

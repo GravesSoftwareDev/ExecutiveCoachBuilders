@@ -1,0 +1,127 @@
+{% comment %}
+    Reusable carousel partial.
+    Required context variables:
+        title    — heading displayed above the carousel
+        vehicles — queryset of Vehicle objects to display
+{% endcomment %}
+
+<section class="mb-5">
+    <h2 class="home-section-title text-center mb-4">{{ title }}</h2>
+
+    {% comment %} data-carousel-id scopes the JS so multiple carousels don't interfere {% endcomment %}
+    <div class="carousel-outer" data-carousel-id="{{ title|slugify }}">
+
+        {% comment %} Scroll left one card {% endcomment %}
+        <button class="carousel-ctrl carousel-prev" aria-label="Previous vehicles">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <div class="vehicle-carousel-wrapper">
+            <div class="vehicle-carousel-track">
+
+                {% comment %} First pass — the visible set {% endcomment %}
+                {% for vehicle in vehicles %}
+                <a href="{% url 'client_view:vehicle_detail' vehicle.slug %}" class="vehicle-carousel-card">
+                    <img src="{{ vehicle.hero_image.url }}" alt="{{ vehicle.name }}">
+                    <div class="vehicle-carousel-card-body">
+                        <p class="vehicle-carousel-card-category">{{ vehicle.get_category_display }}</p>
+                        <h3 class="vehicle-carousel-card-name">{{ vehicle.name }}</h3>
+                        {% if vehicle.tagline %}
+                        <p class="vehicle-carousel-card-tagline">{{ vehicle.tagline }}</p>
+                        {% endif %}
+                    </div>
+                </a>
+                {% endfor %}
+
+                {% comment %} Duplicate pass — required so the loop resets seamlessly at the halfway point {% endcomment %}
+                {% for vehicle in vehicles %}
+                <a href="{% url 'client_view:vehicle_detail' vehicle.slug %}" class="vehicle-carousel-card">
+                    <img src="{{ vehicle.hero_image.url }}" alt="{{ vehicle.name }}">
+                    <div class="vehicle-carousel-card-body">
+                        <p class="vehicle-carousel-card-category">{{ vehicle.get_category_display }}</p>
+                        <h3 class="vehicle-carousel-card-name">{{ vehicle.name }}</h3>
+                        {% if vehicle.tagline %}
+                        <p class="vehicle-carousel-card-tagline">{{ vehicle.tagline }}</p>
+                        {% endif %}
+                    </div>
+                </a>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        {% comment %} Scroll right one card {% endcomment %}
+        <button class="carousel-ctrl carousel-next" aria-label="Next vehicles">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+
+    </div>
+</section>
+
+<script>
+(function () {
+    const outer    = document.querySelector('[data-carousel-id="{{ title|slugify }}"]');
+    const track    = outer.querySelector('.vehicle-carousel-track');
+    const prevBtn  = outer.querySelector('.carousel-prev');
+    const nextBtn  = outer.querySelector('.carousel-next');
+
+    const CARD_STEP = 280 + 24; // card width + gap in px
+    const SPEED     = 0.4;      // pixels scrolled per animation frame
+
+    let pos      = 0;
+    let paused   = false;
+    let halfWidth = 0;
+    let resumeTimer = null;
+
+    // Calculate the true half-width after the browser has laid out the track
+    requestAnimationFrame(function () {
+        halfWidth = track.scrollWidth / 2;
+        requestAnimationFrame(step);
+    });
+
+    function step() {
+        if (!paused) {
+            pos += SPEED;
+            // When we reach the halfway point, jump back silently — the duplicate
+            // cards make this invisible to the user
+            if (pos >= halfWidth) pos -= halfWidth;
+            track.style.transform = 'translateX(-' + pos + 'px)';
+        }
+        requestAnimationFrame(step);
+    }
+
+    // Hovering pauses the auto-scroll; moving away resumes it
+    outer.addEventListener('mouseenter', function () { paused = true; });
+    outer.addEventListener('mouseleave', function () {
+        // Only resume if the user isn't in the middle of a manual scroll pause
+        if (!resumeTimer) paused = false;
+    });
+
+    // Prev button — scroll left one card, then resume auto after 3 s
+    prevBtn.addEventListener('click', function () {
+        paused = true;
+        pos -= CARD_STEP;
+        // Wrap around to the end of the first copy if we go negative
+        if (pos < 0) pos += halfWidth;
+        track.style.transform = 'translateX(-' + pos + 'px)';
+        scheduleResume();
+    });
+
+    // Next button — scroll right one card, then resume auto after 3 s
+    nextBtn.addEventListener('click', function () {
+        paused = true;
+        pos = (pos + CARD_STEP) % halfWidth;
+        track.style.transform = 'translateX(-' + pos + 'px)';
+        scheduleResume();
+    });
+
+    // Resumes auto-scroll 3 seconds after the last manual button press
+    function scheduleResume() {
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(function () {
+            resumeTimer = null;
+            paused = false;
+        }, 3000);
+    }
+}());
+</script>
