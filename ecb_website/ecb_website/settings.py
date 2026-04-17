@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
     'client_view.apps.ClientViewConfig',
+    'garage.apps.GarageConfig',
 ]
 
 MIDDLEWARE = [
@@ -121,6 +122,11 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# Media files — uploaded images (hero photos, gallery photos)
+MEDIA_URL = '/media/'
+# Uploaded files are stored in a 'media' folder next to manage.py
+MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'account.Employee'
 

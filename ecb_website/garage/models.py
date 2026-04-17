@@ -49,7 +49,7 @@ class Vehicle(models.Model):
 
     class Meta:
         # Vehicles will be ordered in the database by display order first, then by name.
-        ordering = ["display order","name"]
+        ordering = ["display_order", "name"]
 
     # Overides the default string to be the vehicle's name
     def __str__(self):
@@ -64,7 +64,7 @@ class Vehicle(models.Model):
     # Takes the text field of features and creates a list from each individual line in the textfield.
     @property
     def feature_list(self):
-        return [line.strip() for lin in self.features.splitlines() if line.strip()]
+        return [line.strip() for line in self.features.splitlines() if line.strip()]
     
 class VehicleImage(models.Model):
     """

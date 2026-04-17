@@ -38,7 +38,21 @@
 
     {% comment %} Portal Navbar {% endcomment %}
     <nav id="main-nav" class="navbar">
-        <div class="container-fluid px-4 d-flex justify-content-end">
+        <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+
+            {% comment %} Left side — portal section links {% endcomment %}
+            <ul class="navbar-nav flex-row gap-1">
+                <li class="nav-item">
+                    <a class="nav-link {% block nav_dashboard %}{% endblock %}" href="{% url 'dashboard' %}">
+                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% block nav_fleet %}{% endblock %}" href="{% url 'garage:vehicle_list' %}">
+                        <i class="bi bi-truck me-1"></i>Fleet
+                    </a>
+                </li>
+            </ul>
             {% if user.is_authenticated %}
             <ul class="navbar-nav nav-auth flex-row align-items-center gap-3">
                 <li class="nav-item">

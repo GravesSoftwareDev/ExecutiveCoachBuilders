@@ -1,0 +1,312 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}{{ action }} - Fleet Management{% endblock %}
+
+{% block nav_fleet %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    {% comment %} Page header with breadcrumb back to the list {% endcomment %}
+    <div class="fleet-page-header mb-4">
+        <div>
+            <a href="{% url 'garage:vehicle_list' %}" class="fleet-breadcrumb">
+                <i class="bi bi-arrow-left me-1"></i> Back to Fleet
+            </a>
+            <h1 class="fleet-page-title mt-1">{{ action }}</h1>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% comment %} Top-level form errors {% endcomment %}
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% comment %} ── Section 1: Identity ─────────────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-card-text me-2"></i>Vehicle Identity
+            </h2>
+            <p class="fleet-form-section-hint">
+                The name and slug form the vehicle's URL on the public site.
+                The slug auto-fills from the name — only change it if you need a custom address.
+            </p>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {% include "garage/_field.html" with field=form.name %}
+                </div>
+                <div class="col-md-6">
+                    {% include "garage/_field.html" with field=form.slug %}
+                </div>
+                <div class="col-md-4">
+                    {% include "garage/_field.html" with field=form.category %}
+                </div>
+                <div class="col-md-4">
+                    {% include "garage/_field.html" with field=form.passenger_capacity %}
+                </div>
+                <div class="col-md-4">
+                    {% include "garage/_field.html" with field=form.display_order %}
+                </div>
+            </div>
+        </div>
+
+        {% comment %} ── Section 2: Copy ──────────────────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-chat-left-text me-2"></i>Marketing Copy
+            </h2>
+            <p class="fleet-form-section-hint">
+                The tagline appears on listing cards. The description and features appear on the
+                vehicle detail page. Put one feature per line — the site renders them as a
+                bulleted list automatically.
+            </p>
+
+            <div class="row g-3">
+                <div class="col-12">
+                    {% include "garage/_field.html" with field=form.tagline %}
+                </div>
+                <div class="col-md-6">
+                    {% include "garage/_field.html" with field=form.description %}
+                </div>
+                <div class="col-md-6">
+                    {% include "garage/_field.html" with field=form.features %}
+                </div>
+            </div>
+        </div>
+
+        {% comment %} ── Section 3: Hero Image ────────────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-image me-2"></i>Hero Image
+            </h2>
+            <p class="fleet-form-section-hint">
+                This is the main image shown on carousel cards and at the top of the detail page.
+                Use a high-resolution landscape photo for best results (recommended: 1200 × 800 px or larger).
+            </p>
+
+            {% comment %} Show the current hero image when editing {% endcomment %}
+            {% if vehicle.hero_image %}
+            <div class="fleet-current-image mb-3">
+                <p class="fleet-field-label">Current Image</p>
+                <img src="{{ vehicle.hero_image.url }}" alt="{{ vehicle.name }}" class="fleet-image-preview">
+            </div>
+            {% endif %}
+
+            {% include "garage/_field.html" with field=form.hero_image %}
+        </div>
+
+        {% comment %} ── Section 4: Gallery Images ────────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-images me-2"></i>Gallery Images
+            </h2>
+            <p class="fleet-form-section-hint">
+                Gallery photos appear on the vehicle detail page below the hero image.
+                Use <strong>Display Order</strong> to control the sequence (lowest first).
+                Click <strong>Remove</strong> to delete a photo — then save the vehicle to confirm.
+            </p>
+
+            {{ formset.management_form }}
+
+            <div id="gallery-rows">
+                {% for image_form in formset %}
+                <div class="fleet-formset-row">
+
+                    {% comment %} Thumbnail for already-saved images {% endcomment %}
+                    {% if image_form.instance.pk %}
+                    <div class="fleet-formset-thumb">
+                        <img src="{{ image_form.instance.image.url }}" alt="Gallery image">
+                    </div>
+                    {% endif %}
+
+                    <div class="row g-3 flex-grow-1">
+                        <div class="col-md-5">
+                            {% include "garage/_field.html" with field=image_form.image %}
+                        </div>
+                        <div class="col-md-5">
+                            {% include "garage/_field.html" with field=image_form.alt_text %}
+                        </div>
+                        <div class="col-md-2">
+                            {% include "garage/_field.html" with field=image_form.display_order %}
+                        </div>
+                        <div class="col-12">
+                            {% if image_form.instance.pk %}
+                            {% comment %} Saved image — hide the DELETE checkbox; JS will tick it {% endcomment %}
+                            <div style="display:none">{{ image_form.DELETE }}</div>
+                            <button type="button" class="fleet-formset-remove-btn"
+                                    data-delete-field="{{ image_form.DELETE.html_name }}">
+                                <i class="bi bi-x-circle me-1"></i> Remove this photo
+                            </button>
+                            {% else %}
+                            {% comment %} Unsaved slot — just remove the row from the DOM {% endcomment %}
+                            <button type="button" class="fleet-formset-remove-btn fleet-formset-remove-new">
+                                <i class="bi bi-x-circle me-1"></i> Remove this slot
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {{ image_form.id }}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% comment %} Add Another Photo button {% endcomment %}
+            <button type="button" id="add-gallery-photo" class="fleet-add-photo-btn mt-3">
+                <i class="bi bi-plus-circle me-1"></i> Add Another Photo
+            </button>
+
+            {% comment %}
+                Hidden template row — Django renders empty_form with __prefix__ in all
+                name/id attributes. JS clones this HTML, replaces __prefix__ with the
+                current form count, and appends it to #gallery-rows.
+            {% endcomment %}
+            <template id="gallery-empty-template">
+                <div class="fleet-formset-row">
+                    <div class="row g-3 flex-grow-1">
+                        <div class="col-md-5">
+                            <div class="fleet-field">
+                                <label class="fleet-field-label">Image</label>
+                                {{ formset.empty_form.image }}
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="fleet-field">
+                                <label class="fleet-field-label">Alt Text</label>
+                                {{ formset.empty_form.alt_text }}
+                                <p class="fleet-field-hint">Describe the image for accessibility.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="fleet-field">
+                                <label class="fleet-field-label">Order</label>
+                                {{ formset.empty_form.display_order }}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="button" class="fleet-formset-remove-btn fleet-formset-remove-new">
+                                <i class="bi bi-x-circle me-1"></i> Remove this slot
+                            </button>
+                        </div>
+                    </div>
+                    {{ formset.empty_form.id }}
+                </div>
+            </template>
+        </div>
+
+        {% comment %} ── Section 5: Publishing ────────────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-toggle-on me-2"></i>Publishing
+            </h2>
+            <p class="fleet-form-section-hint">
+                Published vehicles appear immediately on the public site.
+                Uncheck to save as a draft while you finish the details.
+            </p>
+
+            <div class="fleet-checkbox-row">
+                {{ form.is_published }}
+                <label for="{{ form.is_published.id_for_label }}" class="fleet-checkbox-label">
+                    Publish this vehicle on the public site
+                </label>
+            </div>
+        </div>
+
+        {% comment %} ── Form Actions ─────────────────────────────────────── {% endcomment %}
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Save Vehicle
+            </button>
+            <a href="{% url 'garage:vehicle_list' %}" class="fleet-cancel-link">Cancel</a>
+        </div>
+
+    </form>
+</div>
+
+<script>
+(function () {
+
+    // ── Slug auto-fill from vehicle name ─────────────────────────────────
+    const nameField = document.getElementById('id_name');
+    const slugField = document.getElementById('id_slug');
+
+    // Mirrors Django's slugify: lowercase, strip non-alphanumeric, collapse hyphens
+    function slugify(text) {
+        return text.toLowerCase()
+                   .replace(/[^\w\s-]/g, '')
+                   .replace(/[\s_]+/g, '-')
+                   .replace(/--+/g, '-')
+                   .replace(/^-+|-+$/g, '');
+    }
+
+    // If the slug already has a value that doesn't match the slugified name on
+    // page load, the staff set it manually — respect it and don't overwrite it
+    let slugLocked = slugField.value !== '' &&
+                     slugField.value !== slugify(nameField.value);
+
+    slugField.addEventListener('input', function () {
+        // Staff typed directly in the slug box — lock it from auto-fill
+        slugLocked = true;
+    });
+
+    nameField.addEventListener('input', function () {
+        if (!slugLocked) {
+            slugField.value = slugify(nameField.value);
+        }
+    });
+
+    // ── Gallery image formset ─────────────────────────────────────────────
+    const prefix   = '{{ formset.prefix }}';
+    const totalEl  = () => document.getElementById('id_' + prefix + '-TOTAL_FORMS');
+    const rows     = document.getElementById('gallery-rows');
+    const template = document.getElementById('gallery-empty-template');
+
+    // ── Add a new blank photo slot ────────────────────────────────────────
+    document.getElementById('add-gallery-photo').addEventListener('click', function () {
+        const count = parseInt(totalEl().value);
+
+        // Clone the hidden template HTML and swap __prefix__ for the real index
+        const html = template.innerHTML.replace(/__prefix__/g, count);
+        rows.insertAdjacentHTML('beforeend', html);
+
+        // Wire up the remove button on the freshly added row
+        const newRow = rows.lastElementChild;
+        newRow.querySelector('.fleet-formset-remove-new')
+              .addEventListener('click', removeNewRow);
+
+        totalEl().value = count + 1;
+    });
+
+    // ── Remove an unsaved slot (just drops it from the DOM) ───────────────
+    function removeNewRow() {
+        this.closest('.fleet-formset-row').remove();
+        // No need to update TOTAL_FORMS — Django ignores empty extra forms
+    }
+
+    // Wire remove buttons on the initial blank slots rendered by Django
+    rows.querySelectorAll('.fleet-formset-remove-new').forEach(function (btn) {
+        btn.addEventListener('click', removeNewRow);
+    });
+
+    // ── Mark a saved image for deletion ───────────────────────────────────
+    // Checks the hidden DELETE checkbox and grays the row out visually.
+    // The actual delete happens server-side when the form is saved.
+    rows.querySelectorAll('[data-delete-field]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const row       = btn.closest('.fleet-formset-row');
+            const fieldName = btn.getAttribute('data-delete-field');
+            const checkbox  = row.querySelector('input[name="' + fieldName + '"]');
+
+            checkbox.checked       = true;
+            row.style.opacity      = '0.35';
+            row.style.pointerEvents = 'none';
+            btn.innerHTML          = '<i class="bi bi-x-circle me-1"></i> Marked for removal — save to confirm';
+        });
+    });
+}());
+</script>
+{% endblock %}

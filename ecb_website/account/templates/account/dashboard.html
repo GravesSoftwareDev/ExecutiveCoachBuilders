@@ -2,8 +2,28 @@
 
 {% block title %}Dashboard - Executive Coach Builders{% endblock %}
 
+{% block nav_dashboard %}active{% endblock %}
+
 {% block content %}
 <div class="dashboard-container">
-    <h1 class="dashboard-title">Welcome to Your Dashboard, {{ user.first_name|default:user.username }}!</h1>
+
+    <h1 class="dashboard-title">Welcome, {{ user.first_name|default:user.username }}</h1>
+    <p class="dashboard-subtitle">Select a section below to get started.</p>
+
+    <div class="row g-4 mt-2">
+
+        {% comment %} Fleet Management card {% endcomment %}
+        <div class="col-md-4">
+            <a href="{% url 'garage:vehicle_list' %}" class="dashboard-card">
+                <i class="bi bi-truck dashboard-card-icon"></i>
+                <h2 class="dashboard-card-title">Fleet Management</h2>
+                <p class="dashboard-card-text">
+                    Add, edit, or remove vehicles. Control which vehicles are featured
+                    in the Best Sellers carousel and manage gallery photos.
+                </p>
+            </a>
+        </div>
+
+    </div>
 </div>
 {% endblock %}
