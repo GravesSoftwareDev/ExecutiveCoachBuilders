@@ -44,3 +44,11 @@ def about(request):
 
 def contact(request):
     return render(request, 'client_view/contact.html')
+
+
+def coaches(request):
+    return render(request, 'client_view/coaches.html')
+
+
+def services(request):
+    return render(request, 'client_view/services.html')
