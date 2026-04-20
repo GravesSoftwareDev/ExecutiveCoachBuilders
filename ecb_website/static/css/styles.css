@@ -1385,3 +1385,93 @@ body {
   display: flex;
   justify-content: center;
 }
+
+/* contact form styling */
+/* ─── Contact Page ───────────────────────────────────── */
+
+.contact-form {
+    max-width: 600px;
+    margin: 0 auto 48px;
+    background-color: var(--ecb-off-white);
+    border: 1px solid #ddd;
+    border-top: 3px solid var(--ecb-gold);
+    padding: 40px;
+}
+
+.contact-form label {
+    display: block;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #444;
+    margin-bottom: 6px;
+    margin-top: 20px;
+}
+
+.contact-form label:first-of-type {
+    margin-top: 0;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+    display: block;
+    width: 100%;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9rem;
+    color: #222;
+    background-color: var(--ecb-white);
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 10px 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-form input[type="text"]:focus,
+.contact-form input[type="email"]:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: var(--ecb-gold);
+    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+}
+
+.contact-form textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.contact-form input[type="submit"] {
+    display: block;
+    width: 100%;
+    margin-top: 28px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background-color: var(--ecb-gold);
+    color: var(--ecb-black);
+    border: 1px solid var(--ecb-gold-dark);
+    border-radius: 0;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.contact-form input[type="submit"]:hover {
+    background-color: var(--ecb-gold-dark);
+    color: var(--ecb-white);
+}
+
+.input-error {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}

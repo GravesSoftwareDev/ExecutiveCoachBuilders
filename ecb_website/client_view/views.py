@@ -1,5 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
+from .forms import contactForm
 from garage.models import Vehicle
+from django.http import HttpResponseRedirect
 
 
 def home(request):
@@ -23,8 +25,6 @@ def home(request):
         'all_vehicles': published,
     })
     
-
-
 def vehicle_detail(request, slug):
     # Only allow published vehicles to be viewed publicly
     vehicle = get_object_or_404(Vehicle, slug=slug, is_published=True)
@@ -35,20 +35,24 @@ def vehicle_detail(request, slug):
         'gallery': gallery,
     })
 
-
-
 def about(request):
     return render(request, 'client_view/about.html')
 
-
-
 def contact(request):
-    return render(request, 'client_view/contact.html')
-
+    if request.method == "POST":
+        form = contactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('client_view:thankyou_contact')
+    else:
+        form = contactForm()
+    return render(request, 'client_view/contact.html', {'form': form})
 
 def coaches(request):
     return render(request, 'client_view/coaches.html')
 
-
 def services(request):
     return render(request, 'client_view/services.html')
+
+def thankyou_contact(request):
+    return render(request, 'client_view/thankyou_contact.html')
