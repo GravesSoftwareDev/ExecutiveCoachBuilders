@@ -17,13 +17,8 @@
 </section>
 
 {% comment %} Anniversary Video — full-width, breaks out of Bootstrap container {% endcomment %}
-{% if admin_site %}
-
-
-
-{% endif %}
-
 <div class="home-video-bleed mb-5">
+
     <div class="home-video-section">
         <video
             class="home-video-player"
@@ -135,16 +130,5 @@
     </p>
     <a href="/about/" class="btn btn-gold mt-2">Our Story</a>
 </section>
-
-
-
-<script>
-    if ('{{admin_site}}' !== null) {
-        let links = document.getElementsByTagName('a');
-        for (let link of links){
-            link.href = "javascript:void(0)";
-        }
-    }
-</script>
 
 {% endblock %}

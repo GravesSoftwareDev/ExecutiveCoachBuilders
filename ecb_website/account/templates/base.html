@@ -24,6 +24,10 @@
 
     {% comment %} Top Banner {% endcomment %}
     <header id="top-banner">
+        <button id="return-to-admin" class="btn btn-primary">
+            Return To Admin
+        </button>
+
         <div class="brand-center">
             <a href="/">
                 <img
@@ -102,5 +106,22 @@
 
     {% comment %} Bootstrap JS {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+
+    {% if admin_site %}
+    <script>
+        let ret = document.getElementById("return-to-admin").addEventListener('click', () => {
+            window.location.href="/portal/site/"
+        });
+
+        let r = RegExp('^(?:[a-z+]+:)?\/\/')
+        let links = document.getElementsByTagName('a');
+        for (let link of links) {
+            let h = link.getAttribute('href').slice(0,-1)
+            if (!r.test(h))
+                link.setAttribute('href', '/portal/site/admin_view?s=client_view' + (h ? h : '/home') + ".html")
+        }
+    </script>
+    {% endif %}
 </body>
 </html>

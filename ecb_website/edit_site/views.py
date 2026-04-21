@@ -20,3 +20,11 @@ def site_changes(request):
     site_settings = {s.name : s.get_value() for s in site_settings_model}
 
     return render(request, "edit_site/site_changes.html", {'admin_site':True, 'site_settings': site_settings})
+
+
+@staff_member_required(login_url='login')
+def admin_view(request):
+    site_settings_model = SiteSettings.objects.all()
+    site_settings = {s.name : s.get_value() for s in site_settings_model}
+
+    return render(request, request.GET.get('s', 'client_view/'), {'admin_site': True, 'site_settings': site_settings})

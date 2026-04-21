@@ -1,0 +1,9 @@
+<script>
+    let r = RegExp('^(?:[a-z+]+:)?\/\/')
+    let links = document.getElementsByTagName('a');
+    for (let link of links) {
+        let h = link.getAttribute('href')
+        if (!r.test(h))
+            link.setAttribute('href', '/portal/site/admin_view?s=client_view' + h.slice(0,-1) + ".html")
+    }
+</script>
