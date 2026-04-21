@@ -13,7 +13,11 @@
     <p class="dashboard-subtitle">Click on an object below to edit</p>
 </div>
 
-{% include 'client_view/home.html' %}
 
+<form method="post" enctype="multipart/form-data" novalidate>
+
+    {% include "garage/_field.html" with field=form.primaryCenterVideo %}
+
+</form>
 
 {% endblock %}
