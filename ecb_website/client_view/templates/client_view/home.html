@@ -17,6 +17,12 @@
 </section>
 
 {% comment %} Anniversary Video — full-width, breaks out of Bootstrap container {% endcomment %}
+{% if admin_site %}
+
+
+
+{% endif %}
+
 <div class="home-video-bleed mb-5">
     <div class="home-video-section">
         <video
@@ -26,7 +32,7 @@
             loop
             playsinline
             preload="metadata">
-            <source src="/media/anniversary_video.mp4" type="video/mp4">
+            <source src="{{ site_settings.primary_center_video }}" type="video/mp4">
         </video>
         <p class="home-video-caption">Est. 1976 &nbsp;&bull;&nbsp; 50th Anniversary</p>
     </div>
@@ -129,5 +135,16 @@
     </p>
     <a href="/about/" class="btn btn-gold mt-2">Our Story</a>
 </section>
+
+
+
+<script>
+    if ('{{admin_site}}' !== null) {
+        let links = document.getElementsByTagName('a');
+        for (let link of links){
+            link.href = "javascript:void(0)";
+        }
+    }
+</script>
 
 {% endblock %}
