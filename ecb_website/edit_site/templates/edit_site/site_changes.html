@@ -20,7 +20,18 @@
 
 </form> -->
 
-
 <a href="admin_view?s=client_view/home.html" class="btn">Live view</a>
+
+{% if settings_form %}
+
+{% for setting in settings_form %}
+
+<br>
+<p>{{setting.name.value}}</p>
+{{ setting.value }}
+
+{% endfor %}
+
+{% endif %}
 
 {% endblock %}

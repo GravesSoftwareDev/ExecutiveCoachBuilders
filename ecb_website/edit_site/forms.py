@@ -12,13 +12,12 @@ class SiteSettingsForm(forms.ModelForm):
         }
 
 
-class ImageSettingsForm(forms.ModelForm):
-    value = forms.ImageField(required=True)
+class MediaSettingsForm(forms.ModelForm):
+    value = forms.FileField(required=True)
     class Meta:
         model = SiteSettings
-        fields = ['name', 'value', 'type']
+        fields = ['name', 'value']
         labels = {
             'name': 'Name',
             'value': 'Value',
-            'type': 'Type',
         }

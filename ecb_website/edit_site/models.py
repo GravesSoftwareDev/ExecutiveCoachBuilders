@@ -8,10 +8,13 @@ class SiteSettings(models.Model):
     value = models.CharField(max_length=255, default="_")
     type = models.CharField(max_length=5, choices={"T":"TEXT", "V":"VIDEO", "I":"IMAGE"}, default="T")
 
+    def media_type(this):
+        return this.type == 'I' or this.type == 'V'
+
     def get_value(this):
-        if (this.type is 'T' or this.type is 'V'):
+        if this.media_type():
             return Settings.MEDIA_URL + this.value
         return this.value
-
+    
     class Meta:
         ordering = ["name"]

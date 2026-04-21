@@ -24,9 +24,12 @@
 
     {% comment %} Top Banner {% endcomment %}
     <header id="top-banner">
+
+    {% if admin_site %}
         <button id="return-to-admin" class="btn btn-primary">
             Return To Admin
         </button>
+    {% endif %}
 
         <div class="brand-center">
             <a href="/">
