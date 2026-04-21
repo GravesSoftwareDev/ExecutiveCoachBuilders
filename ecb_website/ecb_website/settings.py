@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'client_view.apps.ClientViewConfig',
     'garage.apps.GarageConfig',
+    'edit_site.apps.EditSiteConfig'
 ]
 
 MIDDLEWARE = [

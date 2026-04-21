@@ -1,0 +1,19 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Edit Site - Executive Coach Builders{% endblock %}
+
+{% block nav_edit_site %}active{% endblock %}
+
+{% block content %}
+
+
+{% comment %} Leaching more of the css {% endcomment %}
+<div class="dashboard-container">
+    <h1 class="dashboard-title">Site Management</h1>
+    <p class="dashboard-subtitle">Click on an object below to edit</p>
+</div>
+
+{% include 'client_view/home.html' %}
+
+
+{% endblock %}
