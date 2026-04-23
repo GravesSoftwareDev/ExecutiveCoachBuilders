@@ -24,6 +24,18 @@
             </a>
         </div>
 
+        {% comment %} Blog card {% endcomment %}
+        <div class="col-md-4">
+            <a href="{% url 'blog:article_list' %}" class="dashboard-card">
+                <i class="bi bi-newspaper dashboard-card-icon"></i>
+                <h2 class="dashboard-card-title">Blog</h2>
+                <p class="dashboard-card-text">
+                    Write and publish news articles. Save drafts, schedule posts,
+                    and manage all published content.
+                </p>
+            </a>
+        </div>
+
     </div>
 </div>
 {% endblock %}

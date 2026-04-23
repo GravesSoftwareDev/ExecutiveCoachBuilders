@@ -12,4 +12,7 @@ urlpatterns = [
     path('services/', views.services, name = 'services'),
     # Vehicle detail page — /coaches/<slug>/
     path('coaches/<slug:slug>/', views.vehicle_detail, name='vehicle_detail'),
+    # Public blog
+    path('blog/', views.article_list, name='article_list'),
+    path('blog/<int:year>/<int:month>/<slug:slug>/', views.article_detail, name='article_detail'),
 ]

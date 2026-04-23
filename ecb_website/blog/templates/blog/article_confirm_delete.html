@@ -1,0 +1,29 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Delete Article — Blog{% endblock %}
+
+{% block nav_blog %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container" style="max-width:560px;">
+
+    <div class="fleet-page-header mb-4">
+        <a href="{% url 'blog:article_list' %}" class="fleet-breadcrumb">
+            <i class="bi bi-arrow-left me-1"></i> Back to Articles
+        </a>
+        <h1 class="fleet-page-title mt-1">Delete Article</h1>
+    </div>
+
+    <div class="fleet-form-section">
+        <p>Are you sure you want to permanently delete <strong>{{ article.title }}</strong>? This cannot be undone.</p>
+        <form method="post" class="d-flex gap-3 mt-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash me-1"></i> Yes, Delete
+            </button>
+            <a href="{% url 'blog:article_list' %}" class="fleet-cancel-link align-self-center">Cancel</a>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

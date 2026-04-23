@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from .forms import contactForm
 from edit_site.models import SiteSettings
 from garage.models import Vehicle
+from blog.models import Article
 from django.http import HttpResponseRedirect
 from django.conf import settings as Settings
 
@@ -24,12 +25,14 @@ def home(request):
         if group.exists():
             category_groups.append((label, group))
     
+    latest_articles = Article.publisher.all()[:3]
+
     return render(request, 'client_view/home.html', {
         'best_sellers': best_sellers,
         'category_groups': category_groups,
-        # Full list used by the browse-all grid at the bottom of the page
         'all_vehicles': published,
-        'site_settings': site_settings
+        'site_settings': site_settings,
+        'latest_articles': latest_articles,
     })
     
 def vehicle_detail(request, slug):
@@ -63,3 +66,19 @@ def services(request):
 
 def thankyou_contact(request):
     return render(request, 'client_view/thankyou_contact.html')
+
+
+def article_list(request):
+    articles = Article.publisher.all()
+    return render(request, 'client_view/article_list.html', {'articles': articles})
+
+
+def article_detail(request, year, month, slug):
+    article = get_object_or_404(
+        Article,
+        status=Article.Status.PUBLISHED,
+        publish__year=year,
+        publish__month=month,
+        slug=slug,
+    )
+    return render(request, 'client_view/article_detail.html', {'article': article})

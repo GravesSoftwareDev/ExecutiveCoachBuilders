@@ -1,0 +1,247 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}{{ action }} — Blog{% endblock %}
+
+{% block nav_blog %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    <div class="fleet-page-header mb-4">
+        <a href="{% url 'blog:article_list' %}" class="fleet-breadcrumb">
+            <i class="bi bi-arrow-left me-1"></i> Back to Articles
+        </a>
+        <h1 class="fleet-page-title mt-1">{{ action }}</h1>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate id="article-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% comment %} ── Section 1: Identity ───────────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-card-text me-2"></i>Article Identity
+            </h2>
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <div class="fleet-field {% if form.title.errors %}has-error{% endif %}">
+                        <label for="{{ form.title.id_for_label }}" class="fleet-field-label">
+                            Title <span class="fleet-required">*</span>
+                        </label>
+                        {{ form.title }}
+                        {% for error in form.title.errors %}
+                        <p class="fleet-field-error"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="fleet-field {% if form.slug.errors %}has-error{% endif %}">
+                        <label for="{{ form.slug.id_for_label }}" class="fleet-field-label">Slug</label>
+                        {{ form.slug }}
+                        <p class="fleet-field-hint">{{ form.slug.help_text }}</p>
+                        {% for error in form.slug.errors %}
+                        <p class="fleet-field-error"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% comment %} ── Section 2: Photo / Video ──────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-film me-2"></i>Featured Media
+            </h2>
+            <p class="fleet-form-section-hint">
+                Upload a photo <strong>or</strong> a video — whichever you add will appear
+                at the top of the article and on listing cards. If you upload both, the
+                video takes priority on the detail page and the photo is used for cards.
+            </p>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="fleet-field {% if form.image.errors %}has-error{% endif %}">
+                        <label class="fleet-field-label">Photo</label>
+                        {% if article.image %}
+                        <div class="mb-2">
+                            <img src="{{ article.image.url }}" alt="{{ article.title }}" class="fleet-image-preview">
+                        </div>
+                        {% endif %}
+                        {{ form.image }}
+                        <p class="fleet-field-hint">Recommended: 1200 × 630 px or larger.</p>
+                        {% for error in form.image.errors %}
+                        <p class="fleet-field-error"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="fleet-field {% if form.video.errors %}has-error{% endif %}">
+                        <label class="fleet-field-label">Video</label>
+                        {% if article.video %}
+                        <div class="mb-2">
+                            <video src="{{ article.video.url }}" controls class="fleet-image-preview"></video>
+                        </div>
+                        {% endif %}
+                        {{ form.video }}
+                        <p class="fleet-field-hint">MP4 recommended. Max size depends on your server.</p>
+                        {% for error in form.video.errors %}
+                        <p class="fleet-field-error"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% comment %} ── Section 3: Body ───────────────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-pencil-square me-2"></i>Article Body
+            </h2>
+
+            {% if form.body.errors %}
+            <div class="alert alert-danger mb-3">
+                {% for error in form.body.errors %}{{ error }}{% endfor %}
+            </div>
+            {% endif %}
+
+            {% comment %} Quill mounts here; the actual value goes into the hidden textarea {% endcomment %}
+            <div id="quill-editor" style="min-height:340px;"></div>
+            {{ form.body }}
+        </div>
+
+        {% comment %} ── Section 4: Tags ───────────────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-tags me-2"></i>Tags
+            </h2>
+            <div class="fleet-field {% if form.tags.errors %}has-error{% endif %}">
+                <label for="{{ form.tags.id_for_label }}" class="fleet-field-label">Tags</label>
+                {{ form.tags }}
+                <p class="fleet-field-hint">{{ form.tags.help_text }}</p>
+                {% for error in form.tags.errors %}
+                <p class="fleet-field-error"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% comment %} ── Section 5: Publishing ──────────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-toggle-on me-2"></i>Publishing
+            </h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="fleet-field {% if form.status.errors %}has-error{% endif %}">
+                        <label for="{{ form.status.id_for_label }}" class="fleet-field-label">Status</label>
+                        {{ form.status }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="fleet-field {% if form.publish.errors %}has-error{% endif %}">
+                        <label for="{{ form.publish.id_for_label }}" class="fleet-field-label">Publish Date</label>
+                        {{ form.publish }}
+                        <p class="fleet-field-hint">{{ form.publish.help_text }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% comment %} ── Form Actions ─────────────────────────────────── {% endcomment %}
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Save Article
+            </button>
+            <a href="{% url 'blog:article_list' %}" class="fleet-cancel-link">Cancel</a>
+        </div>
+
+    </form>
+</div>
+
+{% comment %} Quill.js Snow theme {% endcomment %}
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
+<style>
+    #quill-editor {
+        background: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 0 0 .375rem .375rem;
+    }
+    .ql-toolbar {
+        border-radius: .375rem .375rem 0 0;
+        background: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-bottom: none;
+    }
+    .ql-container {
+        font-size: 1rem;
+        border: none !important;
+    }
+    .ql-editor { min-height: 300px; }
+</style>
+
+<script>
+(function () {
+    // ── Quill rich text editor ────────────────────────────────────────────
+    const quill = new Quill('#quill-editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ color: [] }, { background: [] }],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                [{ indent: '-1' }, { indent: '+1' }],
+                ['blockquote', 'code-block'],
+                ['link', 'image'],
+                ['clean'],
+            ],
+        },
+    });
+
+    // Pre-populate the editor when editing an existing article
+    const bodyField = document.getElementById('id_body');
+    if (bodyField.value) {
+        quill.root.innerHTML = bodyField.value;
+    }
+
+    // Before submit, write the editor HTML into the hidden textarea
+    document.getElementById('article-form').addEventListener('formdata', function (e) {
+        e.formData.set('body', quill.root.innerHTML);
+    });
+
+    // Fallback for browsers that don't fire the formdata event
+    document.getElementById('article-form').addEventListener('submit', function () {
+        bodyField.value = quill.root.innerHTML;
+    });
+
+    // ── Slug auto-fill from title ─────────────────────────────────────────
+    const titleField = document.getElementById('id_title');
+    const slugField  = document.getElementById('id_slug');
+
+    function slugify(text) {
+        return text.toLowerCase()
+                   .replace(/[^\w\s-]/g, '')
+                   .replace(/[\s_]+/g, '-')
+                   .replace(/--+/g, '-')
+                   .replace(/^-+|-+$/g, '');
+    }
+
+    let slugLocked = slugField.value !== '' &&
+                     slugField.value !== slugify(titleField.value);
+
+    slugField.addEventListener('input', function () { slugLocked = true; });
+
+    titleField.addEventListener('input', function () {
+        if (!slugLocked) {
+            slugField.value = slugify(titleField.value);
+        }
+    });
+}());
+</script>
+{% endblock %}

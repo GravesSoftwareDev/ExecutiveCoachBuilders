@@ -120,6 +120,34 @@
     </div>
 </section>
 
+{% comment %} Latest News {% endcomment %}
+{% if latest_articles %}
+<hr class="home-divider mb-5">
+<section class="mb-5">
+    <h2 class="home-section-title text-center mb-4">Latest News</h2>
+    <div class="row g-4">
+        {% for article in latest_articles %}
+        <div class="col-md-4">
+            <a href="{{ article.get_absolute_url }}" class="vehicle-grid-card h-100 text-decoration-none">
+                {% if article.image %}
+                <img src="{{ article.image.url }}" alt="{{ article.title }}" class="vehicle-grid-card-img">
+                {% elif article.video %}
+                <video src="{{ article.video.url }}" muted preload="metadata" class="vehicle-grid-card-img"></video>
+                {% endif %}
+                <div class="vehicle-grid-card-body">
+                    <p class="vehicle-carousel-card-category">{{ article.publish|date:"F j, Y" }}</p>
+                    <h3 class="vehicle-carousel-card-name">{{ article.title }}</h3>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'client_view:article_list' %}" class="btn btn-gold">View All News</a>
+    </div>
+</section>
+{% endif %}
+
 {% comment %} Anniversary Callout {% endcomment %}
 <section class="home-callout text-center py-5 mb-5">
     <p class="home-callout-label">Est. 1976 &nbsp;&bull;&nbsp; 50th Anniversary</p>
