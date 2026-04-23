@@ -38,6 +38,8 @@ def home(request):
 def vehicle_detail(request, slug):
     vehicle = get_object_or_404(Vehicle, slug=slug, is_published=True)
     all_gallery = vehicle.gallery.all()
+    # Split into separate lists so the template can render a clean photo grid
+    # followed by a dedicated full-width video section, rather than mixing them.
     photos = [item for item in all_gallery if item.image and not item.video]
     videos = [item for item in all_gallery if item.video]
     return render(request, 'client_view/vehicle_detail.html', {

@@ -47,6 +47,7 @@ body {
     position: relative;
 }
 
+/* Logo size increased from 160px to 220px for a more prominent header */
 #top-banner .brand-logo {
     height: 220px;
     width: 220px;
@@ -54,6 +55,7 @@ body {
     filter: drop-shadow(0 0 16px rgba(201,168,76,0.55));
 }
 
+/* Company name font size increased from 1.75rem to 2.5rem to match the larger logo */
 #top-banner .brand-name {
     font-family: 'Playfair Display', serif;
     font-weight: 600;
@@ -65,6 +67,8 @@ body {
     line-height: 1;
 }
 
+/* Tagline restyled to Playfair Display italic — delicate and consistent with
+   the brand font. White keeps it subtle against the black banner. */
 #top-banner .brand-tagline {
     font-family: 'Playfair Display', serif;
     font-style: italic;
@@ -978,6 +982,8 @@ body {
     border-bottom: none;
 }
 
+/* video added alongside img so uploaded video thumbnails are constrained
+   to the same 80x60px size as photo thumbnails in the staff portal */
 .fleet-formset-thumb img,
 .fleet-formset-thumb video {
     width: 80px;
@@ -1311,6 +1317,10 @@ body {
     background-color: #eee;
 }
 
+/* ─── Vehicle detail — videos section ───────────────────
+   Videos are rendered in their own full-width section below the photo grid
+   so they don't interrupt the tile layout. Each player is 16:9 and stacked
+   vertically when multiple videos are present. */
 .vd-videos {
     display: flex;
     flex-direction: column;

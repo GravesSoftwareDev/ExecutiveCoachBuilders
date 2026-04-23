@@ -37,18 +37,26 @@ class VehicleImageForm(forms.ModelForm):
     Both image and video are optional at the field level so blank extra rows
     don't block submission. has_changed() treats a new row with no file of
     either type as unchanged so the formset skips it entirely.
+
+    The video field was added to allow staff to upload video files alongside
+    or instead of photos for each gallery row.
     """
     class Meta:
         model = VehicleImage
+        # video was added here to expose the new field in the gallery formset
         fields = ['image', 'video', 'alt_text', 'display_order']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Neither field is required so that blank extra rows are silently skipped.
+        # Staff must upload at least one file, but that is enforced by has_changed()
+        # filtering out completely empty rows before Django tries to save them.
         self.fields['image'].required = False
         self.fields['video'].required = False
 
     def has_changed(self):
-        # Skip validation for new rows where neither an image nor a video was uploaded
+        # Skip validation for new rows where neither an image nor a video was uploaded.
+        # Updated from the original single-field check to cover both image and video.
         if not self.instance.pk:
             if not self.files.get(self.add_prefix('image')) and \
                not self.files.get(self.add_prefix('video')):
