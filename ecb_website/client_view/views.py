@@ -36,13 +36,14 @@ def home(request):
     })
     
 def vehicle_detail(request, slug):
-    # Only allow published vehicles to be viewed publicly
     vehicle = get_object_or_404(Vehicle, slug=slug, is_published=True)
-    # Gallery images are pre-fetched and already ordered by display_order via model Meta
-    gallery = vehicle.gallery.all()
+    all_gallery = vehicle.gallery.all()
+    photos = [item for item in all_gallery if item.image and not item.video]
+    videos = [item for item in all_gallery if item.video]
     return render(request, 'client_view/vehicle_detail.html', {
         'vehicle': vehicle,
-        'gallery': gallery,
+        'photos': photos,
+        'videos': videos,
     })
 
 def about(request):

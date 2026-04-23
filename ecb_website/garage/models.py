@@ -72,10 +72,12 @@ class VehicleImage(models.Model):
     """
     # Creates a Foreign Key relationship to Vehicle
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='gallery')
-    # Saves an image in the specified directory
-    image = models.ImageField(upload_to="vehicles/")
+    # Saves an image in the specified directory (blank=True allows video-only rows)
+    image = models.ImageField(upload_to="vehicles/", blank=True)
+    # Optional video file — supply either image or video (or both)
+    video = models.FileField(upload_to="vehicles/", blank=True)
     # Creates alt_text for accessibility
-    alt_text = models.CharField(max_length=255, blank=True, help_text="Image Description")
+    alt_text = models.CharField(max_length=255, blank=True, help_text="Image or video description")
     # Allows the user to determine the display priority
     display_order = models.PositiveSmallIntegerField(default=0)
 

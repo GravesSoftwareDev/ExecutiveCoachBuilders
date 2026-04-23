@@ -34,26 +34,24 @@ class VehicleForm(forms.ModelForm):
 class VehicleImageForm(forms.ModelForm):
     """
     Form used inside the gallery image formset.
-    Image is set to not required so that blank extra rows don't block submission.
-    has_changed() is overridden to treat a blank extra row (no file selected,
-    no existing instance) as unchanged — this stops display_order's default
-    value of 0 from tricking Django into validating an otherwise empty row.
+    Both image and video are optional at the field level so blank extra rows
+    don't block submission. has_changed() treats a new row with no file of
+    either type as unchanged so the formset skips it entirely.
     """
     class Meta:
         model = VehicleImage
-        fields = ['image', 'alt_text', 'display_order']
+        fields = ['image', 'video', 'alt_text', 'display_order']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Allow the form to submit without an image so blank extra rows are skipped
         self.fields['image'].required = False
+        self.fields['video'].required = False
 
     def has_changed(self):
-        # If this is a brand-new (unsaved) row with no file uploaded, treat it
-        # as empty so the formset skips validation and doesn't try to save it
+        # Skip validation for new rows where neither an image nor a video was uploaded
         if not self.instance.pk:
-            file_key = self.add_prefix('image')
-            if not self.files.get(file_key):
+            if not self.files.get(self.add_prefix('image')) and \
+               not self.files.get(self.add_prefix('video')):
                 return False
         return super().has_changed()
 
