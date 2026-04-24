@@ -1,15 +1,196 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Services - Executive Coach Builders{% endblock %}
 
 {% block nav_services %}active{% endblock %}
 
-
 {% block content %}
 
-{% comment %} Reusing some CSS {% endcomment %}
-<section class="home-hero text-center mb-5">
-  <h1 class="home-hero-title">Work in Progress</h1>
+{% comment %} Hero Section {% endcomment %}
+<section class="services-hero text-center py-5 mb-5">
+    <h1>Our Services</h1>
+    <p>
+        Explore flexible transportation solutions designed around your needs.
+    </p>
+    <a href="/contact/" class="btn btn-gold mt-3">Contact Us</a>
 </section>
 
+<hr class="services-divider my-5">
+
+{% comment %} Services Intro {% endcomment %}
+<section class="mb-5">
+    <div class="container">
+        <h2>Built Around Your Needs</h2>
+        <p>
+            Executive Coach Builders works with clients to provide tailored solutions
+            for luxury transportation, custom builds, and future service offerings.
+        </p>
+    </div>
+</section>
+
+<hr class="services-divider my-5">
+
+{% comment %}
+SERVICE BLOCK TEMPLATE
+To add a new service:
+1. Copy this entire section
+2. Update the title, description, and bullet points
+3. Replace the image if available
+{% endcomment %}
+
+{% comment %} Alternate layout: text left / image right {% endcomment %}
+
+{% comment %} Service Block - Custom Solutions {% endcomment %}
+<section class="service-block service-section-white service-animate slide-from-left mb-5">
+    <div class="container">
+        <div class="row align-items-center g-4">
+
+            <div class="col-md-6">
+                <p class="service-label">Confirmed Service</p>
+                <h2>Custom Solutions</h2>
+                <p>
+                    Work with Executive Coach Builders to explore transportation
+                    solutions tailored to your needs, goals, and preferences.
+                </p>
+
+                <ul>
+                    <li>Personalized guidance</li>
+                    <li>Flexible vehicle options</li>
+                    <li>Solutions built around the client</li>
+                </ul>
+
+                <a href="/contact/" class="btn btn-gold mt-3">
+                    Contact About Custom Solutions
+                </a>
+            </div>
+
+            <div class="col-md-6">
+                <div class="service-image-wrapper">
+                    <img src="{% static 'images/placeholder-about.png' %}"
+                        alt="Service placeholder"
+                        class="service-image">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<hr class="services-divider my-5">
+
+{% comment %} Service Block - Placeholder {% endcomment %}
+<section class="service-block service-section-light service-animate slide-from-right py-5">
+    <div class="container">
+        <div class="row align-items-center g-4">
+
+            <div class="col-md-6">
+                <div class="service-image-wrapper">
+                    <img src="{% static 'images/placeholder-about.png' %}"
+                        alt="Service placeholder"
+                        class="service-image">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <p class="service-label">Future Service</p>
+                <h2>Service Title Placeholder</h2>
+                <p>
+                    Add a short description of this service here. This section can be
+                    updated once Executive Coach Builders confirms additional offerings.
+                </p>
+
+                <ul>
+                    <li>Benefit placeholder</li>
+                    <li>Feature placeholder</li>
+                    <li>Client value placeholder</li>
+                </ul>
+
+                <a href="/contact/" class="btn btn-gold mt-3">
+                    Contact Us
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<hr class="services-divider my-5">
+
+{% comment %} Service Block - Placeholder 2 {% endcomment %}
+<section class="service-block service-section-white service-animate slide-from-left mb-5">
+    <div class="container">
+        <div class="row align-items-center g-4">
+
+            <div class="col-md-6">
+                <p class="service-label">Future Service</p>
+                <h2>Another Service Placeholder</h2>
+                <p>
+                    This section represents another service offering that can be defined
+                    later. Use this space to describe the service and its value to the client.
+                </p>
+
+                <ul>
+                    <li>Key benefit placeholder</li>
+                    <li>Feature placeholder</li>
+                    <li>Client-focused outcome</li>
+                </ul>
+
+                <a href="/contact/" class="btn btn-gold mt-3">
+                    Contact Us
+                </a>
+            </div>
+
+            <div class="col-md-6">
+                <div class="service-image-wrapper">
+                    <img src="{% static 'images/placeholder-about.png' %}"
+                        alt= "Service placeholder"
+                        class="service-image">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<hr class="services-divider my-5">
+
+{% comment %} Final CTA Section {% endcomment %}
+<section class="services-cta-dark text-center py-5">
+    <div class="container">
+
+        <h2>Ready to Get Started?</h2>
+
+        <p class="mb-4">
+            Whether you're exploring options or ready to move forward, our team is here
+            to help you find the right transportation solution.
+        </p>
+
+        <a href="/contact/" class="btn btn-gold">
+            Contact Our Team
+        </a>
+
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const animatedSections = document.querySelectorAll(".service-animate");
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("show");
+            }
+        });
+    }, {
+        threshold: 0,
+        rootMargin: "-30% 0px -30% 0px"
+    });
+
+    animatedSections.forEach(function (section) {
+        observer.observe(section);
+    });
+});
+</script>
 {% endblock %}
