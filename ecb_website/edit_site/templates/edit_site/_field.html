@@ -1,0 +1,18 @@
+{% comment %}
+    Reusable form field partial.
+    Renders a label, input, help text, and any validation errors.
+    Usage: {% include "edit_site/_field.html" with field=form.field_name %}
+{% endcomment %}
+
+<div class="fleet-field {% if field.errors %}has-error{% endif %}">
+    <label for="{{ field.id_for_label }}" class="fleet-field-label">
+        {{ name }}{% if field.field.required %} <span class="fleet-required">*</span>{% endif %}
+    </label>
+    {{ field }}
+    {% if field.help_text %}
+    <p class="fleet-field-hint">{{ field.help_text }}</p>
+    {% endif %}
+    {% for error in field.errors %}
+    <p class="fleet-field-error"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</p>
+    {% endfor %}
+</div>

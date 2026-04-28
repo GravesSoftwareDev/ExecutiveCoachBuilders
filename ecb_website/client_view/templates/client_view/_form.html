@@ -1,0 +1,18 @@
+<form method="POST" data-form="{{setting.mediaType}}" data-form-name="{{setting.name.value}}" action="{% url 'edit_site:site_changes' name=setting.name.value %}"
+    enctype="multipart/form-data" novalidate autocomplete="off">
+    {% csrf_token %}
+    <div class="fleet-form-section">
+        {% if setting.mediaType %}
+        {% include 'edit_site/_field.html' with field=setting.file_value name=setting.name.value %}
+        {% else %}
+        {% include 'edit_site/_field.html' with field=setting.text_value name=setting.name.value %}
+        {% endif %}
+
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Save Change
+            </button>
+            <p hidden>Updated</p>
+        </div>
+    </div>
+</form>
