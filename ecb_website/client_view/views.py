@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import contactForm
 from edit_site.models import SiteSetting
+from .forms import ContactForm
 from garage.models import Vehicle
 from blog.models import Article
 from django.http import HttpResponseRedirect
@@ -50,12 +51,12 @@ def about(request):
 
 def contact(request):
     if request.method == "POST":
-        form = contactForm(request.POST)
+        form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('client_view:thankyou_contact')
     else:
-        form = contactForm()
+        form = ContactForm()
     return render(request, 'client_view/contact.html', {'form': form})
 
 def coaches(request):
