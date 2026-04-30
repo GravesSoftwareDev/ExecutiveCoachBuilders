@@ -47,17 +47,19 @@ body {
     position: relative;
 }
 
+/* Logo size increased from 160px to 220px for a more prominent header */
 #top-banner .brand-logo {
-    height: 160px;
-    width: 160px;
+    height: 220px;
+    width: 220px;
     object-fit: contain;
     filter: drop-shadow(0 0 16px rgba(201,168,76,0.55));
 }
 
+/* Company name font size increased from 1.75rem to 2.5rem to match the larger logo */
 #top-banner .brand-name {
     font-family: 'Playfair Display', serif;
     font-weight: 600;
-    font-size: 1.75rem;
+    font-size: 2.5rem;
     color: var(--ecb-gold);
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -65,13 +67,15 @@ body {
     line-height: 1;
 }
 
+/* Tagline restyled to Playfair Display italic — delicate and consistent with
+   the brand font. White keeps it subtle against the black banner. */
 #top-banner .brand-tagline {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 300;
-    font-size: 0.65rem;
-    color: #888;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1rem;
+    color: #ffffff;
+    letter-spacing: 0.06em;
 }
 
 /* ─── Navbar ─────────────────────────────────────────── */
@@ -978,7 +982,10 @@ body {
     border-bottom: none;
 }
 
-.fleet-formset-thumb img {
+/* video added alongside img so uploaded video thumbnails are constrained
+   to the same 80x60px size as photo thumbnails in the staff portal */
+.fleet-formset-thumb img,
+.fleet-formset-thumb video {
     width: 80px;
     height: 60px;
     object-fit: cover;
@@ -1308,6 +1315,28 @@ body {
     overflow: hidden;
     aspect-ratio: 4 / 3;
     background-color: #eee;
+}
+
+/* ─── Vehicle detail — videos section ───────────────────
+   Videos are rendered in their own full-width section below the photo grid
+   so they don't interrupt the tile layout. Each player is 16:9 and stacked
+   vertically when multiple videos are present. */
+.vd-videos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.vd-video-item {
+    background-color: #000;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.vd-video-player {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
 }
 
 .vd-gallery-img {

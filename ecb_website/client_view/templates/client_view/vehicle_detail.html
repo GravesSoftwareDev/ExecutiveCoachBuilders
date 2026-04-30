@@ -74,16 +74,34 @@
 
 </div>
 
-{% comment %} Gallery grid — only renders when gallery images exist {% endcomment %}
-{% if gallery %}
+{% comment %} Photo grid — only renders when photo gallery items exist {% endcomment %}
+{% if photos %}
 <section class="mb-5">
     <h2 class="home-section-title mb-4">Gallery</h2>
     <div class="vd-gallery">
-        {% for photo in gallery %}
+        {% for photo in photos %}
         <div class="vd-gallery-item">
             <img src="{{ photo.image.url }}"
                  alt="{{ photo.alt_text|default:vehicle.name }}"
                  class="vd-gallery-img">
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% comment %} Videos section — only renders when video gallery items exist {% endcomment %}
+{% if videos %}
+<section class="mb-5">
+    <h2 class="home-section-title mb-4">{% if photos %}Videos{% else %}Gallery{% endif %}</h2>
+    <div class="vd-videos">
+        {% for item in videos %}
+        <div class="vd-video-item">
+            <video src="{{ item.video.url }}"
+                   class="vd-video-player"
+                   controls
+                   preload="metadata"
+                   aria-label="{{ item.alt_text|default:vehicle.name }}"></video>
         </div>
         {% endfor %}
     </div>

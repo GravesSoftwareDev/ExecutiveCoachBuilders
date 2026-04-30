@@ -3,6 +3,9 @@ build/
 ./index.html
 *.DS_Store
 
+# Django media files (user uploads)
+ecb_website/media/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

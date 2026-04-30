@@ -25,6 +25,7 @@ urlpatterns = [
     # Fleet management lives under /portal/fleet/ and requires staff login
     path('portal/fleet/', include('garage.urls')),
     path('portal/site/', include('edit_site.urls')),
+    path('portal/blog/', include('blog.urls')),
     path('', include('client_view.urls')),
 ]
 
