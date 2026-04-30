@@ -26,7 +26,16 @@
 <body>
 
     {% comment %} Top Banner {% endcomment %}
+
+
     <header id="top-banner">
+
+        {% if admin_site %}
+        <button id="return-to-admin" class="btn btn-primary">
+            Return To Admin
+        </button>
+        {% endif %}
+
         <div class="brand-center">
             <a href="/">
                 <img src="{% static 'images/logo.png' %}" alt="Executive Coach Builders Logo" class="brand-logo"
@@ -104,6 +113,70 @@
 
     {% comment %} Bootstrap JS {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    {% if admin_site %}
+    <script>
+
+        document.querySelectorAll('[data-form]').forEach(T => {
+            T.addEventListener('submit', function (event) {
+                // Stop form from submitting normally
+                event.preventDefault();
+                // Send the data using post
+
+                const xml = new XMLHttpRequest();
+
+                xml.onreadystatechange = function () {
+                    if (this.readyState == 4) {
+                        let p = T.querySelector('p');
+                        let obj = document.querySelector('[data-setting-' + T.getAttribute('data-form-name') + ']');
+                        if (this.status == 200) {
+                            p.removeAttribute('hidden');
+                            p.textContent = 'Updated'
+                            if (T.getAttribute('data-form') === 'True') {
+                                let split = this.responseText.split(';')
+                                let a = T.querySelector('a');
+                                a.setAttribute('href', split[0] + split[1]);
+                                a.textContent = split[1];
+
+                                obj.setAttribute('src', split[0] + split[1]);
+
+                                let parent = obj.parentElement;
+                                if (parent.tagName == 'VIDEO') {
+                                    parent.load();
+                                    parent.play();
+                                }
+                            } else {
+                                obj.textContent = this.responseText;
+                            }
+                        } else {
+                            p.removeAttribute('hidden');
+                            p.textContent = 'Failed to save'
+                        }
+                    }
+                }
+
+                xml.open("POST", T.getAttribute('action'));
+                const params = new FormData(T);
+                xml.send(params);
+
+            });
+        })
+
+        let ret = document.getElementById("return-to-admin").addEventListener('click', () => {
+            window.location.href = "/portal/site/"
+        });
+
+        let r = RegExp('^(?:[a-z+]+:)?\/\/')
+        let links = document.getElementsByTagName('a');
+        for (let link of links) {
+            let h = link.getAttribute('href')
+            if (!r.test(h))
+                link.setAttribute('href', '/portal/site/admin_view?s=' + h)
+        }
+    </script>
+    {% endif %}
 </body>
 
 </html>

@@ -18,12 +18,11 @@
 
 {% comment %} Anniversary Video — full-width, breaks out of Bootstrap container {% endcomment %}
 <div class="home-video-bleed mb-5">
-
     <div class="home-video-section">
         <video class="home-video-player" autoplay muted loop playsinline preload="metadata">
             <source src="{{ site_settings.home_video }}" type="video/mp4" data-setting-home_video="">
         </video>
-        <p class="home-video-caption">Est. 1976 &nbsp;&bull;&nbsp; 50th Anniversary</p>
+        <p class="home-video-caption" data-setting-home_video_caption>{{site_settings.home_video_caption}}</p>
     </div>
 </div>
 

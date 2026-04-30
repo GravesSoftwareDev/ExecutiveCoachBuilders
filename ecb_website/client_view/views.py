@@ -1,9 +1,9 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import contactForm
+from edit_site.models import SiteSetting
 from garage.models import Vehicle
 from blog.models import Article
 from django.http import HttpResponseRedirect
-from django.conf import settings as Settings
 
 
 def home(request):
@@ -12,6 +12,10 @@ def home(request):
     # Best sellers: any vehicle given display_order=0 — the highest marketing priority.
     # Set a vehicle's display_order to 1 or higher in the admin to keep it out of this row.
     best_sellers = published.filter(display_order=0)
+
+    # Load settings
+    site_settings_model = SiteSetting.objects.all()
+    site_settings = {s.name : s.get_value() for s in site_settings_model}
 
     # Build one (label, queryset) pair per category that actually has published vehicles
     category_groups = []
@@ -24,8 +28,10 @@ def home(request):
         'best_sellers': best_sellers,
         'category_groups': category_groups,
         'all_vehicles': published,
+        'site_settings': site_settings
     })
-    
+
+
 def vehicle_detail(request, slug):
     vehicle = get_object_or_404(Vehicle, slug=slug, is_published=True)
     all_gallery = vehicle.gallery.all()

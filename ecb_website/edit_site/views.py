@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from .models import SiteSetting
 from .forms import SiteSettingForm
+from django.urls import resolve
 
 
 # Create your views here.
@@ -57,4 +58,7 @@ def admin_view(request):
         else:
             form.mediaType = False
 
-    return render(request, request.GET.get('s', 'client_view/'), {'admin_site': True, 'site_settings': site_settings, 'settings_form': settings_form})
+    view = resolve(request.GET.get('s', '/'))
+    file = view.app_name + '/' + (view.url_name if view.url_name else 'client_view') + '.html'
+
+    return render(request, file, {'admin_site': True, 'site_settings': site_settings, 'settings_form': settings_form})
