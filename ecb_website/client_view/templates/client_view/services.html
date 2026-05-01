@@ -31,47 +31,80 @@
 
 <hr class="services-divider my-5">
 
-{% comment %}
-SERVICE BLOCK TEMPLATE
-To add a new service:
-1. Copy this entire section
-2. Update the title, description, and bullet points
-3. Replace the image if available
-{% endcomment %}
+{% comment %} Dynamic Service Blocks {% endcomment %}
+{% for service in services %}
 
-{% comment %} Alternate layout: text left / image right {% endcomment %}
-
-{% comment %} Service Block - Custom Solutions {% endcomment %}
-<section class="service-block service-section-white service-animate slide-from-left mb-5">
+<section class="service-block {% cycle 'service-section-white' 'service-section-light' %} service-animate {% cycle 'slide-from-left' 'slide-from-right' %} mb-5">
     <div class="container">
         <div class="row align-items-center g-4">
 
-            <div class="col-md-6">
-                <p class="service-label">Confirmed Service</p>
-                <h2>Custom Solutions</h2>
-                <p>
-                    Work with Executive Coach Builders to explore transportation
-                    solutions tailored to your needs, goals, and preferences.
-                </p>
+            {% if forloop.counter|divisibleby:2 %}
 
-                <ul>
-                    <li>Personalized guidance</li>
-                    <li>Flexible vehicle options</li>
-                    <li>Solutions built around the client</li>
-                </ul>
-
-                <a href="/contact/" class="btn btn-gold mt-3">
-                    Contact About Custom Solutions
-                </a>
-            </div>
-
-            <div class="col-md-6">
-                <div class="service-image-wrapper">
-                    <img src="{% static 'images/placeholder-about.png' %}"
-                        alt="Service placeholder"
-                        class="service-image">
+                {% comment %} Even services: image left / text right {% endcomment %}
+                <div class="col-md-6 pe-md-5">
+                    <div class="service-image-wrapper">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}"
+                                alt="{{ service.title }}"
+                                class="service-image">
+                        {% else %}
+                            <img src="{% static 'images/placeholder-about.png' %}"
+                                alt="{{ service.title }}"
+                                class="service-image">
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
+
+                <div class="col-md-6 ps-md-5">
+                    {% if service.label %}
+                        <p class="service-label">{{ service.label }}</p>
+                    {% endif %}
+
+                    <h2>{{ service.title }}</h2>
+
+                    <p>
+                        {{ service.description }}
+                    </p>
+
+                    <a href="/contact/" class="btn btn-gold mt-3">
+                        Contact About {{ service.title }}
+                    </a>
+                </div>
+
+            {% else %}
+
+                {% comment %} Odd services: text left / image right {% endcomment %}
+                <div class="col-md-6 pe-md-5">
+                    {% if service.label %}
+                        <p class="service-label">{{ service.label }}</p>
+                    {% endif %}
+
+                    <h2>{{ service.title }}</h2>
+
+                    <p>
+                        {{ service.description }}
+                    </p>
+
+                    <a href="/contact/" class="btn btn-gold mt-3">
+                        Contact About {{ service.title }}
+                    </a>
+                </div>
+
+                <div class="col-md-6 ps-md-5">
+                    <div class="service-image-wrapper">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}"
+                                alt="{{ service.title }}"
+                                class="service-image">
+                        {% else %}
+                            <img src="{% static 'images/placeholder-about.png' %}"
+                                alt="{{ service.title }}"
+                                class="service-image">
+                        {% endif %}
+                    </div>
+                </div>
+
+            {% endif %}
 
         </div>
     </div>
@@ -79,81 +112,21 @@ To add a new service:
 
 <hr class="services-divider my-5">
 
-{% comment %} Service Block - Placeholder {% endcomment %}
-<section class="service-block service-section-light service-animate slide-from-right py-5">
+{% empty %}
+
+<section class="text-center my-5">
     <div class="container">
-        <div class="row align-items-center g-4">
-
-            <div class="col-md-6">
-                <div class="service-image-wrapper">
-                    <img src="{% static 'images/placeholder-about.png' %}"
-                        alt="Service placeholder"
-                        class="service-image">
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <p class="service-label">Future Service</p>
-                <h2>Service Title Placeholder</h2>
-                <p>
-                    Add a short description of this service here. This section can be
-                    updated once Executive Coach Builders confirms additional offerings.
-                </p>
-
-                <ul>
-                    <li>Benefit placeholder</li>
-                    <li>Feature placeholder</li>
-                    <li>Client value placeholder</li>
-                </ul>
-
-                <a href="/contact/" class="btn btn-gold mt-3">
-                    Contact Us
-                </a>
-            </div>
-
-        </div>
+        <h2>Services Coming Soon</h2>
+        <p>
+            Service information will be added soon. Please contact our team for more information.
+        </p>
+        <a href="/contact/" class="btn btn-gold mt-3">Contact Us</a>
     </div>
 </section>
 
 <hr class="services-divider my-5">
 
-{% comment %} Service Block - Placeholder 2 {% endcomment %}
-<section class="service-block service-section-white service-animate slide-from-left mb-5">
-    <div class="container">
-        <div class="row align-items-center g-4">
-
-            <div class="col-md-6">
-                <p class="service-label">Future Service</p>
-                <h2>Another Service Placeholder</h2>
-                <p>
-                    This section represents another service offering that can be defined
-                    later. Use this space to describe the service and its value to the client.
-                </p>
-
-                <ul>
-                    <li>Key benefit placeholder</li>
-                    <li>Feature placeholder</li>
-                    <li>Client-focused outcome</li>
-                </ul>
-
-                <a href="/contact/" class="btn btn-gold mt-3">
-                    Contact Us
-                </a>
-            </div>
-
-            <div class="col-md-6">
-                <div class="service-image-wrapper">
-                    <img src="{% static 'images/placeholder-about.png' %}"
-                        alt= "Service placeholder"
-                        class="service-image">
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<hr class="services-divider my-5">
+{% endfor %}
 
 {% comment %} Final CTA Section {% endcomment %}
 <section class="services-cta-dark text-center py-5">

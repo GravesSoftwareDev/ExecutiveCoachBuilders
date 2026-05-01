@@ -4,7 +4,7 @@ from .forms import ContactForm
 from garage.models import Vehicle
 from blog.models import Article
 from django.http import HttpResponseRedirect
-
+from .models import Service
 
 def home(request):
     published = Vehicle.objects.filter(is_published=True)
@@ -62,7 +62,8 @@ def coaches(request):
     return render(request, 'client_view/coaches.html')
 
 def services(request):
-    return render(request, 'client_view/services.html')
+    services = Service.objects.all()
+    return render(request, "client_view/services.html", {'services': services})
 
 def thankyou_contact(request):
     return render(request, 'client_view/thankyou_contact.html')

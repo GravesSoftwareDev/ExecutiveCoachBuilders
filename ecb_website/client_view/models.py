@@ -10,3 +10,13 @@ class Contact(models.Model):
     def __str__(self):
         return f"{self.firstname} {self.lastname} <{self.email}>"
     
+class Service(models.Model):
+    title = models.CharField(max_length=150)
+    label = models.CharField(max_length=100, blank=True)
+    description = models.TextField()
+    image = models.ImageField(upload_to="services/", blank=True, null=True)
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
