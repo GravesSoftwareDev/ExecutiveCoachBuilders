@@ -4,12 +4,79 @@
 
 {% block nav_coaches %}active{% endblock %}
 
-
 {% block content %}
 
-{% comment %} Reusing some CSS {% endcomment %}
+{% if all_vehicles %}
 <section class="home-hero text-center mb-5">
-  <h1 class="home-hero-title">Work in Progress</h1>
+    <h2 class="home-section-title text-center mb-4">Browse All Vehicles</h2>
+    <h4 class="text-center mb-4">Filter by category</h4>
+
+    {% comment %} Vehicle type filter dropdown {% endcomment %}
+    <div class="d-flex justify-content-center mb-4">
+        <select id="vehicle-type-filter" class="form-select w-auto">
+            <option value="all">All Vehicle Types</option>
+            {% for vehicle in all_vehicles %}
+            <option value="{{ vehicle.category }}">{{ vehicle.get_category_display }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="row g-4">
+        {% for vehicle in all_vehicles %}
+        <div class="col-sm-6 col-md-4 col-xl-3 vehicle-card-wrapper" data-category="{{ vehicle.category }}">
+            <a href="{% url 'client_view:vehicle_detail' vehicle.slug %}" class="vehicle-grid-card h-100">
+                <img src="{{ vehicle.hero_image.url }}" alt="{{ vehicle.name }}" class="vehicle-grid-card-img">
+                <div class="vehicle-grid-card-body">
+                    <p class="vehicle-carousel-card-category">{{ vehicle.get_category_display }}</p>
+                    <h3 class="vehicle-carousel-card-name">{{ vehicle.name }}</h3>
+                    {% if vehicle.tagline %}
+                    <p class="vehicle-carousel-card-tagline">{{ vehicle.tagline }}</p>
+                    {% endif %}
+                    {% if vehicle.passenger_capacity %}
+                    <p class="vehicle-grid-card-capacity">
+                        <i class="bi bi-people me-1"></i>{{ vehicle.passenger_capacity }}
+                    </p>
+                    {% endif %}
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <p id="no-results-msg" class="text-muted mt-4" style="display: none;">No vehicles found for this type.</p>
 </section>
+{% endif %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const select = document.getElementById('vehicle-type-filter');
+
+    // Deduplicate dropdown options — the Django loop repeats a category once per vehicle
+    const seen = new Set();
+    Array.from(select.options).forEach(function (option) {
+        if (option.value === 'all') return;
+        if (seen.has(option.value)) {
+            option.remove();
+        } else {
+            seen.add(option.value);
+        }
+    });
+
+    // Filter cards when dropdown changes
+    select.addEventListener('change', function () {
+        const selected = this.value;
+        const cards = document.querySelectorAll('.vehicle-card-wrapper');
+        let visibleCount = 0;
+
+        cards.forEach(function (card) {
+            const match = selected === 'all' || card.dataset.category === selected;
+            card.style.display = match ? '' : 'none';
+            if (match) visibleCount++;
+        });
+
+        document.getElementById('no-results-msg').style.display = visibleCount === 0 ? 'block' : 'none';
+    });
+});
+</script>
 
 {% endblock %}

@@ -59,7 +59,10 @@ def contact(request):
     return render(request, 'client_view/contact.html', {'form': form})
 
 def coaches(request):
-    return render(request, 'client_view/coaches.html')
+    published = Vehicle.objects.filter(is_published=True)
+    return render(request, 'client_view/coaches.html', {
+        'all_vehicles': published,
+    })
 
 def services(request):
     services = Service.objects.all()
