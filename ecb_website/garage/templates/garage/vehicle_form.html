@@ -212,7 +212,24 @@
             </template>
         </div>
 
-        {% comment %} ── Section 5: Publishing ────────────────────────────── {% endcomment %}
+        {% comment %} ── Section 5: Used vehicle ────────────────────────────── {% endcomment %}
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-toggle-on me-2"></i>Used Vehicle
+            </h2>
+            <p class="fleet-form-section-hint">
+                If the vehicle is new or used.  Changes if it appears in Coaches or Used Vehicles tab.
+            </p>
+
+            <div class="fleet-checkbox-row">
+                {{ form.used_vehicle }}
+                <label for="{{ form.used_vehicle.id_for_label }}" class="fleet-checkbox-label">
+                    Used Vehicle
+                </label>
+            </div>
+        </div>
+
+        {% comment %} ── Section 6: Publishing ────────────────────────────── {% endcomment %}
         <div class="fleet-form-section">
             <h2 class="fleet-form-section-title">
                 <i class="bi bi-toggle-on me-2"></i>Publishing

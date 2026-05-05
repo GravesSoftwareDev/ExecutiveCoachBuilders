@@ -15,6 +15,7 @@ class VehicleForm(forms.ModelForm):
             'tagline', 'description', 'features',
             'passenger_capacity', 'hero_image',
             'is_published', 'display_order',
+            'used_vehicle'
         ]
         widgets = {
             # Multi-line widgets for the longer text fields
@@ -26,7 +27,8 @@ class VehicleForm(forms.ModelForm):
             'features':          'Enter one feature per line — the site will display them as a bulleted list.',
             'display_order':     'Lower numbers appear first. Set to 0 to include this vehicle in the Best Sellers carousel.',
             'is_published':      'Uncheck to save as a draft — the vehicle will not appear on the public site.',
-            'passenger_capacity':'Optional. Example: "12–16 passengers".',
+            'used_vehicle':      'Whether the vehicle should appear on the Coaches or Used Vehicles tab.',
+            'passenger_capacity':'Optional. Example: "12-16 passengers".',
             'hero_image':        'Main display image for listing and detail pages.',
         }
 

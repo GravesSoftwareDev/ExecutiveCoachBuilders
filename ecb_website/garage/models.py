@@ -44,6 +44,8 @@ class Vehicle(models.Model):
 
     # Allows the user to create drafts and publish at a later date.
     is_published = models.BooleanField(default=True)
+
+    used_vehicle = models.BooleanField(default=False)
     # This allows the user to customize the order the vehicles are displayed in based on their marketing priorities.
     display_order = models.PositiveSmallIntegerField(default=0)
 

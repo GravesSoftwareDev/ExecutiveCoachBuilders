@@ -9,6 +9,7 @@ urlpatterns = [
     path('contact/', views.contact, name = 'contact'),
     path('thankyou-contact/', views.thankyou_contact, name = 'thankyou_contact'),
     path('coaches/', views.coaches, name = 'coaches'),
+    path('used_vehicle/', views.used_vehicle, name = 'used_vehicle'),
     path('services/', views.services, name = 'services'),
     # Vehicle detail page — /coaches/<slug>/
     path('coaches/<slug:slug>/', views.vehicle_detail, name='vehicle_detail'),

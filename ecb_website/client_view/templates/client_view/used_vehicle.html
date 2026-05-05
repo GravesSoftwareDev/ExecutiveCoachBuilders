@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Coaches - Executive Coach Builders{% endblock %}
+{% block title %}Used Vehicles - Executive Coach Builders{% endblock %}
 
-{% block nav_coaches %}active{% endblock %}
+{% block nav_used_vehicle %}active{% endblock %}
 
 {% block content %}
 
@@ -46,8 +46,7 @@
         {% endif %}
     </div>
 
-    <p id="no-results-msg" class="text-muted mt-4" {%if all_vehicles%}style="display: none;" {%endif%}>No vehicles found
-        for this type.</p>
+    <p id="no-results-msg" class="text-muted mt-4"  {%if all_vehicles%}style="display: none;"{%endif%}>No vehicles found for this type.</p>
 </section>
 
 <script>
@@ -81,4 +80,5 @@
         });
     });
 </script>
+
 {% endblock %}
