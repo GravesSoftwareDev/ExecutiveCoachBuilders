@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from edit_site.models import SiteSetting, AboutPage
 from .forms import ContactForm
 from .models import Service, TeamMember
+from account.models import Lead
 from garage.models import Vehicle
 from blog.models import Article
 from django.http import HttpResponseRedirect

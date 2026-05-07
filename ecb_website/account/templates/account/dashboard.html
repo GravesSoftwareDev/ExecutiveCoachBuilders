@@ -89,5 +89,172 @@
         {% endif %}
 
     </div>
+
+    {% comment %} Leads Table {% endcomment %}
+    <div class="mt-5">
+        <h2 class="dashboard-title" style="font-size:1.4rem;">Leads</h2>
+        <p class="dashboard-subtitle">Submissions from the public contact form.</p>
+
+        {% if leads %}
+        <div class="fleet-table-wrapper mt-3">
+            <table class="fleet-table">
+                {% comment %}
+                    sort_url: given a column key, returns the URL that toggles or sets sort.
+                    If already sorted by that column, flips asc↔desc. Otherwise sets asc.
+                {% endcomment %}
+                <thead>
+                    <tr>
+                        <th>
+                            <button class="sort-link sort-active" data-sort="name">
+                                Name <i class="bi bi-arrow-up"></i>
+                            </button>
+                        </th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Interest</th>
+                        <th class="text-center">Budget</th>
+                        <th>Company</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                        <th class="text-center">Contacted</th>
+                        <th>
+                            <button class="sort-link" data-sort="status">
+                                Status <i class="bi bi-arrow-down-up sort-idle"></i>
+                            </button>
+                        </th>
+                        {% if user.is_portal_admin %}
+                        <th>
+                            <button class="sort-link" data-sort="assigned">
+                                Assigned To <i class="bi bi-arrow-down-up sort-idle"></i>
+                            </button>
+                        </th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lead in leads %}
+                    <tr data-name="{{ lead.last_name|lower }},{{ lead.first_name|lower }}"
+                        data-status="{{ lead.status }}"
+                        data-assigned="{{ lead.assigned_to.username|default:''|lower }}">
+                        <td><span class="fleet-vehicle-name">{{ lead.first_name }} {{ lead.last_name }}</span></td>
+                        <td>{{ lead.email }}</td>
+                        <td>{{ lead.phone_number|default:"—" }}</td>
+                        <td>{{ lead.get_interest_display }}</td>
+                        <td class="text-center">{% if lead.budget %}${{ lead.budget|floatformat:"0" }}{% else %}—{% endif %}</td>
+                        <td>{{ lead.company|default:"—" }}</td>
+                        <td style="max-width:200px; white-space:normal;">{{ lead.message|truncatechars:80 }}</td>
+                        <td style="white-space:nowrap;">{{ lead.created_at|date:"M j, Y" }}</td>
+                        <td class="text-center">
+                            <input type="checkbox"
+                                   class="lead-checkbox"
+                                   data-lead="{{ lead.pk }}"
+                                   {% if lead.contacted %}checked{% endif %}>
+                        </td>
+                        <td>
+                            {% if lead.assigned_to %}
+                            <select class="lead-status-select" data-lead="{{ lead.pk }}">
+                                {% for value, label in lead.Status.choices %}
+                                <option value="{{ value }}" {% if lead.status == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            {% else %}
+                            <span class="text-muted" style="font-size:.8rem;">—</span>
+                            {% endif %}
+                        </td>
+                        {% if user.is_portal_admin %}
+                        <td>
+                            <select class="lead-assign-select" data-lead="{{ lead.pk }}">
+                                <option value="">— Unassigned —</option>
+                                {% for agent in agents %}
+                                <option value="{{ agent.pk }}" {% if lead.assigned_to_id == agent.pk %}selected{% endif %}>
+                                    {{ agent.username }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+        const csrfToken = '{{ csrf_token }}';
+
+        function leadUpdate(pk, field, value) {
+            fetch(`/portal/leads/${pk}/update/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: `field=${field}&value=${encodeURIComponent(value)}`,
+            });
+        }
+
+        document.querySelectorAll('.lead-checkbox').forEach(cb => {
+            cb.addEventListener('change', () => {
+                leadUpdate(cb.dataset.lead, 'contacted', cb.checked ? 'true' : 'false');
+            });
+        });
+
+        document.querySelectorAll('.lead-assign-select').forEach(sel => {
+            sel.addEventListener('change', () => {
+                leadUpdate(sel.dataset.lead, 'assigned_to', sel.value);
+            });
+        });
+
+        document.querySelectorAll('.lead-status-select').forEach(sel => {
+            sel.addEventListener('change', () => {
+                leadUpdate(sel.dataset.lead, 'status', sel.value);
+            });
+        });
+
+        // Client-side table sorting
+        const tbody = document.querySelector('.fleet-table tbody');
+        let currentSort = 'name';
+        let currentOrder = 'asc';
+
+        function sortTable(col) {
+            if (col === currentSort) {
+                currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort = col;
+                currentOrder = 'asc';
+            }
+
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            rows.sort((a, b) => {
+                const av = a.dataset[currentSort] || '';
+                const bv = b.dataset[currentSort] || '';
+                return currentOrder === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+            });
+            rows.forEach(r => tbody.appendChild(r));
+
+            document.querySelectorAll('.sort-link').forEach(btn => {
+                const icon = btn.querySelector('i');
+                if (btn.dataset.sort === currentSort) {
+                    btn.classList.add('sort-active');
+                    icon.className = `bi bi-arrow-${currentOrder === 'asc' ? 'up' : 'down'}`;
+                } else {
+                    btn.classList.remove('sort-active');
+                    icon.className = 'bi bi-arrow-down-up sort-idle';
+                }
+            });
+        }
+
+        document.querySelectorAll('.sort-link').forEach(btn => {
+            btn.addEventListener('click', () => sortTable(btn.dataset.sort));
+        });
+        </script>
+        {% else %}
+        <div class="fleet-empty mt-3">
+            <i class="bi bi-inbox fleet-empty-icon"></i>
+            <p class="fleet-empty-text">No leads yet. Submissions from the contact form will appear here.</p>
+        </div>
+        {% endif %}
+    </div>
+
 </div>
 {% endblock %}

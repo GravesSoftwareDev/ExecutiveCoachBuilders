@@ -881,6 +881,62 @@ body {
     color: #888;
 }
 
+/* Sortable table headers */
+.sort-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.sort-link:hover {
+    color: var(--ecb-gold);
+}
+
+.sort-link.sort-active {
+    color: var(--ecb-gold);
+}
+
+.sort-idle {
+    opacity: 0.35;
+}
+
+.sort-link:hover .sort-idle {
+    opacity: 0.7;
+}
+
+/* Lead table controls */
+.lead-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--ecb-gold-dark);
+    cursor: pointer;
+}
+
+.lead-assign-select,
+.lead-status-select {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.78rem;
+    color: #222;
+    background-color: var(--ecb-white);
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    border-radius: 0;
+    min-width: 120px;
+    cursor: pointer;
+}
+
+.lead-assign-select:focus,
+.lead-status-select:focus {
+    outline: none;
+    border-color: var(--ecb-gold);
+    box-shadow: 0 0 0 3px var(--ecb-gold-a15);
+}
+
 /* ── Vehicle Form ── */
 
 /* One bordered section per logical group of fields */
@@ -1526,12 +1582,38 @@ body {
 /* ─── Contact Page ───────────────────────────────────── */
 
 .contact-form {
-    max-width: 600px;
+    max-width: 760px;
     margin: 0 auto 48px;
     background-color: var(--ecb-off-white);
     border: 1px solid #ddd;
     border-top: 3px solid var(--ecb-gold);
     padding: 40px;
+}
+
+.contact-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
+}
+
+.contact-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-required {
+    color: var(--ecb-gold-dark);
+}
+
+.contact-hint {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 4px;
+}
+
+@media (max-width: 540px) {
+    .contact-form-row { grid-template-columns: 1fr; }
 }
 
 .contact-form label {
@@ -1552,6 +1634,9 @@ body {
 
 .contact-form input[type="text"],
 .contact-form input[type="email"],
+.contact-form input[type="tel"],
+.contact-form input[type="number"],
+.contact-form select,
 .contact-form textarea {
     display: block;
     width: 100%;
@@ -1567,6 +1652,9 @@ body {
 
 .contact-form input[type="text"]:focus,
 .contact-form input[type="email"]:focus,
+.contact-form input[type="tel"]:focus,
+.contact-form input[type="number"]:focus,
+.contact-form select:focus,
 .contact-form textarea:focus {
     outline: none;
     border-color: var(--ecb-gold);
