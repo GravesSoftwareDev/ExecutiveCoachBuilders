@@ -1,0 +1,95 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}{{ action }} - Services Management{% endblock %}
+
+{% block nav_edit_site %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    <div class="fleet-page-header mb-4">
+        <div>
+            <a href="{% url 'edit_site:service_list' %}" class="fleet-breadcrumb">
+                <i class="bi bi-arrow-left me-1"></i> Back to Services
+            </a>
+            <h1 class="fleet-page-title mt-1">{{ action }}</h1>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-card-text me-2"></i>Service Details
+            </h2>
+
+            <div class="row g-3">
+                <div class="col-md-8">
+                    {% include "garage/_field.html" with field=form.title %}
+                </div>
+                <div class="col-md-4">
+                    {% include "garage/_field.html" with field=form.label %}
+                </div>
+                <div class="col-12">
+                    {% include "garage/_field.html" with field=form.description %}
+                </div>
+            </div>
+        </div>
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-image me-2"></i>Service Image
+            </h2>
+            <p class="fleet-form-section-hint">
+                This image appears alongside the service description on the public services page.
+                Use a high-resolution landscape photo for best results.
+            </p>
+
+            {% if service.image %}
+            <div class="fleet-current-image mb-3">
+                <p class="fleet-field-label">Current Image</p>
+                <img src="{{ service.image.url }}" alt="{{ service.title }}" class="fleet-image-preview">
+            </div>
+            {% endif %}
+
+            {% include "garage/_field.html" with field=form.image %}
+        </div>
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-sort-numeric-down me-2"></i>Display Order &amp; Visibility
+            </h2>
+            <p class="fleet-form-section-hint">
+                Lower display order numbers appear first. Uncheck Active to hide this service from
+                the public site without deleting it.
+            </p>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    {% include "garage/_field.html" with field=form.display_order %}
+                </div>
+            </div>
+
+            <div class="fleet-checkbox-row mt-3">
+                {{ form.is_active }}
+                <label for="{{ form.is_active.id_for_label }}" class="fleet-checkbox-label">
+                    Show this service on the public site
+                </label>
+            </div>
+        </div>
+
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Save Service
+            </button>
+            <a href="{% url 'edit_site:service_list' %}" class="fleet-cancel-link">Cancel</a>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

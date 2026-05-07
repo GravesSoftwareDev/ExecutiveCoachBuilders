@@ -1,0 +1,71 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Edit About Page - Executive Coach Builders{% endblock %}
+
+{% block nav_edit_site %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    <div class="fleet-page-header mb-4">
+        <div>
+            <a href="{% url 'edit_site:site_changes' %}" class="fleet-breadcrumb">
+                <i class="bi bi-arrow-left me-1"></i> Back to Edit Site
+            </a>
+            <h1 class="fleet-page-title mt-1">Edit About Page</h1>
+        </div>
+        <a href="/about/" target="_blank" class="btn btn-outline-secondary">
+            <i class="bi bi-box-arrow-up-right me-1"></i> View Live Page
+        </a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-card-heading me-2"></i>Page Title
+            </h2>
+            {% include "garage/_field.html" with field=form.title %}
+        </div>
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-image me-2"></i>About Image
+            </h2>
+            <p class="fleet-form-section-hint">
+                The photo displayed at the top of the About page. If left blank the default
+                placeholder image is shown.
+            </p>
+
+            {% if about.image %}
+            <div class="fleet-current-image mb-3">
+                <p class="fleet-field-label">Current Image</p>
+                <img src="{{ about.image.url }}" alt="Current about image" class="fleet-image-preview">
+            </div>
+            {% endif %}
+
+            {% include "garage/_field.html" with field=form.image %}
+        </div>
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-text-paragraph me-2"></i>Body Text
+            </h2>
+            {% include "garage/_field.html" with field=form.body %}
+        </div>
+
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Save Changes
+            </button>
+            <a href="{% url 'edit_site:site_changes' %}" class="fleet-cancel-link">Cancel</a>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

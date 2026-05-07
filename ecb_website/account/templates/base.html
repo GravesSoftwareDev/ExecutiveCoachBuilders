@@ -38,12 +38,14 @@
 
         <div class="brand-center">
             <a href="/">
-                <img src="{% static 'images/logo.png' %}" alt="Executive Coach Builders Logo" class="brand-logo"
-                    onerror="this.style.display='none'">
+                {% if site_settings.header_logo %}
+                <img src="{{ site_settings.header_logo }}" alt="{{ site_settings.header_title|default:'Executive Coach Builders' }} Logo" class="brand-logo" onerror="this.style.display='none'">
+                {% else %}
+                <img src="{% static 'images/logo.png' %}" alt="Executive Coach Builders Logo" class="brand-logo" onerror="this.style.display='none'">
+                {% endif %}
             </a>
-            <span class="brand-name">Executive Coach Builders</span>
-            {% comment %} Tagline updated from "50th Anniversary · Custom Cars Division" {% endcomment %}
-            <span class="brand-tagline">50 Years of Excellence</span>
+            <span class="brand-name">{{ site_settings.header_title|default:"Executive Coach Builders" }}</span>
+            <span class="brand-tagline">{{ site_settings.header_tagline|default:"50 Years of Excellence" }}</span>
         </div>
     </header>
 

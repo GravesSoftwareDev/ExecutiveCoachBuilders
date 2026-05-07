@@ -1,0 +1,71 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Services Management - Executive Coach Builders{% endblock %}
+
+{% block nav_edit_site %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    <div class="fleet-page-header">
+        <div>
+            <h1 class="fleet-page-title">Services Management</h1>
+            <p class="fleet-page-subtitle">
+                Add, edit, or remove services shown on the public services page. Changes take effect immediately
+                for active services.
+            </p>
+        </div>
+        <a href="{% url 'edit_site:service_add' %}" class="btn btn-gold">
+            <i class="bi bi-plus-lg me-1"></i> Add Service
+        </a>
+    </div>
+
+    {% if services %}
+    <div class="fleet-table-wrapper">
+        <table class="fleet-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Label</th>
+                    <th class="text-center">Order</th>
+                    <th class="text-center">Active</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for service in services %}
+                <tr>
+                    <td><span class="fleet-vehicle-name">{{ service.title }}</span></td>
+                    <td>{{ service.label|default:"—" }}</td>
+                    <td class="text-center">{{ service.display_order }}</td>
+                    <td class="text-center">
+                        {% if service.is_active %}
+                        <span class="fleet-badge-published">Active</span>
+                        {% else %}
+                        <span class="fleet-badge-draft">Hidden</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center fleet-actions">
+                        <a href="{% url 'edit_site:service_edit' service.pk %}" class="fleet-action-edit">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a href="{% url 'edit_site:service_delete' service.pk %}" class="fleet-action-delete">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="fleet-empty">
+        <i class="bi bi-briefcase fleet-empty-icon"></i>
+        <p class="fleet-empty-text">No services have been added yet.</p>
+        <a href="{% url 'edit_site:service_add' %}" class="btn btn-gold mt-2">Add Your First Service</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

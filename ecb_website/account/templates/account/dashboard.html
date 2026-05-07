@@ -36,6 +36,18 @@
             </a>
         </div>
 
+        {% comment %} Services card {% endcomment %}
+        <div class="col-md-4">
+            <a href="{% url 'edit_site:service_list' %}" class="dashboard-card">
+                <i class="bi bi-briefcase dashboard-card-icon"></i>
+                <h2 class="dashboard-card-title">Services</h2>
+                <p class="dashboard-card-text">
+                    Add, edit, or remove services shown on the public services page.
+                    Control display order and visibility.
+                </p>
+            </a>
+        </div>
+
     </div>
 </div>
 {% endblock %}

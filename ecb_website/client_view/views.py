@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render, get_object_or_404
-from edit_site.models import SiteSetting
+from edit_site.models import SiteSetting, AboutPage
 from .forms import ContactForm
 from garage.models import Vehicle
 from blog.models import Article
@@ -46,7 +46,8 @@ def vehicle_detail(request, slug):
     })
 
 def about(request):
-    return render(request, 'client_view/about.html')
+    about, _ = AboutPage.objects.get_or_create(pk=1)
+    return render(request, 'client_view/about.html', {'about': about})
 
 def contact(request):
     if request.method == "POST":

@@ -16,47 +16,96 @@
 
 <a href="admin_view?s=/" class="btn btn-primary">Live view</a>
 
-{% if settings_form %}
+{% comment %} ── Header ────────────────────────────────────────────── {% endcomment %}
+<h2 class="fleet-form-section-title mt-4">Header</h2>
+<hr>
 
-<div id="formList">
-
-    {% for setting in settings_form %}
-
-    <form method="POST" data-form="{{setting.mediaType}}"
-        action="{% url 'edit_site:site_changes' name=setting.name.value %}" enctype="multipart/form-data" novalidate
-        autocomplete="off">
-        {% csrf_token %}
-        <div class="fleet-form-section">
-            {% if setting.mediaType %}
-            {% include 'edit_site/_field.html' with field=setting.file_value name=setting.name.value %}
-            {% else %}
-            {% include 'edit_site/_field.html' with field=setting.text_value name=setting.name.value %}
-            {% endif %}
-
-            <div class="fleet-form-actions">
-                <button type="submit" class="btn btn-gold">
-                    <i class="bi bi-check-lg me-1"></i> Save Change
-                </button>
-                <p hidden>Updated</p>
-            </div>
+{% for setting in header_forms %}
+<form method="POST" data-form="{{ setting.mediaType }}"
+    action="{% url 'edit_site:site_changes' name=setting.name.value %}" enctype="multipart/form-data" novalidate
+    autocomplete="off">
+    {% csrf_token %}
+    <div class="fleet-form-section">
+        {% if setting.mediaType %}
+        {% include 'edit_site/_field.html' with field=setting.file_value name=setting.name.value %}
+        {% else %}
+        {% include 'edit_site/_field.html' with field=setting.text_value name=setting.name.value %}
+        {% endif %}
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Save Change
+            </button>
+            <p hidden>Updated</p>
         </div>
-    </form>
+    </div>
+</form>
+{% endfor %}
 
-    {% endfor %}
 
-</div>
+{% comment %} ── Home Page ─────────────────────────────────────────── {% endcomment %}
+<h2 class="fleet-form-section-title mt-4">Home Page</h2>
+<hr>
 
-{% endif %}
+{% for setting in home_forms %}
+<form method="POST" data-form="{{ setting.mediaType }}"
+    action="{% url 'edit_site:site_changes' name=setting.name.value %}" enctype="multipart/form-data" novalidate
+    autocomplete="off">
+    {% csrf_token %}
+    <div class="fleet-form-section">
+        {% if setting.mediaType %}
+        {% include 'edit_site/_field.html' with field=setting.file_value name=setting.name.value %}
+        {% else %}
+        {% include 'edit_site/_field.html' with field=setting.text_value name=setting.name.value %}
+        {% endif %}
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Save Change
+            </button>
+            <p hidden>Updated</p>
+        </div>
+    </div>
+</form>
+{% endfor %}
+
+
+{% comment %} ── About Page ────────────────────────────────────────── {% endcomment %}
+<h2 class="fleet-form-section-title mt-4">About Page</h2>
+<hr>
+
+<form method="post" action="{% url 'edit_site:about_edit' %}" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <div class="fleet-form-section">
+        {% include "garage/_field.html" with field=about_form.title %}
+    </div>
+
+    <div class="fleet-form-section">
+        <h3 class="fleet-form-section-title"><i class="bi bi-image me-2"></i>About Image</h3>
+        {% if about.image %}
+        <div class="fleet-current-image mb-3">
+            <p class="fleet-field-label">Current Image</p>
+            <img src="{{ about.image.url }}" alt="Current about image" class="fleet-image-preview">
+        </div>
+        {% endif %}
+        {% include "garage/_field.html" with field=about_form.image %}
+    </div>
+
+    <div class="fleet-form-section">
+        {% include "garage/_field.html" with field=about_form.body %}
+    </div>
+
+    <div class="fleet-form-actions">
+        <button type="submit" class="btn btn-gold">
+            <i class="bi bi-check-lg me-1"></i> Save About Page
+        </button>
+    </div>
+</form>
 
 
 <script>
-
-    let forms = document.getElementById("formList");
-    forms.querySelectorAll('[data-form]').forEach(T => {
+    document.querySelectorAll('[data-form]').forEach(T => {
         T.addEventListener('submit', function (event) {
-            // Stop form from submitting normally
             event.preventDefault();
-            // Send the data using post
 
             const xml = new XMLHttpRequest();
 
@@ -82,10 +131,8 @@
             xml.open("POST", T.getAttribute('action'));
             const params = new FormData(T);
             xml.send(params);
-
         });
     })
-
 </script>
 
 {% endblock %}
