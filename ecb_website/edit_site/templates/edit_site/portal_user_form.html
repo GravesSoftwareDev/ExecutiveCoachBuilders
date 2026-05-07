@@ -1,0 +1,54 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Add Portal Account - Manage Team{% endblock %}
+
+{% block nav_accounts %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    <div class="fleet-page-header mb-4">
+        <div>
+            <a href="{% url 'team:portal_user_list' %}" class="fleet-breadcrumb">
+                <i class="bi bi-arrow-left me-1"></i> Back to Portal Accounts
+            </a>
+            <h1 class="fleet-page-title mt-1">Add Portal Account</h1>
+        </div>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-person-lock me-2"></i>Account Details
+            </h2>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {% include "garage/_field.html" with field=form.username %}
+                </div>
+            </div>
+            <div class="row g-3 mt-1">
+                <div class="col-md-6">
+                    {% include "garage/_field.html" with field=form.password1 %}
+                </div>
+                <div class="col-md-6">
+                    {% include "garage/_field.html" with field=form.password2 %}
+                </div>
+            </div>
+        </div>
+
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Create Account
+            </button>
+            <a href="{% url 'team:portal_user_list' %}" class="fleet-cancel-link">Cancel</a>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

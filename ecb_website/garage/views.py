@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from .models import Vehicle
 from .forms import VehicleForm, VehicleImageFormSet
+from account.decorators import portal_section_required
 
 
-@staff_member_required(login_url='login')
+@portal_section_required('can_edit_fleet')
 def vehicle_list(request):
     """Shows all vehicles in a table with edit and delete actions."""
     # Order by display_order then name so the list matches the public carousel order
@@ -13,7 +13,7 @@ def vehicle_list(request):
     return render(request, 'garage/vehicle_list.html', {'vehicles': vehicles})
 
 
-@staff_member_required(login_url='login')
+@portal_section_required('can_edit_fleet')
 def vehicle_add(request):
     """Handles the blank Add Vehicle form and its gallery image formset."""
     if request.method == 'POST':
@@ -37,7 +37,7 @@ def vehicle_add(request):
     })
 
 
-@staff_member_required(login_url='login')
+@portal_section_required('can_edit_fleet')
 def vehicle_edit(request, pk):
     """Pre-populates the form with an existing vehicle so staff can update it."""
     vehicle = get_object_or_404(Vehicle, pk=pk)
@@ -61,7 +61,7 @@ def vehicle_edit(request, pk):
     })
 
 
-@staff_member_required(login_url='login')
+@portal_section_required('can_edit_fleet')
 def vehicle_delete(request, pk):
     """Shows a confirmation page; deletes the vehicle on POST."""
     vehicle = get_object_or_404(Vehicle, pk=pk)

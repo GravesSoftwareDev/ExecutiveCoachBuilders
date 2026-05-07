@@ -71,13 +71,15 @@
                         <span class="fleet-badge-draft">Draft</span>
                         {% endif %}
                     </td>
-                    <td class="text-center fleet-actions">
-                        <a href="{% url 'garage:vehicle_edit' vehicle.pk %}" class="fleet-action-edit">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a>
-                        <a href="{% url 'garage:vehicle_delete' vehicle.pk %}" class="fleet-action-delete">
-                            <i class="bi bi-trash"></i> Delete
-                        </a>
+                    <td class="text-center">
+                        <div class="fleet-actions">
+                            <a href="{% url 'garage:vehicle_edit' vehicle.pk %}" class="fleet-action-edit">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a href="{% url 'garage:vehicle_delete' vehicle.pk %}" class="fleet-action-delete">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

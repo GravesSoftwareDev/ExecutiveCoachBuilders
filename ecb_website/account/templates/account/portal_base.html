@@ -45,31 +45,48 @@
                         <i class="bi bi-speedometer2 me-1"></i>Dashboard
                     </a>
                 </li>
+                {% if user.is_portal_admin or user.can_edit_fleet %}
                 <li class="nav-item">
                     <a class="nav-link {% block nav_fleet %}{% endblock %}" href="{% url 'garage:vehicle_list' %}">
                         <i class="bi bi-truck me-1"></i>Fleet
                     </a>
                 </li>
+                {% endif %}
+                {% if user.is_portal_admin or user.can_edit_site %}
                 <li class="nav-item">
                     <a class="nav-link {% block nav_edit_site %}{% endblock %}" href="{% url 'edit_site:site_changes' %}">
                         <i class="bi bi-gear me-1"></i>Edit Site
                     </a>
                 </li>
+                {% endif %}
+                {% if user.is_portal_admin or user.can_edit_blog %}
                 <li class="nav-item">
                     <a class="nav-link {% block nav_blog %}{% endblock %}" href="{% url 'blog:article_list' %}">
                         <i class="bi bi-newspaper me-1"></i>Blog
                     </a>
                 </li>
+                {% endif %}
+                {% if user.is_portal_admin or user.can_edit_services %}
                 <li class="nav-item">
                     <a class="nav-link {% block nav_services %}{% endblock %}" href="{% url 'edit_site:service_list' %}">
                         <i class="bi bi-briefcase me-1"></i>Services
                     </a>
                 </li>
+                {% endif %}
+                {% if user.is_portal_admin or user.can_edit_team %}
                 <li class="nav-item">
                     <a class="nav-link {% block nav_team %}{% endblock %}" href="{% url 'team:team_member_list' %}">
                         <i class="bi bi-people me-1"></i>Manage Team
                     </a>
                 </li>
+                {% endif %}
+                {% if user.is_portal_admin %}
+                <li class="nav-item">
+                    <a class="nav-link {% block nav_accounts %}{% endblock %}" href="{% url 'team:portal_user_list' %}">
+                        <i class="bi bi-person-lock me-1"></i>Accounts
+                    </a>
+                </li>
+                {% endif %}
             </ul>
             {% if user.is_authenticated %}
             <ul class="navbar-nav nav-auth flex-row align-items-center gap-3">

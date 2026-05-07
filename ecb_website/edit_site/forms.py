@@ -1,6 +1,31 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
 from .models import SiteSetting, AboutPage
 from client_view.models import Service, TeamMember
+
+
+class PortalUserForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = get_user_model()
+        fields = ['username', 'password1', 'password2']
+
+
+class PortalUserPermissionForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ['role', 'can_edit_site', 'can_edit_fleet', 'can_edit_blog', 'can_edit_services', 'can_edit_team']
+        labels = {
+            'role': 'Role',
+            'can_edit_site': 'Edit Site Settings',
+            'can_edit_fleet': 'Edit Fleet / Vehicles',
+            'can_edit_blog': 'Edit Blog',
+            'can_edit_services': 'Edit Services',
+            'can_edit_team': 'Edit Team',
+        }
+        help_texts = {
+            'role': 'Admins have full access regardless of individual permissions.',
+        }
 
 
 class TeamMemberForm(forms.ModelForm):

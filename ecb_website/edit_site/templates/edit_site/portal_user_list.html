@@ -1,0 +1,88 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Portal Accounts - Manage Team{% endblock %}
+
+{% block nav_accounts %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    <div class="fleet-page-header">
+        <div>
+            <h1 class="fleet-page-title">Portal Accounts</h1>
+            <p class="fleet-page-subtitle">Staff accounts that can log in and edit the site through the portal.</p>
+        </div>
+        <a href="{% url 'team:portal_user_add' %}" class="btn btn-gold">
+            <i class="bi bi-plus-lg me-1"></i> Add Account
+        </a>
+    </div>
+
+    <div class="fleet-table-wrapper">
+        <table class="fleet-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th class="text-center">Role</th>
+                    <th>Permissions</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in portal_users %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fleet-vehicle-name">{{ u.username }}</span>
+                            {% if u == request.user %}
+                            <span class="fleet-badge-neutral">You</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        {% if u.is_superuser %}
+                        <span class="fleet-badge-bestseller">Admin</span>
+                        {% elif u.role == 'ADMIN' %}
+                        <span class="fleet-badge-bestseller">Admin</span>
+                        {% else %}
+                        <span class="fleet-badge-neutral">Agent</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if u.is_superuser or u.role == 'ADMIN' %}
+                        <span class="fleet-perm-pill">Full Access</span>
+                        {% else %}
+                            {% if u.can_edit_site %}<span class="fleet-perm-pill">Site</span>{% endif %}
+                            {% if u.can_edit_fleet %}<span class="fleet-perm-pill">Fleet</span>{% endif %}
+                            {% if u.can_edit_blog %}<span class="fleet-perm-pill">Blog</span>{% endif %}
+                            {% if u.can_edit_services %}<span class="fleet-perm-pill">Services</span>{% endif %}
+                            {% if u.can_edit_team %}<span class="fleet-perm-pill">Team</span>{% endif %}
+                            {% if not u.can_edit_site and not u.can_edit_fleet and not u.can_edit_blog and not u.can_edit_services and not u.can_edit_team %}
+                            <span style="font-size:.78rem; color:#666;">No access</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="fleet-actions">
+                        {% if not u.is_superuser %}
+                        <a href="{% url 'team:portal_user_edit' u.pk %}" class="fleet-action-edit">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        {% endif %}
+                        {% if u != request.user and not u.is_superuser %}
+                        <a href="{% url 'team:portal_user_delete' u.pk %}" class="fleet-action-delete">
+                            <i class="bi bi-trash"></i> Remove
+                        </a>
+                        {% endif %}
+                        {% if u == request.user or u.is_superuser %}
+                        <span class="text-muted" style="font-size:.8rem;">—</span>
+                        {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

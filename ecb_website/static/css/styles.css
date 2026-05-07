@@ -620,6 +620,7 @@ body {
 /* Clickable card linking to a portal section */
 .dashboard-card {
     display: block;
+    height: 100%;
     background-color: var(--ecb-off-white);
     border: 1px solid #ddd;
     border-top: 3px solid var(--ecb-gold);
@@ -813,6 +814,27 @@ body {
     background-color: var(--ecb-gold-a15);
     color: var(--ecb-gold-dark);
     border: 1px solid var(--ecb-gold-dark);
+}
+
+.fleet-badge-neutral {
+    background-color: rgba(255,255,255,0.06);
+    color: #aaa;
+    border: 1px solid rgba(255,255,255,0.12);
+}
+
+.fleet-perm-pill {
+    display: inline-block;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    background-color: rgba(255,255,255,0.07);
+    color: #ccc;
+    border: 1px solid rgba(255,255,255,0.14);
+    margin: 1px 2px;
 }
 
 /* Row action links */

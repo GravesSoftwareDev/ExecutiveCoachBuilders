@@ -1,19 +1,19 @@
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.utils.text import slugify
 
 from .forms import ArticleForm
 from .models import Article
+from account.decorators import portal_section_required
 
 
-@login_required
+@portal_section_required('can_edit_blog')
 def article_list(request):
     articles = Article.objects.all().order_by('-publish')
     return render(request, 'blog/article_list.html', {'articles': articles})
 
 
-@login_required
+@portal_section_required('can_edit_blog')
 def article_create(request):
     if request.method == 'POST':
         form = ArticleForm(request.POST, request.FILES)
@@ -31,7 +31,7 @@ def article_create(request):
     return render(request, 'blog/article_form.html', {'form': form, 'action': 'New Article'})
 
 
-@login_required
+@portal_section_required('can_edit_blog')
 def article_edit(request, pk):
     article = get_object_or_404(Article, pk=pk)
     if request.method == 'POST':
@@ -53,7 +53,7 @@ def article_edit(request, pk):
     })
 
 
-@login_required
+@portal_section_required('can_edit_blog')
 def article_delete(request, pk):
     article = get_object_or_404(Article, pk=pk)
     if request.method == 'POST':

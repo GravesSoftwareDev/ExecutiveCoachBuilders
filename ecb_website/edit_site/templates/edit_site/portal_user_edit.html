@@ -1,0 +1,70 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Edit Permissions - Portal Accounts{% endblock %}
+
+{% block nav_accounts %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    <div class="fleet-page-header mb-4">
+        <div>
+            <a href="{% url 'team:portal_user_list' %}" class="fleet-breadcrumb">
+                <i class="bi bi-arrow-left me-1"></i> Back to Portal Accounts
+            </a>
+            <h1 class="fleet-page-title mt-1">Edit — {{ portal_user.username }}</h1>
+        </div>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-shield-lock me-2"></i>Role
+            </h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    {% include "garage/_field.html" with field=form.role %}
+                </div>
+            </div>
+        </div>
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-toggles me-2"></i>Section Permissions
+            </h2>
+            <p class="fleet-page-subtitle mb-3">Admins have full access regardless of these settings.</p>
+            <div class="row g-3">
+                <div class="col-sm-6 col-md-4">
+                    {% include "garage/_field.html" with field=form.can_edit_site %}
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    {% include "garage/_field.html" with field=form.can_edit_fleet %}
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    {% include "garage/_field.html" with field=form.can_edit_blog %}
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    {% include "garage/_field.html" with field=form.can_edit_services %}
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    {% include "garage/_field.html" with field=form.can_edit_team %}
+                </div>
+            </div>
+        </div>
+
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Save Permissions
+            </button>
+            <a href="{% url 'team:portal_user_list' %}" class="fleet-cancel-link">Cancel</a>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

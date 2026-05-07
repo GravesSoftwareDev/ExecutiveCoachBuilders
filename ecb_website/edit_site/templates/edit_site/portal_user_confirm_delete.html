@@ -1,0 +1,34 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Remove Portal Account - Manage Team{% endblock %}
+
+{% block nav_accounts %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    <a href="{% url 'team:portal_user_list' %}" class="fleet-breadcrumb">
+        <i class="bi bi-arrow-left me-1"></i> Back to Portal Accounts
+    </a>
+
+    <div class="fleet-delete-card">
+        <i class="bi bi-exclamation-triangle fleet-delete-icon"></i>
+        <h1 class="fleet-delete-title">Remove Portal Account</h1>
+        <p class="fleet-delete-body">
+            You are about to permanently remove the account <strong>{{ portal_user.username }}</strong>.
+            This action cannot be undone.
+        </p>
+
+        <div class="fleet-delete-actions">
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn fleet-btn-danger">
+                    <i class="bi bi-trash me-1"></i> Yes, Remove This Account
+                </button>
+            </form>
+            <a href="{% url 'team:portal_user_list' %}" class="fleet-cancel-link">Cancel</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

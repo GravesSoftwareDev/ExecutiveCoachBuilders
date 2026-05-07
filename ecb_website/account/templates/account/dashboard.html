@@ -60,6 +60,34 @@
             </a>
         </div>
 
+        {% comment %} Edit Site card {% endcomment %}
+        {% if user.is_portal_admin or user.can_edit_site %}
+        <div class="col-md-4">
+            <a href="{% url 'edit_site:site_changes' %}" class="dashboard-card">
+                <i class="bi bi-gear dashboard-card-icon"></i>
+                <h2 class="dashboard-card-title">Edit Site</h2>
+                <p class="dashboard-card-text">
+                    Update header text, homepage content, the About page, and
+                    the site color scheme.
+                </p>
+            </a>
+        </div>
+        {% endif %}
+
+        {% comment %} Portal Accounts card {% endcomment %}
+        {% if user.is_portal_admin %}
+        <div class="col-md-4">
+            <a href="{% url 'team:portal_user_list' %}" class="dashboard-card">
+                <i class="bi bi-person-lock dashboard-card-icon"></i>
+                <h2 class="dashboard-card-title">Portal Accounts</h2>
+                <p class="dashboard-card-text">
+                    Create and remove staff accounts. Set each user's role and
+                    control which sections they can access.
+                </p>
+            </a>
+        </div>
+        {% endif %}
+
     </div>
 </div>
 {% endblock %}
