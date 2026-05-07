@@ -5,7 +5,7 @@ from .models import Article
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ['title', 'slug', 'image', 'video', 'body', 'tags', 'status', 'publish']
+        fields = ['title', 'slug', 'summary', 'image', 'video', 'body', 'status', 'publish']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'fleet-input',
@@ -15,20 +15,21 @@ class ArticleForm(forms.ModelForm):
                 'class': 'fleet-input',
                 'placeholder': 'url-friendly-slug',
             }),
+            'summary': forms.Textarea(attrs={
+                'class': 'fleet-input',
+                'rows': 3,
+                'placeholder': '1-2 sentence excerpt for the news list.',
+            }),
             'body': forms.HiddenInput(attrs={'id': 'id_body'}),
             'status': forms.Select(attrs={'class': 'fleet-input'}),
             'publish': forms.DateTimeInput(
                 attrs={'class': 'fleet-input', 'type': 'datetime-local'},
                 format='%Y-%m-%dT%H:%M',
             ),
-            'tags': forms.TextInput(attrs={
-                'class': 'fleet-input',
-                'placeholder': 'luxury, custom build, motorcoach',
-            }),
         }
         help_texts = {
             'slug': 'Auto-filled from the title. Only change for a custom URL.',
-            'tags': 'Comma-separated list of tags.',
+            'summary': 'Optional but recommended. Keep it concise.',
             'publish': 'Defaults to now. Set a future date to schedule.',
         }
 
@@ -39,8 +40,3 @@ class ArticleForm(forms.ModelForm):
         self.fields['video'].widget.attrs.update({'class': 'fleet-file-input'})
         self.fields['video'].required = False
         self.fields['publish'].input_formats = ['%Y-%m-%dT%H:%M']
-        # Render taggit tags as a plain comma string
-        if self.instance.pk:
-            self.initial['tags'] = ', '.join(
-                t.name for t in self.instance.tags.all()
-            )

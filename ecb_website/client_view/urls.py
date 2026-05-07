@@ -11,6 +11,7 @@ urlpatterns = [
     path('coaches/', views.coaches, name = 'coaches'),
     path('used_vehicle/', views.used_vehicle, name = 'used_vehicle'),
     path('services/', views.services, name = 'services'),
+    path('api/chat/', views.public_chat, name='public_chat'),
     # Vehicle detail page — /coaches/<slug>/
     path('coaches/<slug:slug>/', views.vehicle_detail, name='vehicle_detail'),
     # Public blog

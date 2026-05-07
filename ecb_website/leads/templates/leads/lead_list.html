@@ -1,0 +1,72 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Leads - Executive Coach Builders{% endblock %}
+{% block nav_leads %}active{% endblock %}
+
+{% block content %}
+<div class="portal-section">
+    <div class="portal-section-head">
+        <div class="portal-section-head-main">
+            <h1 class="portal-h1">Leads</h1>
+            <p class="portal-sub">Sales inquiries, ownership, pipeline status, notes, and AI chat.</p>
+            <div class="portal-stats" aria-label="Lead counts">
+                <div class="stat"><span class="stat-num">{{ stats.open }}</span><span class="stat-label">Open</span></div>
+                <div class="stat"><span class="stat-num">{{ stats.hot }}</span><span class="stat-label">Hot</span></div>
+                <div class="stat"><span class="stat-num">{{ stats.mine }}</span><span class="stat-label">Mine</span></div>
+            </div>
+        </div>
+        <div class="portal-section-head-actions">
+            <a href="{% url 'leads:lead_create' %}" class="btn btn-gold">
+                <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> New Lead
+            </a>
+        </div>
+    </div>
+
+    <div class="portal-toolbar">
+        <div class="portal-pills">
+            <a class="pill {% if current_filter == 'open' %}active{% endif %}" href="?filter=open">Open</a>
+            <a class="pill {% if current_filter == 'all' %}active{% endif %}" href="?filter=all">All</a>
+            <a class="pill {% if current_filter == 'mine' %}active{% endif %}" href="?filter=mine">Mine</a>
+            <a class="pill pill-hot {% if current_filter == 'hot' %}active{% endif %}" href="?filter=hot"><i class="bi bi-fire"></i> Hot</a>
+        </div>
+        <form method="get" class="portal-search">
+            <input type="hidden" name="filter" value="{{ current_filter }}">
+            <input type="search" name="q" value="{{ search_q }}" class="form-control" placeholder="Search name, email, company">
+            <button type="submit" class="btn btn-gold">Search</button>
+        </form>
+    </div>
+
+    <div class="portal-table-wrap">
+        <table class="portal-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Interest</th>
+                    <th>Stage</th>
+                    <th>Owner</th>
+                    <th>Last activity</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in leads %}
+                <tr class="{% if lead.is_hot %}lead-row-hot{% endif %}">
+                    <td>
+                        <div class="lead-name">{{ lead.first_name }} {{ lead.last_name }}</div>
+                        <div class="lead-email">{{ lead.email }}</div>
+                        {% if lead.company %}<div class="lead-company">{{ lead.company }}</div>{% endif %}
+                    </td>
+                    <td>{{ lead.get_interest_display }}</td>
+                    <td><span class="stage-chip stage-{{ lead.pipeline_stage }}">{{ lead.get_pipeline_stage_display }}</span></td>
+                    <td>{% if lead.assigned_to %}{{ lead.assigned_to.get_username }}{% else %}<span class="muted">Unassigned</span>{% endif %}</td>
+                    <td>{{ lead.last_activity_at|default:lead.created_at|date:"M j, H:i" }}</td>
+                    <td><a class="btn btn-sm btn-outline-gold" href="{% url 'leads:lead_detail' lead.pk %}">Open</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="muted">No leads yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

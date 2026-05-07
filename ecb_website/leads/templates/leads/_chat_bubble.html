@@ -1,0 +1,21 @@
+{% if t.is_ai_generated %}
+<div class="bubble bubble-ai{% if compact %} bubble-compact{% endif %}">
+    <div class="bubble-avatar"><i class="bi bi-robot"></i></div>
+    <div class="bubble-content">
+        <div class="bubble-body">{{ t.body|linebreaksbr }}</div>
+        <div class="bubble-meta muted small">
+            <span>{{ t.created_at|date:"M j, H:i" }}</span>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="bubble bubble-user{% if compact %} bubble-compact{% endif %}">
+    <div class="bubble-content">
+        <div class="bubble-body">{{ t.body|linebreaksbr }}</div>
+        <div class="bubble-meta muted small text-end">
+            <span>{{ t.created_at|date:"M j, H:i" }}</span>
+            {% if t.actor %}<span>&middot; {{ t.actor.get_username }}</span>{% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}

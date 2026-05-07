@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.urls import reverse
-from taggit.managers import TaggableManager
 
 # Create your models here.
 class Publisher(models.Manager):
@@ -23,7 +22,6 @@ class Article(models.Model):
         body: Full article text (supports markdown)
         publish: Publication date/time
         status: Draft or Published state
-        tags: Flexible tagging system using django-taggit
     """
     
     class Status(models.TextChoices):
@@ -34,6 +32,12 @@ class Article(models.Model):
     video = models.FileField(upload_to='blog/videos/', blank=True)
     title = models.CharField(max_length=250)
     slug = models.CharField(max_length=250, unique_for_date='publish')
+    summary = models.CharField(
+        max_length=500,
+        blank=True,
+        default='',
+        help_text='Short excerpt for the public news list and search previews.',
+    )
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -47,8 +51,6 @@ class Article(models.Model):
         default=Status.DRAFT
     )
  
-    tags = TaggableManager()
-
     # Two managers: 'objects' for all articles, 'publisher' for published only
     objects = models.Manager()
     publisher = Publisher()

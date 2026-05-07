@@ -3,10 +3,49 @@
 from django.db import migrations, models
 
 
+def copy_account_leads(apps, schema_editor):
+    table_names = schema_editor.connection.introspection.table_names()
+    if 'account_lead' not in table_names:
+        return
+
+    OldLead = apps.get_model('account', 'Lead')
+    NewLead = apps.get_model('leads', 'Lead')
+    cursor = schema_editor.connection.cursor()
+    columns = {
+        column.name
+        for column in schema_editor.connection.introspection.get_table_description(
+            cursor,
+            'account_lead',
+        )
+    }
+
+    for old in OldLead.objects.all():
+        NewLead.objects.update_or_create(
+            id=old.id,
+            defaults={
+                'first_name': old.first_name,
+                'last_name': old.last_name,
+                'email': old.email,
+                'phone_number': old.phone_number,
+                'company': old.company,
+                'budget': old.budget,
+                'interest': old.interest,
+                'message': old.message if 'message' in columns else '',
+                'assigned_to_id': old.assigned_to_id if 'assigned_to_id' in columns else None,
+                'source': 'account_legacy',
+            },
+        )
+
+
+def noop_reverse(apps, schema_editor):
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
         ('account', '0001_initial'),
+        ('leads', '0001_initial'),
     ]
 
     operations = [
@@ -34,5 +73,19 @@ class Migration(migrations.Migration):
             model_name='employee',
             name='can_edit_team',
             field=models.BooleanField(default=False),
+        ),
+        migrations.AlterField(
+            model_name='employee',
+            name='role',
+            field=models.CharField(choices=[('AGENT', 'Agent'), ('ADMIN', 'Admin')], default='AGENT', max_length=16),
+        ),
+        migrations.SeparateDatabaseAndState(
+            database_operations=[
+                migrations.RunPython(copy_account_leads, noop_reverse),
+                migrations.RunSQL('DROP TABLE IF EXISTS account_lead', reverse_sql=migrations.RunSQL.noop),
+            ],
+            state_operations=[
+                migrations.DeleteModel(name='Lead'),
+            ],
         ),
     ]

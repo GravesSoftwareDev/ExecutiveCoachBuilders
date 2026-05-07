@@ -1,0 +1,33 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Delete lead — Sales Portal{% endblock %}
+
+{% block content %}
+<div class="lead-delete-wrap">
+    <a href="{% url 'leads:lead_detail' lead.pk %}" class="back-link mb-3 d-inline-block">
+        <i class="bi bi-chevron-left"></i> Back to lead
+    </a>
+
+    <div class="lead-delete-card">
+        <i class="bi bi-exclamation-triangle lead-delete-icon"></i>
+        <h1 class="portal-h1 lead-delete-title">Delete this lead?</h1>
+        <p class="lead-delete-body">
+            You are about to permanently delete
+            <strong>{{ lead.first_name }} {{ lead.last_name }}</strong>
+            ({{ lead.email }}).
+            All notes, emails on file, AI drafts, and assistant chat history for this lead will be removed.
+            This cannot be undone.
+        </p>
+
+        <div class="lead-delete-actions">
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash me-1"></i> Yes, delete lead
+                </button>
+            </form>
+            <a href="{% url 'leads:lead_detail' lead.pk %}" class="lead-delete-cancel">Cancel — keep lead</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

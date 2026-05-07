@@ -1,6 +1,6 @@
 # Executive Coach Builders — Web Application
 
-A Django-based web application for Executive Coach Builders, providing internal tools for managing leads and employee accounts.
+A Django-based web application for Executive Coach Builders, providing internal tools for managing leads and employee accounts, public site content, optional AI/LLM features, and sales email (SMTP/IMAP).
 
 ---
 ## Dev Admin Account
@@ -22,7 +22,7 @@ Before setting up the project, make sure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone <https://github.com/GabrielConner/ExecutiveCoachBuilders.git>
+git clone https://github.com/GabrielConner/ExecutiveCoachBuilders.git
 cd ExecutiveCoachBuilders
 ```
 
@@ -70,15 +70,25 @@ pip install -r requirements.txt
 cd ecb_website
 ```
 
-### 5. Apply Database Migrations *(WHEN READY)*
+### 5. Environment variables *(optional but recommended)*
+
+Copy the example file and edit as needed (same folder as `manage.py`):
+
+```bash
+cp .env.example .env
+```
+
+Typical entries: `SECRET_KEY`, `DEBUG`, `DATABASE_URL` (Postgres in production; omit for local SQLite), LLM API keys (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and mail settings (`SMTP_*`, `IMAP_*`) if not using only the in-app Settings UI. The app loads `.env` automatically when [python-dotenv](https://github.com/theskumar/python-dotenv) is installed.
+
+### 6. Apply Database Migrations *(WHEN READY)*
 
 ```bash
 python manage.py migrate
 ```
 
-This creates the SQLite database (`db.sqlite3`) and applies all schema migrations, including the custom `Employee` and `Lead` models.
+This creates the SQLite database (`db.sqlite3`) when `DATABASE_URL` is unset, and applies all schema migrations.
 
-### 6. Create a Superuser (Admin Account)
+### 7. Create a Superuser (Admin Account)
 
 ```bash
 python manage.py createsuperuser
@@ -86,7 +96,7 @@ python manage.py createsuperuser
 
 Follow the prompts to set a username, email, and password. This account will have full access to the Django admin panel.
 
-### 7. Run the Development Server
+### 8. Run the Development Server
 
 ```bash
 python manage.py runserver
@@ -106,12 +116,13 @@ ExecutiveCoachBuilders/
 ├── requirements.txt             # Python dependencies
 └── ecb_website/
     ├── manage.py                # Django management utility
-    ├── db.sqlite3               # SQLite database (auto-generated)
-    ├── account/                 # Account app (employees & leads)
-    │   ├── models.py            # Employee and Lead data models
-    │   ├── views.py
-    │   ├── admin.py
-    │   └── migrations/
+    ├── .env.example             # Env template (copy to .env; .env is not committed)
+    ├── db.sqlite3               # SQLite database (auto-generated; dev default)
+    ├── account/                 # Staff portal, auth (Employee)
+    ├── leads/                   # CRM leads & timeline
+    ├── agent/                   # LLM settings & in-portal AI usage
+    ├── emailing/                # SMTP/IMAP integration
+    ├── blog/, client_view/, garage/, edit_site/  # Public site & CMS
     └── ecb_website/             # Project configuration
         ├── settings.py
         ├── urls.py
@@ -148,16 +159,21 @@ Represents a prospective customer. Tracks the following:
 
 ## Dependencies
 
-| Package   | Version |
-|-----------|---------|
-| Django    | 6.0.4   |
-| asgiref   | 3.11.1  |
-| sqlparse  | 0.5.5   |
+Pinned in `requirements.txt` (run `pip freeze` locally for the full resolved set). Main packages:
+
+| Package        | Version (pinned) |
+|----------------|------------------|
+| Django         | 6.0.3            |
+| django-taggit  | 6.1.0            |
+| Pillow         | 11.2.1           |
+| python-dotenv  | 1.0.1            |
+| psycopg        | 3.2.9 (binary)   | *optional; for PostgreSQL* |
 
 ---
 
 ## Notes
 
-- The default database is **SQLite**, stored locally as `db.sqlite3`. No additional database setup is required for development.
-- `DEBUG = True` is set by default. Do not deploy with this setting enabled in production.
-- The `SECRET_KEY` in `settings.py` must be replaced with a secure, private value before any production deployment.
+- **Database:** Default development database is **SQLite** (`ecb_website/db.sqlite3`). For **PostgreSQL**, set `DATABASE_URL` in `.env` (see `ecb_website/settings.py`), install deps, then `migrate`.
+- **Production:** Set `DEBUG=0`, a strong `SECRET_KEY` in `.env`, correct `ALLOWED_HOSTS` / `CSRF_TRUSTED_ORIGINS`, run `collectstatic` (set `STATIC_ROOT`), and serve user uploads from `MEDIA_ROOT` (defaults under `ecb_website/media/` or override via env). Use a reverse proxy (e.g. nginx) in front of the app server.
+- **Secrets:** Prefer `.env` or the host environment; do not commit `.env`. Values saved in the admin/portal (e.g. AI keys, email passwords in Email Settings) are stored in the database and override env fallbacks where applicable.
+- For local development, `DEBUG` defaults to on unless overridden in `.env`.

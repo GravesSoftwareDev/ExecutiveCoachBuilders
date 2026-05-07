@@ -118,16 +118,108 @@
         </div>
     </main>
 
-    {% comment %} Footer {% endcomment %}
     <footer id="main-footer">
-        <p class="footer-text mb-0">
-            &copy; {% now "Y" %} <span>Executive Coach Builders</span> &mdash; All rights reserved.
-        </p>
+        <div class="container py-4 py-lg-5">
+            <div class="row g-4 g-lg-4 align-items-start footer-main-row">
+                <div class="col-12 col-lg-4 text-center text-lg-start footer-col-brand">
+                    <p class="footer-brand-name mb-2">Executive Coach Builders</p>
+                    <p class="footer-brand-tag mb-0">Custom Cars Division · Est. 1976</p>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4 text-center text-md-start footer-col-contact">
+                    <h2 class="footer-heading">Visit &amp; contact</h2>
+                    <address class="footer-address-plain mb-0">
+                        <span class="d-block">{{ contact_address_line1 }}</span>
+                        <span class="d-block">{{ contact_address_line2 }}</span>
+                    </address>
+                    {% if contact_maps_url %}
+                    <p class="footer-maps-cta mb-0">
+                        <a class="footer-maps-link" href="{{ contact_maps_url }}" target="_blank" rel="noopener noreferrer">
+                            <i class="bi bi-geo-alt" aria-hidden="true"></i> Open in Maps
+                        </a>
+                    </p>
+                    {% endif %}
+                    <ul class="footer-contact-lines list-unstyled mb-0 mt-2 mt-md-3">
+                        {% if contact_tel_href %}
+                        <li>
+                            <a class="footer-inline-link" href="{{ contact_tel_href }}">
+                                <i class="bi bi-telephone-fill footer-contact-icon" aria-hidden="true"></i>
+                                <span>{{ contact_public_phone }}</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if contact_public_email %}
+                        <li>
+                            <a class="footer-inline-link" href="mailto:{{ contact_public_email }}">
+                                <i class="bi bi-envelope-fill footer-contact-icon" aria-hidden="true"></i>
+                                <span>{{ contact_public_email }}</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4 footer-col-social">
+                    <div class="footer-social-stack">
+                        <h2 class="footer-heading footer-heading-social">Follow us</h2>
+                        <div class="footer-social-icons">
+                            {% if contact_social_facebook_url %}
+                            <a class="footer-social-btn" href="{{ contact_social_facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                                <i class="bi bi-facebook" aria-hidden="true"></i>
+                            </a>
+                            {% endif %}
+                            {% if contact_social_youtube_url %}
+                            <a class="footer-social-btn" href="{{ contact_social_youtube_url }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                                <i class="bi bi-youtube" aria-hidden="true"></i>
+                            </a>
+                            {% endif %}
+                            {% if contact_social_x_url %}
+                            <a class="footer-social-btn" href="{{ contact_social_x_url }}" target="_blank" rel="noopener noreferrer" aria-label="X">
+                                <i class="bi bi-twitter-x" aria-hidden="true"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-rule my-4">
+            <p class="footer-copyright text-center mb-0">
+                &copy; {% now "Y" %} Executive Coach Builders — All rights reserved.
+            </p>
+        </div>
     </footer>
+
+    <div id="ecb-chat-widget" data-chat-url="{% url 'client_view:public_chat' %}" aria-live="polite">
+        <button type="button" id="ecb-chat-launcher" aria-label="Open chat assistant" aria-expanded="false" aria-controls="ecb-chat-panel">
+            <i class="bi bi-chat-dots-fill"></i>
+        </button>
+        <div id="ecb-chat-panel" role="dialog" aria-label="ECB assistant">
+            <header>
+                <h2>ECB Assistant</h2>
+                <button type="button" id="ecb-chat-close" aria-label="Close chat">&times;</button>
+            </header>
+            <div id="ecb-chat-messages">
+                <div class="ecb-msg ecb-msg-bot">Hi, I can answer general questions about Executive Coach Builders vehicles and custom builds.</div>
+            </div>
+            <div id="ecb-chat-chips">
+                <button type="button">What does ECB build?</button>
+                <button type="button">How do custom projects start?</button>
+                <button type="button">Can I request a quote?</button>
+            </div>
+            <form id="ecb-chat-form" autocomplete="off">
+                {% csrf_token %}
+                <input type="text" id="ecb-chat-input" maxlength="2000" placeholder="Type a message..." aria-label="Message">
+                <button type="submit" id="ecb-chat-send">Send</button>
+            </form>
+            <div id="ecb-chat-foot">
+                <a href="/contact/">Contact form</a>
+                <span>General guidance only.</span>
+            </div>
+        </div>
+    </div>
 
     {% comment %} Bootstrap JS {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/theme.js' %}"></script>
+    <script src="{% static 'js/public-chat.js' %}"></script>
 
     {% if admin_site %}
     <script>

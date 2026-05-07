@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Employee, Lead
+
+from .models import Employee
 
 
 @admin.register(Employee)
@@ -16,11 +17,4 @@ class EmployeeAdmin(UserAdmin):
         }),
     )
     list_display = ('username', 'email', 'first_name', 'last_name', 'role', 'is_staff', 'is_active')
-    list_filter  = UserAdmin.list_filter + ('role',)
-
-
-@admin.register(Lead)
-class LeadAdmin(admin.ModelAdmin):
-    list_display  = ('first_name', 'last_name', 'email', 'interest', 'status', 'contacted', 'assigned_to', 'created_at')
-    list_filter   = ('status', 'interest', 'contacted')
-    search_fields = ('first_name', 'last_name', 'email', 'company')
+    list_filter = UserAdmin.list_filter + ('role',)

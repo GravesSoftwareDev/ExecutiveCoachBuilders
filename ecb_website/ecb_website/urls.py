@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('portal/', include('account.urls')),
+    path('portal/', include('leads.urls')),
     # Fleet management lives under /portal/fleet/ and requires staff login
     path('portal/fleet/', include('garage.urls')),
     path('portal/site/', include('edit_site.urls')),

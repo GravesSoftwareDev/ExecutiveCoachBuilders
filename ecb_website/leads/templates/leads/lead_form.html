@@ -1,0 +1,114 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}{{ action }} - Leads{% endblock %}
+{% block nav_leads %}active{% endblock %}
+
+{% block content %}
+<div class="portal-section">
+    <div class="fleet-page-header mb-4">
+        <a href="{% if lead %}{% url 'leads:lead_detail' lead.pk %}{% else %}{% url 'leads:lead_list' %}{% endif %}" class="fleet-breadcrumb">
+            <i class="bi bi-arrow-left me-1"></i> Back
+        </a>
+        <h1 class="portal-h1 mt-1">{{ action }}</h1>
+        <p class="portal-sub">Create or update a sales lead manually. Logged details become context for the internal AI chat.</p>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title"><i class="bi bi-person-fill me-2"></i>Contact</h2>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {% include "leads/_field.html" with field=form.first_name %}
+                </div>
+                <div class="col-md-6">
+                    {% include "leads/_field.html" with field=form.last_name %}
+                </div>
+                <div class="col-md-6">
+                    {% include "leads/_field.html" with field=form.email %}
+                </div>
+                <div class="col-md-6">
+                    {% include "leads/_field.html" with field=form.phone_number %}
+                </div>
+                <div class="col-12">
+                    {% include "leads/_field.html" with field=form.company %}
+                </div>
+            </div>
+        </div>
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title"><i class="bi bi-clipboard-check me-2"></i>Project</h2>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {% include "leads/_field.html" with field=form.interest %}
+                </div>
+                <div class="col-md-6">
+                    {% include "leads/_field.html" with field=form.budget %}
+                </div>
+                <div class="col-md-4">
+                    {% include "leads/_field.html" with field=form.passenger_count %}
+                </div>
+                <div class="col-md-4">
+                    {% include "leads/_field.html" with field=form.timeline %}
+                </div>
+                <div class="col-md-4">
+                    {% include "leads/_field.html" with field=form.use_case %}
+                </div>
+                <div class="col-12">
+                    {% include "leads/_field.html" with field=form.message %}
+                </div>
+            </div>
+        </div>
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title"><i class="bi bi-diagram-3 me-2"></i>Pipeline</h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    {% include "leads/_field.html" with field=form.pipeline_stage %}
+                </div>
+                <div class="col-md-4">
+                    {% include "leads/_field.html" with field=form.priority %}
+                </div>
+                <div class="col-md-4">
+                    {% include "leads/_field.html" with field=form.assigned_to %}
+                </div>
+                <div class="col-md-3">
+                    <label class="ai-chat-toggle" style="margin-top:28px;">
+                        {{ form.is_hot }} Mark as hot
+                    </label>
+                    {% for error in form.is_hot.errors %}
+                    <p class="fleet-field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="col-md-9">
+                    {% include "leads/_field.html" with field=form.hot_reason %}
+                </div>
+            </div>
+        </div>
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title"><i class="bi bi-link-45deg me-2"></i>Source</h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    {% include "leads/_field.html" with field=form.source %}
+                </div>
+                <div class="col-md-8">
+                    {% include "leads/_field.html" with field=form.source_url %}
+                </div>
+            </div>
+        </div>
+
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Save Lead
+            </button>
+            <a href="{% url 'leads:lead_list' %}" class="fleet-cancel-link">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

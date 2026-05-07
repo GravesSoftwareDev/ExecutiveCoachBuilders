@@ -1,0 +1,180 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}{{ lead.first_name }} {{ lead.last_name }} - Lead{% endblock %}
+{% block nav_leads %}active{% endblock %}
+
+{% block content %}
+<div class="lead-detail">
+    <div class="lead-detail-head">
+        <div>
+            <a href="{% url 'leads:lead_list' %}" class="back-link"><i class="bi bi-chevron-left"></i> Back to leads</a>
+            <h1 class="portal-h1">{{ lead.first_name }} {{ lead.last_name }}</h1>
+            <div class="lead-meta">
+                <a href="mailto:{{ lead.email }}">{{ lead.email }}</a>
+                {% if lead.phone_number %} &middot; <span>{{ lead.phone_number }}</span>{% endif %}
+                {% if lead.company %} &middot; <span>{{ lead.company }}</span>{% endif %}
+            </div>
+        </div>
+        <div class="lead-detail-actions row-chips">
+            {% if lead.is_hot %}<span class="hot-chip"><i class="bi bi-fire"></i> Hot</span>{% endif %}
+            <span class="stage-chip stage-{{ lead.pipeline_stage }}">{{ lead.get_pipeline_stage_display }}</span>
+            {% if user.is_staff %}
+            <a href="{% url 'leads:lead_edit' lead.pk %}" class="btn btn-sm btn-outline-gold">
+                <i class="bi bi-pencil me-1"></i>Edit
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="lead-detail-grid">
+        <section class="lead-main">
+            {% include "leads/_chat_panel.html" %}
+
+            {% if user.is_staff %}
+            <div class="section-title mt-4"><i class="bi bi-envelope-at"></i> Email customer (Sales mailbox)</div>
+            <p class="muted small">Sends through SMTP configured in <a href="{% url 'settings' %}?section=email&amp;e=smtp">Settings → Sales email</a>. Replies appear on this timeline when IMAP polling matches the thread or sender.</p>
+            <form method="post" action="{% url 'leads:lead_send_email' lead.pk %}" class="note-form mb-4">
+                {% csrf_token %}
+                {% if reply_in_reply_to %}
+                <input type="hidden" name="in_reply_to" value="{{ reply_in_reply_to }}">
+                {% endif %}
+                <div class="mb-2">
+                    <input type="text" name="subject" class="form-control" placeholder="Subject" value="Re: {{ lead.get_interest_display }} inquiry">
+                </div>
+                <textarea name="body" rows="5" class="form-control mb-2" placeholder="Write your message to {{ lead.email }}…" required></textarea>
+                <button type="submit" class="btn btn-gold"><i class="bi bi-send me-1"></i>Send email</button>
+            </form>
+            {% endif %}
+
+            <details class="timeline-wrap" {% if timeline %}open{% endif %}>
+                <summary class="section-title timeline-summary">
+                    <span><i class="bi bi-clock-history"></i> Timeline
+                        <span class="muted">({{ timeline|length }} entr{{ timeline|length|pluralize:"y,ies" }})</span>
+                    </span>
+                    <span class="timeline-toggle">
+                        <span class="tl-open-label">Hide</span>
+                        <span class="tl-closed-label">Show</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </span>
+                </summary>
+                <ol class="timeline">
+                    {% for m in timeline %}
+                    <li class="tl-item tl-{{ m.direction }} tl-ch-{{ m.channel }}">
+                        <div class="tl-icon">
+                            {% if m.channel == 'form' %}<i class="bi bi-send-plus"></i>
+                            {% elif m.channel == 'email' %}<i class="bi bi-envelope"></i>
+                            {% elif m.channel == 'note' %}<i class="bi bi-sticky"></i>
+                            {% else %}<i class="bi bi-gear"></i>{% endif %}
+                        </div>
+                        <div class="tl-body">
+                            <div class="tl-head">
+                                <span class="tl-label">
+                                    {{ m.get_direction_display }} &middot; {{ m.get_channel_display }}
+                                    {% if m.is_ai_generated %}<span class="ai-tag">AI</span>{% endif %}
+                                    <span class="status status-{{ m.status }}">{{ m.get_status_display }}</span>
+                                </span>
+                                <span class="tl-time">{{ m.created_at|date:"M j, Y H:i" }}</span>
+                            </div>
+                            {% if m.subject %}<div class="tl-subject">{{ m.subject }}</div>{% endif %}
+                            {% if m.body %}<pre class="tl-text">{{ m.body }}</pre>{% endif %}
+                            {% if m.actor %}<div class="tl-actor">by {{ m.actor.get_username }}</div>{% endif %}
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="muted">No activity yet.</li>
+                    {% endfor %}
+                </ol>
+            </details>
+
+            <div class="section-title">Add a note</div>
+            <form method="post" action="{% url 'leads:lead_note' lead.pk %}" class="note-form">
+                {% csrf_token %}
+                <textarea name="body" rows="3" class="form-control mb-2" placeholder="Internal note visible only to the team"></textarea>
+                <button type="submit" class="btn btn-outline-gold">Save note</button>
+            </form>
+        </section>
+
+        <aside class="lead-side">
+            <div class="side-card">
+                <h3>Inquiry</h3>
+                <dl>
+                    <dt>Interest</dt><dd>{{ lead.get_interest_display }}</dd>
+                    <dt>Budget</dt><dd>{% if lead.budget %}${{ lead.budget }}{% else %}<span class="muted">-</span>{% endif %}</dd>
+                    <dt>Passenger count</dt><dd>{% if lead.passenger_count %}{{ lead.passenger_count }}{% else %}<span class="muted">-</span>{% endif %}</dd>
+                    <dt>Timeline</dt><dd>{% if lead.timeline %}{{ lead.timeline }}{% else %}<span class="muted">-</span>{% endif %}</dd>
+                    <dt>Use case</dt><dd>{% if lead.use_case %}{{ lead.use_case }}{% else %}<span class="muted">-</span>{% endif %}</dd>
+                    <dt>Source</dt>
+                    <dd>
+                        {% if lead.source %}{{ lead.source }}{% else %}<span class="muted">-</span>{% endif %}
+                        {% if lead.source_url %}<div class="small muted">{{ lead.source_url }}</div>{% endif %}
+                    </dd>
+                    <dt>Received</dt><dd>{{ lead.created_at|date:"M j, Y H:i" }}</dd>
+                </dl>
+                {% if lead.message %}
+                <div class="side-quote">{{ lead.message }}</div>
+                {% endif %}
+            </div>
+
+            {% if lead.is_hot and lead.hot_reason %}
+            <div class="side-card">
+                <h3><i class="bi bi-fire"></i> Why hot</h3>
+                <div class="hot-box">{{ lead.hot_reason }}</div>
+            </div>
+            {% endif %}
+
+            {% if lead.ai_structured %}
+            <div class="side-card">
+                <h3><i class="bi bi-robot"></i> AI summary</h3>
+                {% if lead.ai_structured.summary %}<p>{{ lead.ai_structured.summary }}</p>{% endif %}
+                {% if lead.ai_structured.tags %}
+                <div class="tag-row">
+                    {% for t in lead.ai_structured.tags %}<span class="tag">{{ t }}</span>{% endfor %}
+                </div>
+                {% endif %}
+                {% if lead.ai_structured_updated_at %}
+                <div class="muted small">Updated {{ lead.ai_structured_updated_at|date:"M j, H:i" }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="side-card">
+                <h3>Ownership</h3>
+                {% if lead.assigned_to %}
+                <p class="mb-2">Assigned to <strong>{{ lead.assigned_to.get_username }}</strong>.</p>
+                {% else %}
+                <p class="muted mb-2">Unassigned.</p>
+                {% endif %}
+                {% if lead.assigned_to != user %}
+                <form method="post" action="{% url 'leads:lead_claim' lead.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-gold w-100">Claim this lead</button>
+                </form>
+                {% endif %}
+            </div>
+
+            <div class="side-card">
+                <h3>Pipeline</h3>
+                <form method="post" action="{% url 'leads:lead_stage' lead.pk %}">
+                    {% csrf_token %}
+                    <select name="stage" class="form-select mb-2">
+                        {% for value, label in pipeline_choices %}
+                        <option value="{{ value }}" {% if lead.pipeline_stage == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-outline-gold w-100">Update stage</button>
+                </form>
+            </div>
+
+            {% if user.is_staff %}
+            <div class="side-card side-card-danger">
+                <h3>Danger zone</h3>
+                <p class="muted small mb-2">Permanently remove this lead and all related data.</p>
+                <a href="{% url 'leads:lead_delete' lead.pk %}" class="btn btn-outline-danger w-100">
+                    <i class="bi bi-trash me-1"></i> Delete lead
+                </a>
+            </div>
+            {% endif %}
+        </aside>
+    </div>
+</div>
+{% endblock %}

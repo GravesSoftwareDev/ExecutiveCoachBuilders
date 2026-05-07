@@ -1,0 +1,93 @@
+<form method="post" class="settings-form settings-form--dense" id="email-smtp-form">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="save_email">
+    <input type="hidden" name="channel" value="smtp">
+
+    <div class="settings-check-inline">
+        <label class="d-inline-flex align-items-center gap-2 mb-0">
+            <input type="checkbox" name="smtp_enabled" {% if smtp_form.smtp_enabled.value %}checked{% endif %}>
+            <span>Enable SMTP</span>
+        </label>
+        <label class="d-inline-flex align-items-center gap-2 mb-0">
+            <input type="checkbox" name="smtp_use_tls" {% if smtp_form.smtp_use_tls.value %}checked{% endif %}>
+            <span>TLS (STARTTLS)</span>
+        </label>
+    </div>
+
+    <div class="settings-field-row-2">
+        <div class="settings-field">
+            <label for="id_smtp_host">Host</label>
+            <input type="text" name="smtp_host" id="id_smtp_host" class="form-control form-control-sm settings-input-compact"
+                   value="{{ smtp_form.smtp_host.value|default:'' }}" placeholder="smtp.mailprovider.com" autocomplete="off">
+        </div>
+        <div class="settings-field">
+            <label for="id_smtp_port">Port</label>
+            <input type="number" name="smtp_port" id="id_smtp_port" class="form-control form-control-sm settings-input-compact" min="1" max="65535"
+                   value="{{ smtp_form.smtp_port.value|default:'' }}" placeholder="587">
+        </div>
+    </div>
+
+    <div class="settings-field">
+        <label for="id_smtp_username">Username</label>
+        <input type="text" name="smtp_username" id="id_smtp_username" class="form-control form-control-sm settings-input-compact" autocomplete="off"
+               value="{{ smtp_form.smtp_username.value|default:'' }}" placeholder="Often same as from address">
+    </div>
+
+    <div class="settings-field">
+        <label for="id_smtp_password">Password
+            {% if email_status.smtp_password_masked %}
+            <span class="settings-muted small fw-normal text-lowercase">· saved <code>{{ email_status.smtp_password_masked }}</code></span>
+            {% endif %}
+        </label>
+        <input type="password" name="smtp_password" id="id_smtp_password" class="form-control form-control-sm settings-input-compact" autocomplete="new-password"
+               placeholder="{% if email_status.smtp_password_masked %}Leave blank to keep{% else %}App or SMTP password{% endif %}">
+    </div>
+
+    <div class="settings-field-row-2">
+        <div class="settings-field">
+            <label for="id_from_address">From address</label>
+            <input type="email" name="from_address" id="id_from_address" class="form-control form-control-sm settings-input-compact"
+                   value="{{ smtp_form.from_address.value|default:'' }}" placeholder="Sales@ecblimo.com" autocomplete="off">
+        </div>
+        <div class="settings-field">
+            <label for="id_from_name">Display name</label>
+            <input type="text" name="from_name" id="id_from_name" class="form-control form-control-sm settings-input-compact"
+                   value="{{ smtp_form.from_name.value|default:'' }}" placeholder="Executive Coach Builders" autocomplete="off">
+        </div>
+    </div>
+
+    <div class="settings-field">
+        <label for="id_signature">Signature <span class="settings-muted small fw-normal text-lowercase">· appended to outbound</span></label>
+        <textarea name="signature" id="id_signature" class="form-control form-control-sm settings-input-compact" rows="2">{{ smtp_form.signature.value|default:'' }}</textarea>
+    </div>
+
+    <div class="settings-action-row">
+        <button type="submit" class="btn btn-gold btn-sm px-3"><i class="bi bi-save2 me-1"></i>Save SMTP</button>
+    </div>
+</form>
+
+<hr class="settings-email-divider" aria-hidden="true">
+
+<div class="settings-email-tools-row">
+    <form method="post" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="email_smtp_selftest">
+        <button type="submit" class="settings-outline-btn settings-outline-btn--sm" {% if not email_status.smtp_configured %}disabled title="Set host and from address first"{% endif %}>
+            <i class="bi bi-activity"></i> Test login
+        </button>
+    </form>
+    <form method="post" class="settings-email-roundtrip flex-grow-1" style="min-width:min(100%, 280px);">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="email_send_test">
+        <div class="d-flex flex-wrap gap-2 align-items-end">
+            <div class="flex-grow-1" style="min-width: 180px;">
+                <label for="id_test_to" class="small text-muted text-uppercase mb-1 d-block" style="letter-spacing:0.08em;font-size:0.65rem;">Send test to</label>
+                <input type="email" name="test_to" id="id_test_to" class="form-control form-control-sm settings-input-compact" required placeholder="you@company.com" {% if not email_status.smtp_enabled %}disabled{% endif %}>
+            </div>
+            <button type="submit" class="settings-outline-btn settings-outline-btn--sm mb-0" {% if not email_status.smtp_enabled %}disabled{% endif %}>
+                <i class="bi bi-envelope-check"></i> Send
+            </button>
+        </div>
+    </form>
+</div>
+<p class="settings-help mb-0" style="margin-top:10px;">Round-trip requires SMTP enabled and saved above.</p>

@@ -1,3 +1,4 @@
+{% if setting.name.value %}
 <form method="POST" data-form="{{setting.mediaType}}" data-form-name="{{setting.name.value}}" action="{% url 'edit_site:site_changes' name=setting.name.value %}"
     enctype="multipart/form-data" novalidate autocomplete="off">
     {% csrf_token %}
@@ -16,3 +17,4 @@
         </div>
     </div>
 </form>
+{% endif %}

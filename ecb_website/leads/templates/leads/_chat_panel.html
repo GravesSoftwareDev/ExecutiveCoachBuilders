@@ -1,0 +1,242 @@
+{% load static %}
+<div id="ai-chat" class="ai-chat-panel">
+    <header class="ai-chat-head">
+        <h3 class="ai-chat-title"><i class="bi bi-stars"></i> Ask AI</h3>
+        <div class="ai-chat-head-actions">
+            <span class="ai-chat-badge" title="All chat is internal only. Never shared with the customer.">internal</span>
+            {% if chat_sessions_past %}
+            <details class="chat-history-menu">
+                <summary class="ai-chat-ghost" title="Resume a past conversation">
+                    <i class="bi bi-clock-history"></i>
+                    History
+                    <span class="count-dot">{{ chat_sessions_past|length }}</span>
+                </summary>
+                <div class="chat-history-list">
+                    {% for s in chat_sessions_past %}
+                    <div class="chat-history-row">
+                        <form method="post"
+                              action="{% url 'leads:chat_resume' lead.pk s.pk %}"
+                              hx-post="{% url 'leads:chat_resume' lead.pk s.pk %}"
+                              hx-target="#ai-chat" hx-swap="outerHTML"
+                              class="chat-history-item-form">
+                            {% csrf_token %}
+                            <button type="submit" class="chat-history-item">
+                                <span class="chat-history-title">{{ s.title|default:"Untitled conversation" }}</span>
+                                <span class="chat-history-meta muted small">
+                                    {{ s.last_activity_at|date:"M j, H:i" }} · {{ s.ordered_messages|length }} msg
+                                </span>
+                            </button>
+                        </form>
+                        <form method="post"
+                              action="{% url 'leads:chat_delete' lead.pk s.pk %}"
+                              hx-post="{% url 'leads:chat_delete' lead.pk s.pk %}"
+                              hx-target="#ai-chat" hx-swap="outerHTML"
+                              class="chat-history-delete-form"
+                              onsubmit="return confirm('Delete this conversation?');">
+                            {% csrf_token %}
+                            <button type="submit" class="chat-history-delete" title="Delete conversation">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+            </details>
+            {% endif %}
+            {% if current_session %}
+            <form method="post"
+                  action="{% url 'leads:chat_new' lead.pk %}"
+                  hx-post="{% url 'leads:chat_new' lead.pk %}"
+                  hx-target="#ai-chat" hx-swap="outerHTML"
+                  class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="ai-chat-ghost" title="Start a new conversation">
+                    <i class="bi bi-plus-lg"></i> New
+                </button>
+            </form>
+            {% if not starting_fresh %}
+            <form method="post"
+                  action="{% url 'leads:chat_delete' lead.pk current_session.pk %}"
+                  hx-post="{% url 'leads:chat_delete' lead.pk current_session.pk %}"
+                  hx-target="#ai-chat" hx-swap="outerHTML"
+                  class="d-inline"
+                  onsubmit="return confirm('Delete this conversation?');">
+                {% csrf_token %}
+                <button type="submit" class="ai-chat-ghost ai-chat-delete" title="Delete this conversation">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </form>
+            {% endif %}
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="ai-chat-log">
+        {% if current_session and not starting_fresh %}
+        <div class="current-session-title muted small">
+            <i class="bi bi-chat-left-text"></i>
+            {{ current_session.title|default:"Current conversation" }}
+        </div>
+        {% for t in current_session.ordered_messages %}
+        {% include "leads/_chat_bubble.html" with t=t lead=lead compact=False %}
+        {% endfor %}
+        {% else %}
+        <div class="ai-chat-empty">
+            <div class="ai-chat-empty-quick">
+                <form method="post" action="{% url 'leads:lead_ask' lead.pk %}"
+                      hx-post="{% url 'leads:lead_ask' lead.pk %}"
+                      hx-target="#ai-chat" hx-swap="outerHTML">
+                    {% csrf_token %}
+                    <button name="question" value="Summarize what we know about this lead in 3 bullets." class="quick-chip">
+                        <i class="bi bi-card-checklist"></i> 3-bullet summary
+                    </button>
+                </form>
+                <form method="post" action="{% url 'leads:lead_ask' lead.pk %}"
+                      hx-post="{% url 'leads:lead_ask' lead.pk %}"
+                      hx-target="#ai-chat" hx-swap="outerHTML">
+                    {% csrf_token %}
+                    <button name="question" value="What information is missing that I should ask for in a follow-up?" class="quick-chip">
+                        <i class="bi bi-question-circle"></i> What's missing?
+                    </button>
+                </form>
+                <form method="post" action="{% url 'leads:lead_ask' lead.pk %}"
+                      hx-post="{% url 'leads:lead_ask' lead.pk %}"
+                      hx-target="#ai-chat" hx-swap="outerHTML">
+                    {% csrf_token %}
+                    <button name="question" value="Draft a short, warm follow-up email to move this lead forward." class="quick-chip">
+                        <i class="bi bi-envelope-paper"></i> Draft follow-up
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <form method="post" action="{% url 'leads:lead_ask' lead.pk %}"
+          data-stream-url="{% url 'leads:lead_ask_stream' lead.pk %}"
+          data-panel-url="{% url 'leads:chat_panel' lead.pk %}"
+          class="ai-chat-form" id="ai-chat-form">
+        {% csrf_token %}
+        <div class="ai-chat-input">
+            <textarea name="question" rows="1"
+                      placeholder="Ask about this lead, or ask the AI to draft an email..." required
+                      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();this.form.requestSubmit();}"></textarea>
+            <button type="submit" class="ai-chat-send" aria-label="Send">
+                <i class="bi bi-arrow-up-circle-fill"></i>
+            </button>
+        </div>
+        <details class="ai-chat-advanced">
+            <summary class="muted small">Options</summary>
+            <label class="ai-chat-toggle">
+                <input type="checkbox" name="full_history" value="on">
+                Include full message history
+            </label>
+        </details>
+    </form>
+</div>
+
+<script>
+(function () {
+    const form = document.getElementById('ai-chat-form');
+    if (!form || form.dataset.streamBound === '1') return;
+    form.dataset.streamBound = '1';
+
+    const log = form.parentElement.querySelector('.ai-chat-log');
+    const streamUrl = form.dataset.streamUrl;
+    const panelUrl = form.dataset.panelUrl;
+
+    function appendPending(question) {
+        const empty = log.querySelector('.ai-chat-empty');
+        if (empty) empty.remove();
+        const userBubble = document.createElement('div');
+        userBubble.className = 'bubble bubble-user';
+        userBubble.innerHTML =
+            '<div class="bubble-content">' +
+              '<div class="bubble-body"></div>' +
+              '<div class="bubble-meta muted small text-end">sending…</div>' +
+            '</div>';
+        userBubble.querySelector('.bubble-body').textContent = question;
+        log.appendChild(userBubble);
+
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'bubble bubble-ai bubble-streaming';
+        aiBubble.innerHTML =
+            '<div class="bubble-avatar"><i class="bi bi-robot"></i></div>' +
+            '<div class="bubble-content">' +
+              '<div class="bubble-body">' +
+                '<span class="stream-text"></span><span class="stream-caret">▍</span>' +
+              '</div>' +
+            '</div>';
+        log.appendChild(aiBubble);
+        log.scrollTop = log.scrollHeight;
+        return aiBubble.querySelector('.stream-text');
+    }
+
+    async function refreshPanel() {
+        try {
+            const res = await fetch(panelUrl, { headers: { 'HX-Request': 'true' } });
+            if (!res.ok) return;
+            const html = await res.text();
+            const wrap = document.createElement('div');
+            wrap.innerHTML = html;
+            const fresh = wrap.querySelector('#ai-chat');
+            const cur = document.getElementById('ai-chat');
+            if (fresh && cur) {
+                cur.replaceWith(fresh);
+                if (window.htmx) window.htmx.process(fresh);
+            }
+        } catch (e) { /* swallow */ }
+    }
+
+    form.addEventListener('submit', async function (ev) {
+        ev.preventDefault();
+        const data = new FormData(form);
+        const question = (data.get('question') || '').toString().trim();
+        if (!question) return;
+
+        const target = appendPending(question);
+        form.querySelector('textarea[name="question"]').value = '';
+
+        let res;
+        try {
+            res = await fetch(streamUrl, { method: 'POST', body: data });
+        } catch (err) {
+            target.textContent = '[network error]';
+            return;
+        }
+        if (!res.ok || !res.body) {
+            target.textContent = '[request failed]';
+            return;
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            let idx;
+            while ((idx = buffer.indexOf('\n\n')) !== -1) {
+                const chunk = buffer.slice(0, idx);
+                buffer = buffer.slice(idx + 2);
+                if (!chunk.startsWith('data:')) continue;
+                let payload;
+                try { payload = JSON.parse(chunk.slice(5).trim()); }
+                catch (e) { continue; }
+                if (payload.delta) {
+                    target.textContent += payload.delta;
+                    log.scrollTop = log.scrollHeight;
+                } else if (payload.error) {
+                    target.textContent += ' [error: ' + payload.error + ']';
+                } else if (payload.done) {
+                    await refreshPanel();
+                    return;
+                }
+            }
+        }
+        await refreshPanel();
+    });
+})();
+</script>

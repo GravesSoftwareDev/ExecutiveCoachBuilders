@@ -10,25 +10,49 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+from urllib.parse import unquote, urlparse
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    load_dotenv = None
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+if load_dotenv:
+    load_dotenv(BASE_DIR / '.env')
 
-# Quick-start development settings - unsuitable for production
+
+def _split_csv(s: str) -> list[str]:
+    return [x.strip() for x in (s or '').split(',') if x.strip()]
+
+
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8$wmusjd_qr$-))agw-75j+ojpdmm2%3^v-e#l(bslppls3504'
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-8$wmusjd_qr$-))agw-75j+ojpdmm2%3^v-e#l(bslppls3504',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', '1').strip().lower() in ('1', 'true', 'yes', 'on')
 
-# Trusted Site
-CSRF_TRUSTED_ORIGINS = ['http://3.83.45.207/']
+if os.environ.get('CSRF_TRUSTED_ORIGINS'):
+    CSRF_TRUSTED_ORIGINS = _split_csv(os.environ['CSRF_TRUSTED_ORIGINS'])
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        'http://3.83.45.207/',
+        'http://127.0.0.1:8000',
+        'http://localhost:8000',
+    ]
 
-ALLOWED_HOSTS = ['127.0.0.1','3.83.45.207']
+ALLOWED_HOSTS = _split_csv(
+    os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost,3.83.45.207'),
+)
 
 
 # Application definition
@@ -41,11 +65,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
+    'leads.apps.LeadsConfig',
+    'agent.apps.AgentConfig',
     'client_view.apps.ClientViewConfig',
     'garage.apps.GarageConfig',
     'edit_site.apps.EditSiteConfig',
     'taggit',
     'blog.apps.BlogConfig',
+    'emailing.apps.EmailingConfig',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +98,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'edit_site.context_processors.site_settings',
+                'client_view.context_processors.public_contact',
             ],
         },
     },
@@ -81,13 +109,45 @@ WSGI_APPLICATION = 'ecb_website.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+# Set DATABASE_URL for PostgreSQL. Unset to use SQLite at BASE_DIR / db.sqlite3.
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+_database_url = os.environ.get('DATABASE_URL', '').strip()
+if _database_url:
+    _u = urlparse(_database_url)
+    if _u.scheme in ('postgres', 'postgresql'):
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': unquote(_u.path.lstrip('/')),
+                'USER': unquote(_u.username) if _u.username else '',
+                'PASSWORD': unquote(_u.password) if _u.password else '',
+                'HOST': _u.hostname or '',
+                'PORT': str(_u.port or 5432),
+            }
+        }
+    elif _u.scheme == 'sqlite':
+        _p = _u.path or ''
+        if _p.startswith('/') and len(_p) > 1:
+            _sqlite_name = Path(_p)
+        else:
+            _sqlite_name = BASE_DIR / _p.lstrip('/') if _p else BASE_DIR / 'db.sqlite3'
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': str(_sqlite_name),
+            }
+        }
+    else:
+        raise ValueError(
+            f'Unsupported DATABASE_URL scheme {_u.scheme!r}; use postgresql:// or sqlite://',
+        )
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 
 # Password validation
@@ -130,13 +190,32 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Media files — uploaded images (hero photos, gallery photos)
+# Optional large paths on a dedicated disk (single server). Leave unset = ecb_website/media.
+_media_root = os.environ.get('MEDIA_ROOT', '').strip()
+if _media_root:
+    MEDIA_ROOT = Path(_media_root)
+else:
+    MEDIA_ROOT = BASE_DIR / 'media'
+
+_static_root = os.environ.get('STATIC_ROOT', '').strip()
+if _static_root:
+    STATIC_ROOT = Path(_static_root)
+
+# Media files — uploaded images (hero, gallery, CMS assets). Videos should live here too
+# (Django FileField / your templates) or on CDN later.
 MEDIA_URL = '/media/'
-# Uploaded files are stored in a 'media' folder next to manage.py
-MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'account.Employee'
 
 LOGIN_URL = '/portal/login/'
 LOGIN_REDIRECT_URL = '/portal/'
 LOGOUT_REDIRECT_URL = '/portal/login/'
+
+CONTACT_PUBLIC_PHONE = '(417) 831-3535'
+CONTACT_PUBLIC_EMAIL = 'Sales@ecblimo.com'
+CONTACT_PUBLIC_ADDRESS_LINE1 = '4400 W Production St'
+CONTACT_PUBLIC_ADDRESS_LINE2 = 'Springfield, MO 65803'
+CONTACT_PUBLIC_MAPS_URL = 'https://maps.google.com/?q=4400+W+Production+St+Springfield+MO+65803'
+CONTACT_SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/ExecutiveCoachBuilders/'
+CONTACT_SOCIAL_YOUTUBE_URL = 'https://www.youtube.com/@ECBLIMOTV'
+CONTACT_SOCIAL_X_URL = 'https://twitter.com/coach_builders'

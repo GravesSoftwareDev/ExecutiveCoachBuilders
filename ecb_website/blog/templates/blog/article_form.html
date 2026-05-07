@@ -14,6 +14,25 @@
         <h1 class="fleet-page-title mt-1">{{ action }}</h1>
     </div>
 
+    <div class="fleet-form-section">
+        <h2 class="fleet-form-section-title">
+            <i class="bi bi-stars me-2"></i>AI Draft
+        </h2>
+        <p class="fleet-form-section-hint">
+            Give AI the rough topic, audience, facts, and call to action. It will fill the title, summary, and article body.
+        </p>
+        <div class="fleet-field">
+            <label for="blog-ai-prompt" class="fleet-field-label">Draft Brief</label>
+            <textarea id="blog-ai-prompt" class="fleet-input" rows="4" placeholder="Example: Write a public update about our latest luxury coach build, focusing on custom cabinetry, road-trip comfort, and how prospects can schedule a consultation."></textarea>
+        </div>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <button type="button" id="blog-ai-generate" class="btn btn-gold">
+                <i class="bi bi-magic me-1"></i> Generate Draft
+            </button>
+            <span id="blog-ai-status" class="text-muted small"></span>
+        </div>
+    </div>
+
     <form method="post" enctype="multipart/form-data" novalidate id="article-form">
         {% csrf_token %}
 
@@ -48,6 +67,14 @@
                         {% endfor %}
                     </div>
                 </div>
+            </div>
+            <div class="fleet-field mt-3 {% if form.summary.errors %}has-error{% endif %}">
+                <label for="{{ form.summary.id_for_label }}" class="fleet-field-label">Summary</label>
+                {{ form.summary }}
+                <p class="fleet-field-hint">{{ form.summary.help_text }}</p>
+                {% for error in form.summary.errors %}
+                <p class="fleet-field-error"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</p>
+                {% endfor %}
             </div>
         </div>
 
@@ -114,22 +141,7 @@
             {{ form.body }}
         </div>
 
-        {% comment %} ── Section 4: Tags ───────────────────────────────── {% endcomment %}
-        <div class="fleet-form-section">
-            <h2 class="fleet-form-section-title">
-                <i class="bi bi-tags me-2"></i>Tags
-            </h2>
-            <div class="fleet-field {% if form.tags.errors %}has-error{% endif %}">
-                <label for="{{ form.tags.id_for_label }}" class="fleet-field-label">Tags</label>
-                {{ form.tags }}
-                <p class="fleet-field-hint">{{ form.tags.help_text }}</p>
-                {% for error in form.tags.errors %}
-                <p class="fleet-field-error"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</p>
-                {% endfor %}
-            </div>
-        </div>
-
-        {% comment %} ── Section 5: Publishing ──────────────────────────── {% endcomment %}
+        {% comment %} ── Section 4: Publishing ──────────────────────────── {% endcomment %}
         <div class="fleet-form-section">
             <h2 class="fleet-form-section-title">
                 <i class="bi bi-toggle-on me-2"></i>Publishing
@@ -240,6 +252,66 @@
     titleField.addEventListener('input', function () {
         if (!slugLocked) {
             slugField.value = slugify(titleField.value);
+        }
+    });
+
+    // ── AI draft generation ──────────────────────────────────────────────
+    const aiButton = document.getElementById('blog-ai-generate');
+    const aiPrompt = document.getElementById('blog-ai-prompt');
+    const aiStatus = document.getElementById('blog-ai-status');
+    const summaryField = document.getElementById('id_summary');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    function setAiStatus(text, isError) {
+        aiStatus.textContent = text;
+        aiStatus.classList.toggle('text-danger', Boolean(isError));
+        aiStatus.classList.toggle('text-muted', !isError);
+    }
+
+    aiButton.addEventListener('click', async function () {
+        const prompt = aiPrompt.value.trim();
+        if (prompt.length < 8) {
+            setAiStatus('Add a little more detail first.', true);
+            aiPrompt.focus();
+            return;
+        }
+
+        aiButton.disabled = true;
+        setAiStatus('Generating draft...', false);
+
+        try {
+            const response = await fetch("{% url 'blog:article_ai_generate' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify({ prompt }),
+            });
+            const payload = await response.json();
+            if (!response.ok) {
+                throw new Error(payload.error || 'AI draft failed.');
+            }
+
+            const draft = payload.draft || {};
+            if (draft.title) {
+                titleField.value = draft.title;
+                if (!slugLocked) {
+                    slugField.value = slugify(draft.title);
+                }
+            }
+            if (draft.summary) {
+                summaryField.value = draft.summary;
+            }
+            if (draft.body) {
+                quill.root.innerHTML = draft.body;
+                bodyField.value = draft.body;
+            }
+            setAiStatus('Draft inserted. Review before publishing.', false);
+        } catch (error) {
+            setAiStatus(error.message || 'AI draft failed.', true);
+        } finally {
+            aiButton.disabled = false;
         }
     });
 }());

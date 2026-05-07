@@ -1,0 +1,83 @@
+<form method="post" class="settings-form settings-form--dense">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="save_email">
+    <input type="hidden" name="channel" value="imap">
+
+    <div class="settings-check-inline">
+        <label class="d-inline-flex align-items-center gap-2 mb-0">
+            <input type="checkbox" name="imap_enabled" {% if imap_form.imap_enabled.value %}checked{% endif %}>
+            <span>Enable IMAP</span>
+        </label>
+        <label class="d-inline-flex align-items-center gap-2 mb-0">
+            <input type="checkbox" name="imap_use_ssl" {% if imap_form.imap_use_ssl.value %}checked{% endif %}>
+            <span>SSL (IMAP4_SSL)</span>
+        </label>
+    </div>
+
+    <div class="settings-field-row-2">
+        <div class="settings-field">
+            <label for="id_imap_host">Host</label>
+            <input type="text" name="imap_host" id="id_imap_host" class="form-control form-control-sm settings-input-compact"
+                   value="{{ imap_form.imap_host.value|default:'' }}" placeholder="imap.mailprovider.com" autocomplete="off">
+        </div>
+        <div class="settings-field">
+            <label for="id_imap_port">Port</label>
+            <input type="number" name="imap_port" id="id_imap_port" class="form-control form-control-sm settings-input-compact" min="1" max="65535"
+                   value="{{ imap_form.imap_port.value|default:'' }}" placeholder="993">
+        </div>
+    </div>
+
+    <div class="settings-field-row-2">
+        <div class="settings-field">
+            <label for="id_imap_folder">Folder</label>
+            <input type="text" name="imap_folder" id="id_imap_folder" class="form-control form-control-sm settings-input-compact"
+                   value="{{ imap_form.imap_folder.value|default:'INBOX' }}">
+        </div>
+        <div class="settings-field">
+            <label for="id_imap_username">Username</label>
+            <input type="text" name="imap_username" id="id_imap_username" class="form-control form-control-sm settings-input-compact" autocomplete="off"
+                   value="{{ imap_form.imap_username.value|default:'' }}" placeholder="Sales@ecblimo.com">
+        </div>
+    </div>
+
+    <div class="settings-field">
+        <label for="id_imap_password">Password
+            {% if email_status.imap_password_masked %}
+            <span class="settings-muted small fw-normal text-lowercase">· saved <code>{{ email_status.imap_password_masked }}</code></span>
+            {% endif %}
+        </label>
+        <input type="password" name="imap_password" id="id_imap_password" class="form-control form-control-sm settings-input-compact" autocomplete="new-password"
+               placeholder="{% if email_status.imap_password_masked %}Leave blank to keep{% else %}IMAP password{% endif %}">
+    </div>
+
+    <div class="settings-field">
+        <label for="id_internal_domains">Internal domains <span class="settings-muted small fw-normal text-lowercase">· thread detection</span></label>
+        <input type="text" name="internal_domains" id="id_internal_domains" class="form-control form-control-sm settings-input-compact"
+               value="{{ imap_form.internal_domains.value|default:'' }}" placeholder="ecblimo.com">
+        <p class="settings-help mb-0">Comma-separated. Staff addresses on these domains match as internal replies.</p>
+    </div>
+
+    <div class="settings-action-row flex-wrap">
+        <button type="submit" class="btn btn-gold btn-sm px-3"><i class="bi bi-save2 me-1"></i>Save IMAP</button>
+    </div>
+</form>
+
+<hr class="settings-email-divider" aria-hidden="true">
+
+<div class="settings-email-tools-row">
+    <form method="post" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="email_imap_selftest">
+        <button type="submit" class="settings-outline-btn settings-outline-btn--sm" {% if not email_status.imap_configured %}disabled{% endif %}>
+            <i class="bi bi-activity"></i> Test connection
+        </button>
+    </form>
+    <form method="post" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="email_poll_now">
+        <button type="submit" class="settings-outline-btn settings-outline-btn--sm" {% if not email_status.imap_enabled %}disabled title="Enable IMAP and save first"{% endif %}>
+            <i class="bi bi-arrow-clockwise"></i> Poll now
+        </button>
+    </form>
+</div>
+<p class="settings-help mb-0" style="margin-top:10px;">Automation: <code>manage.py fetch_email</code> via cron or <code>poll_email</code>.</p>

@@ -26,20 +26,18 @@
 
         <h1 class="mb-2" style="font-family:'Playfair Display',serif;">{{ article.title }}</h1>
 
+        {% if article.summary %}
+        <p class="lead text-muted mb-3">{{ article.summary }}</p>
+        {% endif %}
+
         <p class="text-muted small mb-4">
             {{ article.publish|date:"F j, Y" }}
             &nbsp;&bull;&nbsp;
             {{ article.author.get_full_name|default:article.author.username }}
-            {% if article.tags.all %}
-            &nbsp;&bull;&nbsp;
-            {% for tag in article.tags.all %}
-            <span class="badge bg-secondary">{{ tag }}</span>
-            {% endfor %}
-            {% endif %}
         </p>
 
         <div class="article-body">
-            {{ article.body|safe }}
+            {{ article_html }}
         </div>
 
     </div>

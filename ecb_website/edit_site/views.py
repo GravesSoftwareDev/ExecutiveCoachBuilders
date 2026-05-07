@@ -7,7 +7,7 @@ from .forms import SiteSettingForm, ServiceForm, AboutPageForm, TeamMemberForm, 
 from django.contrib.auth import get_user_model
 from .palettes import PALETTES, DEFAULT_PALETTE
 from client_view.models import Service, TeamMember
-from django.urls import resolve
+from django.urls import Resolver404, resolve
 from account.decorators import portal_section_required, portal_admin_required
 
 
@@ -17,6 +17,8 @@ def site_changes(request, name = None):
 
     form = None
     if request.method == 'POST' and name is not None:
+        if not name.strip():
+            return HttpResponse("Invalid setting", status=400)
         setting = get_object_or_404(SiteSetting, name=name)
         form    = SiteSettingForm(request.POST, request.FILES, instance=setting)
 
@@ -32,7 +34,7 @@ def site_changes(request, name = None):
 
 
     # Load settings
-    site_settings_model = SiteSetting.objects.all()
+    site_settings_model = SiteSetting.objects.exclude(name='')
     site_settings = {s.name: s.get_value() for s in site_settings_model}
 
     header_forms = []
@@ -61,7 +63,7 @@ def site_changes(request, name = None):
 
 @portal_section_required('can_edit_site')
 def admin_view(request):
-    site_settings_model = SiteSetting.objects.all()
+    site_settings_model = SiteSetting.objects.exclude(name='')
     site_settings = {s.name : s.get_value() for s in site_settings_model}
 
     settings_form = {}
@@ -73,7 +75,11 @@ def admin_view(request):
         else:
             form.mediaType = False
 
-    view = resolve(request.GET.get('s', '/'))
+    target = request.GET.get('s') or '/'
+    try:
+        view = resolve(target)
+    except Resolver404:
+        return HttpResponse("Invalid page", status=400)
     file = view.app_name + '/' + (view.url_name if view.url_name else 'client_view') + '.html'
 
     return render(request, file, {'admin_site': True, 'site_settings': site_settings, 'settings_form': settings_form})

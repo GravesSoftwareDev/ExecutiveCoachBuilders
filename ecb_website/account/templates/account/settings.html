@@ -1,0 +1,240 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Settings - Executive Coach Builders{% endblock %}
+{% block nav_settings %}active{% endblock %}
+
+{% block content %}
+<div class="settings-page">
+    <nav class="settings-provider-tabs mb-3" aria-label="Settings area" style="grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 520px;">
+        <a class="settings-provider-tab {% if settings_section == 'ai' %}active{% endif %}" href="?section=ai&amp;p={{ tab }}">
+            <i class="bi bi-robot" aria-hidden="true"></i>
+            <span>AI &amp; LLM</span>
+        </a>
+        <a class="settings-provider-tab {% if settings_section == 'email' %}active{% endif %}" href="?section=email&amp;e={{ email_tab }}">
+            <i class="bi bi-envelope-at" aria-hidden="true"></i>
+            <span>Sales email</span>
+        </a>
+    </nav>
+
+    {% if settings_section == 'ai' %}
+    <header class="settings-hero">
+        <div class="settings-hero-copy">
+            <p class="settings-eyebrow">AI &amp; LLM</p>
+            <h1 class="settings-title">Model providers</h1>
+            <p class="settings-subtitle">API keys stay on the server. Optional per-day cap applies to <strong>non-staff</strong> visitors; staff are not limited.</p>
+        </div>
+        <div class="settings-hero-status">
+            <span class="settings-label">Last 7 days</span>
+            <strong>{{ usage.total }} calls</strong>
+            <span class="settings-muted small">{{ usage.tokens|default:0 }} tokens · {{ usage.errors }} errors</span>
+        </div>
+    </header>
+
+    <div class="settings-email-strip">
+        <div class="settings-kpis settings-kpis--status">
+            <div class="settings-kpi">
+                <span>Active</span>
+                <strong>{{ active|title }}</strong>
+                <span class="settings-muted small">
+                    {% if active == 'openai' %}{{ resolved.openai_model|default:"—" }}
+                    {% elif active == 'gemini' %}{{ resolved.gemini_model|default:"—" }}
+                    {% elif active == 'deepseek' %}{{ resolved.deepseek_model|default:"—" }}
+                    {% else %}{{ resolved.openrouter_model|default:"—" }}{% endif %}
+                </span>
+            </div>
+            <div class="settings-kpi">
+                <span>Visitor quota</span>
+                <strong>{% if quota_policy.limit %}{{ quota_policy.limit }}{% else %}∞{% endif %}</strong>
+                <span class="settings-muted small">{{ quota_policy.caption }}</span>
+            </div>
+        </div>
+    </div>
+
+    <nav class="settings-provider-tabs settings-email-channel-tabs" aria-label="LLM provider" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
+        <a class="settings-provider-tab {% if tab == 'openai' %}active{% endif %}" href="?section=ai&amp;p=openai">
+            <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+            <span>OpenAI</span>
+        </a>
+        <a class="settings-provider-tab {% if tab == 'gemini' %}active{% endif %}" href="?section=ai&amp;p=gemini">
+            <i class="bi bi-gem" aria-hidden="true"></i>
+            <span>Gemini</span>
+        </a>
+        <a class="settings-provider-tab {% if tab == 'deepseek' %}active{% endif %}" href="?section=ai&amp;p=deepseek">
+            <i class="bi bi-cpu" aria-hidden="true"></i>
+            <span>DeepSeek</span>
+        </a>
+        <a class="settings-provider-tab {% if tab == 'openrouter' %}active{% endif %}" href="?section=ai&amp;p=openrouter">
+            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+            <span>OpenRouter</span>
+        </a>
+    </nav>
+
+    <section class="settings-panel settings-panel--email-main">
+        <div class="settings-panel-head settings-panel-head--tight">
+            <div>
+            <p class="settings-section-kicker">Provider</p>
+            <h2>{{ tab|title }}</h2>
+            </div>
+            {% if tab == active %}
+            <span class="settings-pill is-active">Live</span>
+            {% else %}
+            <span class="settings-pill">Standby</span>
+            {% endif %}
+        </div>
+
+        <p class="settings-ai-hint mb-3 {% if tab == active %}d-none{% endif %}">
+            Keys and model below apply to <strong>{{ tab|title }}</strong>. Choose <strong>Make active</strong> to route production traffic here.
+        </p>
+
+        <form id="settings-ai-provider-form" method="post" class="settings-form settings-form--dense">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save">
+            <input type="hidden" name="provider" value="{{ tab }}">
+            <div class="settings-ai-form-grid">
+                <div class="settings-field mb-0">
+                    <label for="{{ form.model.id_for_label }}">Model</label>
+                    {{ form.model }}
+                    {% if form.model.errors %}<div class="text-danger small">{{ form.model.errors }}</div>{% endif %}
+                </div>
+                <div class="settings-field mb-0 settings-ai-field-key">
+                    <label for="{{ form.api_key.id_for_label }}">API key</label>
+                    {{ form.api_key }}
+                    {% if form.api_key.errors %}<div class="text-danger small">{{ form.api_key.errors }}</div>{% endif %}
+                    <p class="settings-help mb-0">Leave blank to keep the stored key.</p>
+                </div>
+            </div>
+        </form>
+
+        <div class="settings-ai-footer-actions">
+            <button type="submit" form="settings-ai-provider-form" class="btn btn-gold btn-sm px-4">
+                <i class="bi bi-save2 me-1" aria-hidden="true"></i>Save {{ tab|title }}
+            </button>
+            <form method="post" class="m-0">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="test">
+                <button type="submit" class="settings-test-btn">Run test call</button>
+            </form>
+        </div>
+
+        <div class="settings-ai-secondary-forms">
+            <form method="post" class="settings-ai-inline-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="activate">
+                <input type="hidden" name="provider" value="{{ tab }}">
+                <button type="submit" class="settings-outline-btn settings-outline-btn--sm">Make active</button>
+            </form>
+            <form method="post" class="settings-ai-inline-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="revoke">
+                <input type="hidden" name="provider" value="{{ tab }}">
+                <button type="submit" class="settings-outline-btn settings-outline-btn--sm settings-danger-btn">Clear key</button>
+            </form>
+        </div>
+
+        <div class="settings-ai-quota-embed">
+            <p class="settings-section-kicker mb-2">Visitor quota</p>
+            <form method="post" class="settings-form settings-form--dense mb-0">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="save_quota">
+                <div class="settings-field-row-2">
+                    <div class="settings-field mb-0">
+                        <label for="{{ quota_form.daily_llm_calls_per_user.id_for_label }}">Calls per visitor per day (UTC)</label>
+                        {{ quota_form.daily_llm_calls_per_user }}
+                        {% if quota_form.daily_llm_calls_per_user.errors %}
+                        <div class="text-danger small">{{ quota_form.daily_llm_calls_per_user.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="settings-field mb-0 d-flex align-items-end">
+                        <button type="submit" class="btn btn-outline-gold btn-sm w-100">Save</button>
+                    </div>
+                </div>
+                <p class="settings-help small mb-0 mt-2">{{ quota_form.daily_llm_calls_per_user.help_text }}</p>
+            </form>
+        </div>
+    </section>
+
+    <section class="settings-panel settings-panel--email-main settings-panel--ai-usage">
+        <div class="settings-panel-head settings-panel-head--tight">
+            <div>
+                <p class="settings-section-kicker">Usage</p>
+                <h2>By purpose (7 days)</h2>
+            </div>
+        </div>
+        {% if usage.by_purpose %}
+        <div class="settings-table-wrap settings-ai-table-wrap">
+            <table class="settings-usage-table settings-usage-table--dense">
+                <thead><tr><th>Purpose</th><th>Calls</th><th>Tokens</th></tr></thead>
+                <tbody>
+                    {% for row in usage.by_purpose %}
+                    <tr><td>{{ row.label }}</td><td>{{ row.calls }}</td><td>{{ row.tokens }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="settings-empty mb-0">No API calls recorded in this window.</p>
+        {% endif %}
+    </section>
+
+    {% else %}
+    {# --- Sales email (SMTP / IMAP) --- #}
+    <header class="settings-hero">
+        <div class="settings-hero-copy">
+            <p class="settings-eyebrow">Sales mailbox</p>
+            <h1 class="settings-title">Email delivery</h1>
+            <p class="settings-subtitle">Connect <strong>Sales@ecblimo.com</strong> (or your provider) via SMTP and IMAP. Inbound messages attach to leads by sender or thread; no AI spam scoring.</p>
+        </div>
+        <div class="settings-hero-status">
+            <span class="settings-label">Last IMAP poll</span>
+            {% if email_status.last_poll_at %}
+            <strong>{{ email_status.last_poll_at|timesince }} ago</strong>
+            <span class="settings-muted small">{{ email_status.last_poll_status }}</span>
+            {% else %}
+            <strong>Never</strong>
+            <span class="settings-muted small">Save IMAP and run fetch or Poll now</span>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="settings-email-strip">
+        <div class="settings-kpis settings-kpis--status">
+            <div class="settings-kpi">
+                <span>SMTP</span>
+                <strong>{% if email_status.smtp_enabled %}On{% elif email_status.smtp_configured %}Off{% else %}—{% endif %}</strong>
+                <span class="settings-muted small">{{ email_status.smtp_from|default:"Not set" }}</span>
+            </div>
+            <div class="settings-kpi">
+                <span>IMAP</span>
+                <strong>{% if email_status.imap_enabled %}On{% elif email_status.imap_configured %}Off{% else %}—{% endif %}</strong>
+                <span class="settings-muted small">{{ email_status.imap_username|default:"Not set" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <nav class="settings-provider-tabs settings-email-channel-tabs" aria-label="Email channel" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+        <a class="settings-provider-tab {% if email_tab == 'smtp' %}active{% endif %}" href="?section=email&amp;e=smtp">
+            <i class="bi bi-send" aria-hidden="true"></i>
+            <span>Outbound (SMTP)</span>
+        </a>
+        <a class="settings-provider-tab {% if email_tab == 'imap' %}active{% endif %}" href="?section=email&amp;e=imap">
+            <i class="bi bi-inbox" aria-hidden="true"></i>
+            <span>Inbound (IMAP)</span>
+        </a>
+    </nav>
+
+    <section class="settings-panel settings-panel--email-main">
+        <div class="settings-panel-head settings-panel-head--tight">
+            <div>
+                <p class="settings-section-kicker">{% if email_tab == 'smtp' %}SMTP{% else %}IMAP{% endif %}</p>
+                <h2>{% if email_tab == 'smtp' %}Send as Sales{% else %}Fetch inbox{% endif %}</h2>
+            </div>
+        </div>
+        {% if email_tab == 'smtp' %}
+            {% include "account/_email_smtp_settings.html" %}
+        {% else %}
+            {% include "account/_email_imap_settings.html" %}
+        {% endif %}
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
