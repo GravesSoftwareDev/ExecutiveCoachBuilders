@@ -15,7 +15,7 @@
         {% comment %} Fleet Management card {% endcomment %}
         <div class="col-md-4">
             <a href="{% url 'garage:vehicle_list' %}" class="dashboard-card">
-                <i class="bi bi-truck dashboard-card-icon"></i>
+                <i class="bi bi-truck dashboard-card-icon" aria-hidden="true"></i>
                 <h2 class="dashboard-card-title">Fleet Management</h2>
                 <p class="dashboard-card-text">
                     Add, edit, or remove vehicles. Control which vehicles are featured
@@ -27,7 +27,7 @@
         {% comment %} Blog card {% endcomment %}
         <div class="col-md-4">
             <a href="{% url 'blog:article_list' %}" class="dashboard-card">
-                <i class="bi bi-newspaper dashboard-card-icon"></i>
+                <i class="bi bi-newspaper dashboard-card-icon" aria-hidden="true"></i>
                 <h2 class="dashboard-card-title">Blog</h2>
                 <p class="dashboard-card-text">
                     Write and publish news articles. Save drafts, schedule posts,
@@ -39,7 +39,7 @@
         {% comment %} Services card {% endcomment %}
         <div class="col-md-4">
             <a href="{% url 'edit_site:service_list' %}" class="dashboard-card">
-                <i class="bi bi-briefcase dashboard-card-icon"></i>
+                <i class="bi bi-briefcase dashboard-card-icon" aria-hidden="true"></i>
                 <h2 class="dashboard-card-title">Services</h2>
                 <p class="dashboard-card-text">
                     Add, edit, or remove services shown on the public services page.
@@ -51,7 +51,7 @@
         {% comment %} Manage Team card {% endcomment %}
         <div class="col-md-4">
             <a href="{% url 'team:team_member_list' %}" class="dashboard-card">
-                <i class="bi bi-people dashboard-card-icon"></i>
+                <i class="bi bi-people dashboard-card-icon" aria-hidden="true"></i>
                 <h2 class="dashboard-card-title">Manage Team</h2>
                 <p class="dashboard-card-text">
                     Add, edit, or remove team members shown in the Meet the Team
@@ -64,7 +64,7 @@
         {% if user.is_portal_admin or user.can_edit_site %}
         <div class="col-md-4">
             <a href="{% url 'edit_site:site_changes' %}" class="dashboard-card">
-                <i class="bi bi-gear dashboard-card-icon"></i>
+                <i class="bi bi-gear dashboard-card-icon" aria-hidden="true"></i>
                 <h2 class="dashboard-card-title">Edit Site</h2>
                 <p class="dashboard-card-text">
                     Update header text, homepage content, the About page, and
@@ -78,7 +78,7 @@
         {% if user.is_portal_admin %}
         <div class="col-md-4">
             <a href="{% url 'team:portal_user_list' %}" class="dashboard-card">
-                <i class="bi bi-person-lock dashboard-card-icon"></i>
+                <i class="bi bi-person-lock dashboard-card-icon" aria-hidden="true"></i>
                 <h2 class="dashboard-card-title">Portal Accounts</h2>
                 <p class="dashboard-card-text">
                     Create and remove staff accounts. Set each user's role and
@@ -148,11 +148,13 @@
                             <input type="checkbox"
                                    class="lead-checkbox"
                                    data-lead="{{ lead.pk }}"
+                                   aria-label="Mark {{ lead.first_name }} {{ lead.last_name }} as contacted"
                                    {% if lead.contacted %}checked{% endif %}>
                         </td>
                         <td>
                             {% if lead.assigned_to %}
-                            <select class="lead-status-select" data-lead="{{ lead.pk }}">
+                            <select class="lead-status-select" data-lead="{{ lead.pk }}"
+                                    aria-label="{{ lead.first_name }} {{ lead.last_name }} status">
                                 {% for value, label in lead.Status.choices %}
                                 <option value="{{ value }}" {% if lead.status == value %}selected{% endif %}>{{ label }}</option>
                                 {% endfor %}
@@ -163,7 +165,8 @@
                         </td>
                         {% if user.is_portal_admin %}
                         <td>
-                            <select class="lead-assign-select" data-lead="{{ lead.pk }}">
+                            <select class="lead-assign-select" data-lead="{{ lead.pk }}"
+                                    aria-label="Assign {{ lead.first_name }} {{ lead.last_name }}">
                                 <option value="">— Unassigned —</option>
                                 {% for agent in agents %}
                                 <option value="{{ agent.pk }}" {% if lead.assigned_to_id == agent.pk %}selected{% endif %}>

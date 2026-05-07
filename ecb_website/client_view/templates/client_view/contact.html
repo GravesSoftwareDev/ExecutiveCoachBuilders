@@ -10,39 +10,42 @@
   <h1 class="home-hero-title">Contact</h1>
 </section>
 
-<form class="contact-form" action="/contact/" method="post">
+<form class="contact-form" action="/contact/" method="post" novalidate>
   {% csrf_token %}
 
   <div class="contact-form-row">
     <div class="contact-form-group">
-      <label for="id_first_name">First Name <span class="contact-required">*</span></label>
+      <label for="id_first_name">First Name <span class="contact-required" aria-hidden="true">*</span></label>
       <input id="id_first_name" type="text" name="first_name" maxlength="50"
              value="{{ form.first_name.value|default:'' }}"
+             {% if form.first_name.errors %}aria-invalid="true" aria-describedby="err_first_name"{% endif %}
              class="{% if form.first_name.errors %}input-error{% endif %}">
       {% for error in form.first_name.errors %}
-        <span class="error-message">{{ error }}</span>
+        <span id="err_first_name" class="error-message" role="alert">{{ error }}</span>
       {% endfor %}
     </div>
 
     <div class="contact-form-group">
-      <label for="id_last_name">Last Name <span class="contact-required">*</span></label>
+      <label for="id_last_name">Last Name <span class="contact-required" aria-hidden="true">*</span></label>
       <input id="id_last_name" type="text" name="last_name" maxlength="50"
              value="{{ form.last_name.value|default:'' }}"
+             {% if form.last_name.errors %}aria-invalid="true" aria-describedby="err_last_name"{% endif %}
              class="{% if form.last_name.errors %}input-error{% endif %}">
       {% for error in form.last_name.errors %}
-        <span class="error-message">{{ error }}</span>
+        <span id="err_last_name" class="error-message" role="alert">{{ error }}</span>
       {% endfor %}
     </div>
   </div>
 
   <div class="contact-form-row">
     <div class="contact-form-group">
-      <label for="id_email">Email <span class="contact-required">*</span></label>
+      <label for="id_email">Email <span class="contact-required" aria-hidden="true">*</span></label>
       <input id="id_email" type="email" name="email"
              value="{{ form.email.value|default:'' }}"
+             {% if form.email.errors %}aria-invalid="true" aria-describedby="err_email"{% endif %}
              class="{% if form.email.errors %}input-error{% endif %}">
       {% for error in form.email.errors %}
-        <span class="error-message">{{ error }}</span>
+        <span id="err_email" class="error-message" role="alert">{{ error }}</span>
       {% endfor %}
     </div>
 
@@ -50,9 +53,10 @@
       <label for="id_phone_number">Phone Number</label>
       <input id="id_phone_number" type="tel" name="phone_number" maxlength="25"
              value="{{ form.phone_number.value|default:'' }}"
+             {% if form.phone_number.errors %}aria-invalid="true" aria-describedby="err_phone_number"{% endif %}
              class="{% if form.phone_number.errors %}input-error{% endif %}">
       {% for error in form.phone_number.errors %}
-        <span class="error-message">{{ error }}</span>
+        <span id="err_phone_number" class="error-message" role="alert">{{ error }}</span>
       {% endfor %}
     </div>
   </div>
@@ -62,22 +66,24 @@
       <label for="id_company">Company</label>
       <input id="id_company" type="text" name="company" maxlength="150"
              value="{{ form.company.value|default:'' }}"
+             {% if form.company.errors %}aria-invalid="true" aria-describedby="err_company"{% endif %}
              class="{% if form.company.errors %}input-error{% endif %}">
       {% for error in form.company.errors %}
-        <span class="error-message">{{ error }}</span>
+        <span id="err_company" class="error-message" role="alert">{{ error }}</span>
       {% endfor %}
     </div>
 
     <div class="contact-form-group">
-      <label for="id_interest">I'm Interested In <span class="contact-required">*</span></label>
+      <label for="id_interest">I'm Interested In <span class="contact-required" aria-hidden="true">*</span></label>
       <select id="id_interest" name="interest"
+              {% if form.interest.errors %}aria-invalid="true" aria-describedby="err_interest"{% endif %}
               class="{% if form.interest.errors %}input-error{% endif %}">
         {% for value, label in form.fields.interest.choices %}
         <option value="{{ value }}" {% if form.interest.value == value %}selected{% endif %}>{{ label }}</option>
         {% endfor %}
       </select>
       {% for error in form.interest.errors %}
-        <span class="error-message">{{ error }}</span>
+        <span id="err_interest" class="error-message" role="alert">{{ error }}</span>
       {% endfor %}
     </div>
   </div>
@@ -86,36 +92,45 @@
     <label for="id_budget">Budget ($)</label>
     <input id="id_budget" type="number" name="budget" min="0"
            value="{{ form.budget.value|default:'' }}"
+           {% if form.budget.errors %}aria-invalid="true" aria-describedby="err_budget"{% endif %}
            class="{% if form.budget.errors %}input-error{% endif %}">
-    <small class="contact-hint">Optional — helps us recommend the right options.</small>
+    <small class="contact-hint" id="budget_hint">Optional — helps us recommend the right options.</small>
     {% for error in form.budget.errors %}
-      <span class="error-message">{{ error }}</span>
+      <span id="err_budget" class="error-message" role="alert">{{ error }}</span>
     {% endfor %}
   </div>
 
   <div class="contact-form-group">
     <label for="id_message">Message</label>
     <textarea id="id_message" name="message" rows="5"
+              {% if form.message.errors %}aria-invalid="true" aria-describedby="err_message"{% endif %}
               class="{% if form.message.errors %}input-error{% endif %}">{{ form.message.value|default:'' }}</textarea>
     {% for error in form.message.errors %}
-      <span class="error-message">{{ error }}</span>
+      <span id="err_message" class="error-message" role="alert">{{ error }}</span>
     {% endfor %}
   </div>
 
   {% if form.non_field_errors %}
-    <div class="error-message non-field-errors">
+    <div class="error-message non-field-errors" role="alert">
       {{ form.non_field_errors|join:", " }}
     </div>
   {% endif %}
 
+  <p class="contact-hint mt-2"><span aria-hidden="true">*</span> Required</p>
+
   <input type="submit" value="Send Message">
 </form>
 
-<section class="contact-social-media">
-  <a href="https://www.facebook.com/ExecutiveCoachBuilders/" target="_blank"><i
-      class="bi bi-facebook contact-icon contact-icon-facebook"></i></a>
-  <a href="https://twitter.com/coach_builders/" target="_blank"><i class="bi bi-twitter contact-icon contact-icon-twitter"></i></a>
-  <a href="https://www.youtube.com/@ECBLIMOTV/" target="_blank"><i class="bi bi-youtube contact-icon contact-icon-youtube"></i></a>
+<section class="contact-social-media" aria-label="Social media links">
+  <a href="https://www.facebook.com/ExecutiveCoachBuilders/" target="_blank" rel="noopener noreferrer" aria-label="Executive Coach Builders on Facebook">
+    <i class="bi bi-facebook contact-icon contact-icon-facebook" aria-hidden="true"></i>
+  </a>
+  <a href="https://twitter.com/coach_builders/" target="_blank" rel="noopener noreferrer" aria-label="Executive Coach Builders on Twitter">
+    <i class="bi bi-twitter contact-icon contact-icon-twitter" aria-hidden="true"></i>
+  </a>
+  <a href="https://www.youtube.com/@ECBLIMOTV/" target="_blank" rel="noopener noreferrer" aria-label="Executive Coach Builders on YouTube">
+    <i class="bi bi-youtube contact-icon contact-icon-youtube" aria-hidden="true"></i>
+  </a>
 </section>
 
 {% endblock %}

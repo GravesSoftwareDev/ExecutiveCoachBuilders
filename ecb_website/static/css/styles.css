@@ -5,6 +5,15 @@
     --ecb-black:      #0A0A0A;
     --ecb-white:      #FFFFFF;
     --ecb-off-white:  #F8F6F1;
+
+    /* Semantic tokens — overridden in [data-theme="dark"] */
+    --ecb-bg:         #FFFFFF;
+    --ecb-surface:    #F8F6F1;
+    --ecb-text:       #222222;
+    --ecb-text-sub:   #555555;
+    --ecb-text-muted: #888888;
+    --ecb-border:     #dddddd;
+    --ecb-input-bg:   #FFFFFF;
 }
 
 * {
@@ -12,10 +21,10 @@
 }
 
 body {
-    background-color: var(--ecb-white);
+    background-color: var(--ecb-bg);
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
-    color: #222;
+    color: var(--ecb-text);
     margin: 0;
     /* Prevents horizontal scrollbar from full-bleed sections that use 100vw */
     overflow-x: hidden;
@@ -134,7 +143,7 @@ body {
 /* ─── Page Content ───────────────────────────────────── */
 #page-content {
     min-height: calc(100vh - 200px);
-    background-color: var(--ecb-white);
+    background-color: var(--ecb-bg);
     padding: 48px 0;
 }
 
@@ -1762,4 +1771,151 @@ body {
 
 .services-hero p {
     color: #ddd;
+}
+
+/* ══════════════════════════════════════════════════════
+   Theme Toggle Button
+   ══════════════════════════════════════════════════════ */
+
+.theme-toggle-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.75);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.9rem;
+    transition: border-color 0.2s, color 0.2s;
+    flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--ecb-gold);
+    color: var(--ecb-gold);
+}
+
+
+/* ══════════════════════════════════════════════════════
+   Dark Mode
+   ══════════════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+    --ecb-bg:         #111111;
+    --ecb-surface:    #1d1d1d;
+    --ecb-text:       #e0e0e0;
+    --ecb-text-sub:   #aaaaaa;
+    --ecb-text-muted: #777777;
+    --ecb-border:     #2e2e2e;
+    --ecb-input-bg:   #1d1d1d;
+    color-scheme: dark;
+}
+
+/* ── Surfaces ── */
+[data-theme="dark"] .portal-card,
+[data-theme="dark"] .login-container,
+[data-theme="dark"] .home-card,
+[data-theme="dark"] .dashboard-card,
+[data-theme="dark"] .vehicle-carousel-card,
+[data-theme="dark"] .vehicle-grid-card,
+[data-theme="dark"] .carousel-ctrl,
+[data-theme="dark"] .contact-form,
+[data-theme="dark"] .fleet-form-section,
+[data-theme="dark"] .fleet-delete-card,
+[data-theme="dark"] .fleet-info-box {
+    background-color: var(--ecb-surface);
+    border-color: var(--ecb-border);
+}
+
+[data-theme="dark"] .fleet-table tbody tr:hover {
+    background-color: var(--ecb-surface);
+}
+
+/* ── Borders ── */
+[data-theme="dark"] .home-divider,
+[data-theme="dark"] .fleet-table td {
+    border-color: var(--ecb-border);
+}
+
+/* ── Titles (var(--ecb-black) → light) ── */
+[data-theme="dark"] .home-hero-title,
+[data-theme="dark"] .home-section-title,
+[data-theme="dark"] .home-card-title,
+[data-theme="dark"] .dashboard-title,
+[data-theme="dark"] .dashboard-card-title,
+[data-theme="dark"] .fleet-page-title,
+[data-theme="dark"] .fleet-form-section-title,
+[data-theme="dark"] .fleet-delete-title,
+[data-theme="dark"] .fleet-info-title,
+[data-theme="dark"] .fleet-vehicle-name,
+[data-theme="dark"] .vehicle-carousel-card-name,
+[data-theme="dark"] .portal-card-title,
+[data-theme="dark"] .login-title {
+    color: var(--ecb-text);
+}
+
+/* ── Body / subtitle text ── */
+[data-theme="dark"] .home-hero-subtitle,
+[data-theme="dark"] .home-card-text,
+[data-theme="dark"] .dashboard-subtitle,
+[data-theme="dark"] .dashboard-card-text,
+[data-theme="dark"] .fleet-page-subtitle,
+[data-theme="dark"] .fleet-form-section-hint,
+[data-theme="dark"] .fleet-delete-body,
+[data-theme="dark"] .vehicle-carousel-card-tagline,
+[data-theme="dark"] .portal-card-subtitle,
+[data-theme="dark"] .login-subtitle,
+[data-theme="dark"] .contact-hint,
+[data-theme="dark"] .fleet-field-hint {
+    color: var(--ecb-text-sub);
+}
+
+[data-theme="dark"] .fleet-table td,
+[data-theme="dark"] .fleet-empty-text,
+[data-theme="dark"] .vehicle-grid-card-capacity,
+[data-theme="dark"] .fleet-field-label,
+[data-theme="dark"] .contact-form label,
+[data-theme="dark"] .login-form .form-label {
+    color: var(--ecb-text);
+}
+
+/* ── Form inputs ── */
+[data-theme="dark"] .fleet-field input,
+[data-theme="dark"] .fleet-field select,
+[data-theme="dark"] .fleet-field textarea,
+[data-theme="dark"] .contact-form input[type="text"],
+[data-theme="dark"] .contact-form input[type="email"],
+[data-theme="dark"] .contact-form input[type="tel"],
+[data-theme="dark"] .contact-form input[type="number"],
+[data-theme="dark"] .contact-form select,
+[data-theme="dark"] .contact-form textarea,
+[data-theme="dark"] .lead-assign-select,
+[data-theme="dark"] .lead-status-select,
+[data-theme="dark"] .login-form .form-control,
+[data-theme="dark"] .form-select {
+    background-color: var(--ecb-input-bg);
+    color: var(--ecb-text);
+    border-color: var(--ecb-border);
+}
+
+/* ── Carousel gradient fades (use dark bg instead of white) ── */
+[data-theme="dark"] .vehicle-carousel-wrapper::before {
+    background: linear-gradient(to right, var(--ecb-bg), transparent);
+}
+[data-theme="dark"] .vehicle-carousel-wrapper::after {
+    background: linear-gradient(to left, var(--ecb-bg), transparent);
+}
+
+/* ── Badges ── */
+[data-theme="dark"] .fleet-badge-published {
+    background-color: #1a3320;
+    color: #6ecf80;
+}
+[data-theme="dark"] .fleet-badge-draft {
+    background-color: #2e2408;
+    color: #d4a847;
 }
