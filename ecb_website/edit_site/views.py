@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from .models import SiteSetting, AboutPage
 from .forms import SiteSettingForm, ServiceForm, AboutPageForm, TeamMemberForm
+from .palettes import PALETTES, DEFAULT_PALETTE
 from client_view.models import Service, TeamMember
 from django.urls import resolve
 
@@ -53,6 +54,7 @@ def site_changes(request, name = None):
         'home_forms': home_forms,
         'about_form': about_form,
         'about': about,
+        'palettes': PALETTES,
     })
 
 
@@ -190,3 +192,17 @@ def team_member_delete(request, pk):
         messages.success(request, f'"{name}" has been removed from the team.')
         return redirect('team:team_member_list')
     return render(request, 'edit_site/team_member_confirm_delete.html', {'member': member})
+
+
+@staff_member_required(login_url='login')
+def theme_save(request):
+    if request.method == 'POST':
+        palette_key = request.POST.get('palette', DEFAULT_PALETTE)
+        if palette_key not in PALETTES:
+            palette_key = DEFAULT_PALETTE
+        SiteSetting.objects.update_or_create(
+            name='theme_palette',
+            defaults={'text_value': palette_key, 'file': False},
+        )
+        messages.success(request, f'Color scheme changed to {PALETTES[palette_key]["label"]}.')
+    return redirect('edit_site:site_changes')

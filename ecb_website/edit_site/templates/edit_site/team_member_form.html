@@ -1,0 +1,90 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}{{ action }} - Manage Team{% endblock %}
+
+{% block nav_team %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    <div class="fleet-page-header mb-4">
+        <div>
+            <a href="{% url 'team:team_member_list' %}" class="fleet-breadcrumb">
+                <i class="bi bi-arrow-left me-1"></i> Back to Team
+            </a>
+            <h1 class="fleet-page-title mt-1">{{ action }}</h1>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-person me-2"></i>Member Details
+            </h2>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {% include "garage/_field.html" with field=form.name %}
+                </div>
+                <div class="col-md-6">
+                    {% include "garage/_field.html" with field=form.role %}
+                </div>
+                <div class="col-12">
+                    {% include "garage/_field.html" with field=form.bio %}
+                </div>
+            </div>
+        </div>
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-image me-2"></i>Photo
+            </h2>
+            <p class="fleet-form-section-hint">
+                Square photos work best. Recommended size: 400 × 400 px or larger.
+            </p>
+
+            {% if member.photo %}
+            <div class="fleet-current-image mb-3">
+                <p class="fleet-field-label">Current Photo</p>
+                <img src="{{ member.photo.url }}" alt="{{ member.name }}" class="fleet-image-preview">
+            </div>
+            {% endif %}
+
+            {% include "garage/_field.html" with field=form.photo %}
+        </div>
+
+        <div class="fleet-form-section">
+            <h2 class="fleet-form-section-title">
+                <i class="bi bi-sort-numeric-down me-2"></i>Display Order &amp; Visibility
+            </h2>
+            <p class="fleet-form-section-hint">
+                Lower numbers appear first. Uncheck Active to hide without deleting.
+            </p>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    {% include "garage/_field.html" with field=form.display_order %}
+                </div>
+            </div>
+            <div class="fleet-checkbox-row mt-3">
+                {{ form.is_active }}
+                <label for="{{ form.is_active.id_for_label }}" class="fleet-checkbox-label">
+                    Show this member on the public site
+                </label>
+            </div>
+        </div>
+
+        <div class="fleet-form-actions">
+            <button type="submit" class="btn btn-gold">
+                <i class="bi bi-check-lg me-1"></i> Save Member
+            </button>
+            <a href="{% url 'team:team_member_list' %}" class="fleet-cancel-link">Cancel</a>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

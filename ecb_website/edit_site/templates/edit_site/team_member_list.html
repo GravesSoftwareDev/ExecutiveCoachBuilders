@@ -1,0 +1,72 @@
+{% extends "account/portal_base.html" %}
+
+{% block title %}Manage Team - Executive Coach Builders{% endblock %}
+
+{% block nav_team %}active{% endblock %}
+
+{% block content %}
+<div class="fleet-container">
+
+    <div class="fleet-page-header">
+        <div>
+            <h1 class="fleet-page-title">Manage Team</h1>
+            <p class="fleet-page-subtitle">
+                Add, edit, or remove team members shown in the Meet the Team section on the About page.
+            </p>
+        </div>
+        <a href="{% url 'team:team_member_add' %}" class="btn btn-gold">
+            <i class="bi bi-plus-lg me-1"></i> Add Member
+        </a>
+    </div>
+
+    {% if members %}
+    <div class="fleet-table-wrapper">
+        <table class="fleet-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th class="text-center">Order</th>
+                    <th class="text-center">Active</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                <tr>
+                    <td>
+                        <span class="fleet-vehicle-name">{{ member.name }}</span>
+                    </td>
+                    <td>{{ member.role }}</td>
+                    <td class="text-center">{{ member.display_order }}</td>
+                    <td class="text-center">
+                        {% if member.is_active %}
+                        <span class="fleet-badge-published">Active</span>
+                        {% else %}
+                        <span class="fleet-badge-draft">Hidden</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center fleet-actions">
+                        <a href="{% url 'team:team_member_edit' member.pk %}" class="fleet-action-edit">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a href="{% url 'team:team_member_delete' member.pk %}" class="fleet-action-delete">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="fleet-empty">
+        <i class="bi bi-people fleet-empty-icon"></i>
+        <p class="fleet-empty-text">No team members have been added yet.</p>
+        <a href="{% url 'team:team_member_add' %}" class="btn btn-gold mt-2">Add Your First Team Member</a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

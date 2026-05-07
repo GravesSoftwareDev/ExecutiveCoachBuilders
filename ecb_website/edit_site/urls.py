@@ -9,6 +9,8 @@ urlpatterns = [
     path('admin_view/', views.admin_view, name='admin_view'),
     # About page
     path('about/', views.about_edit, name='about_edit'),
+    # Color scheme
+    path('theme/', views.theme_save, name='theme_save'),
     # Services management
     path('services/', views.service_list, name='service_list'),
     path('services/add/', views.service_add, name='service_add'),

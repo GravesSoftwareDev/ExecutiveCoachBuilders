@@ -1130,6 +1130,21 @@ body {
     color: var(--ecb-white);
 }
 
+/* ─── Color Scheme Picker ────────────────────────────── */
+.theme-dropdown {
+    max-width: 220px;
+}
+
+.theme-dropdown-swatch {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,.15);
+    flex-shrink: 0;
+    transition: background .1s ease;
+}
+
 /* ─── Vehicle Detail Page ────────────────────────────── */
 
 /* Full-width hero image with overlaid text */

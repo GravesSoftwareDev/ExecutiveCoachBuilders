@@ -8,13 +8,33 @@
 
 
 {% comment %} Leaching more of the css {% endcomment %}
-<div class="dashboard-container">
-    <h1 class="dashboard-title">Site Management</h1>
-    <p class="dashboard-subtitle">Click on an object below to edit</p>
+<div class="d-flex justify-content-between align-items-start mb-2">
+    <div>
+        <h1 class="dashboard-title">Site Management</h1>
+    </div>
+    <form method="post" action="{% url 'edit_site:theme_save' %}" id="theme-form">
+        {% csrf_token %}
+        <div class="d-flex align-items-center gap-2">
+            <label class="fleet-field-label mb-0" style="white-space:nowrap;">Color Scheme</label>
+            <span id="theme-swatch" class="theme-dropdown-swatch" style="background: {{ theme.primary }};"></span>
+            <select name="palette" class="form-select theme-dropdown" onchange="previewTheme(this); this.form.submit();">
+                {% for key, palette in palettes.items %}
+                <option value="{{ key }}" {% if theme_key == key %}selected{% endif %}>{{ palette.label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
 </div>
 
-
 <a href="admin_view?s=/" class="btn btn-primary">Live view</a>
+
+<script>
+    const themeColors = { {% for key, palette in palettes.items %}'{{ key }}': '{{ palette.primary }}',{% endfor %} };
+    function previewTheme(sel) {
+        document.getElementById('theme-swatch').style.background = themeColors[sel.value] || '#ccc';
+    }
+</script>
+
 
 {% comment %} ── Header ────────────────────────────────────────────── {% endcomment %}
 <h2 class="fleet-form-section-title mt-4">Header</h2>

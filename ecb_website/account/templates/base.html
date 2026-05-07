@@ -21,6 +21,8 @@
 
     {% comment %} Style Sheet {% endcomment %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% comment %} Theme colour override — overwrites CSS variable defaults from styles.css {% endcomment %}
+    <style>:root { --ecb-gold: {{ theme.primary }}; --ecb-gold-light: {{ theme.light }}; --ecb-gold-dark: {{ theme.dark }}; }</style>
 </head>
 
 <body>
