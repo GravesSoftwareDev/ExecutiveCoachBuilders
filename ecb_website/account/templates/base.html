@@ -22,7 +22,7 @@
     {% comment %} Style Sheet {% endcomment %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% comment %} Theme colour override — overwrites CSS variable defaults from styles.css {% endcomment %}
-    <style>:root { --ecb-gold: {{ theme.primary }}; --ecb-gold-light: {{ theme.light }}; --ecb-gold-dark: {{ theme.dark }}; }</style>
+    <style>:root { --ecb-gold: {{ theme.primary }}; --ecb-gold-light: {{ theme.light }}; --ecb-gold-dark: {{ theme.dark }}; --ecb-gold-a12: {{ theme.a12 }}; --ecb-gold-a15: {{ theme.a15 }}; --ecb-gold-a20: {{ theme.a20 }}; --ecb-gold-a55: {{ theme.a55 }}; }</style>
 </head>
 
 <body>
@@ -57,7 +57,7 @@
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
                 aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                <i class="bi bi-list" style="color:#fff;font-size:1.5rem;"></i>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarMain">

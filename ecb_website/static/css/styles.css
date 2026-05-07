@@ -35,7 +35,7 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 70%);
+    background: radial-gradient(ellipse at 50% 0%, var(--ecb-gold-a12) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -52,7 +52,7 @@ body {
     height: 220px;
     width: 220px;
     object-fit: contain;
-    filter: drop-shadow(0 0 16px rgba(201,168,76,0.55));
+    filter: drop-shadow(0 0 16px var(--ecb-gold-a55));
 }
 
 /* Company name font size increased from 1.75rem to 2.5rem to match the larger logo */
@@ -63,7 +63,7 @@ body {
     color: var(--ecb-gold);
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    text-shadow: 0 2px 12px rgba(201,168,76,0.2);
+    text-shadow: 0 2px 12px var(--ecb-gold-a20);
     line-height: 1;
 }
 
@@ -122,9 +122,6 @@ body {
     border-color: var(--ecb-gold-dark);
 }
 
-#main-nav .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%23C9A84C' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-}
 
 #main-nav .nav-auth .nav-link {
     color: var(--ecb-gold);
@@ -255,7 +252,7 @@ body {
 
 .login-form .form-control:focus {
     border-color: var(--ecb-gold);
-    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+    box-shadow: 0 0 0 3px var(--ecb-gold-a15);
 }
 
 /* ─── Gold Button ────────────────────────────────────── */
@@ -813,7 +810,7 @@ body {
 }
 
 .fleet-badge-bestseller {
-    background-color: rgba(201,168,76,0.15);
+    background-color: var(--ecb-gold-a15);
     color: var(--ecb-gold-dark);
     border: 1px solid var(--ecb-gold-dark);
 }
@@ -938,7 +935,7 @@ body {
 .fleet-field textarea:focus {
     outline: none;
     border-color: var(--ecb-gold);
-    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+    box-shadow: 0 0 0 3px var(--ecb-gold-a15);
 }
 
 .fleet-field-hint {
@@ -1551,7 +1548,7 @@ body {
 .contact-form textarea:focus {
     outline: none;
     border-color: var(--ecb-gold);
-    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+    box-shadow: 0 0 0 3px var(--ecb-gold-a15);
 }
 
 .contact-form textarea {
