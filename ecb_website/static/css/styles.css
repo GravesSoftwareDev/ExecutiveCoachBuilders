@@ -1391,6 +1391,79 @@ body {
   align-items: center;
 }
 
+/* ─── Meet the Team ───────────────────────────── */
+.team-section {
+  width: 75%;
+  margin: 3rem auto 4rem;
+}
+
+.team-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: var(--ecb-black);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+}
+
+.team-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+.team-card-photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.team-card-photo-placeholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  color: #aaa;
+}
+
+.team-card-body {
+  padding: 1rem;
+}
+
+.team-card-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--ecb-black);
+  margin-bottom: .25rem;
+}
+
+.team-card-role {
+  font-family: 'Oswald', sans-serif;
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--ecb-gold-dark);
+  margin-bottom: .5rem;
+}
+
+.team-card-bio {
+  font-size: .9rem;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
 /* ─── Contact ─────────────────────────────────── */
 .contact-icon {
   font-size: 3rem;

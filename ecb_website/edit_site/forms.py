@@ -1,6 +1,19 @@
 from django import forms
 from .models import SiteSetting, AboutPage
-from client_view.models import Service
+from client_view.models import Service, TeamMember
+
+
+class TeamMemberForm(forms.ModelForm):
+    class Meta:
+        model = TeamMember
+        fields = ['name', 'role', 'bio', 'photo', 'display_order', 'is_active']
+        widgets = {
+            'bio': forms.Textarea(attrs={'rows': 4}),
+        }
+        help_texts = {
+            'display_order': 'Lower numbers appear first in the team section.',
+            'is_active': 'Uncheck to hide this member without deleting them.',
+        }
 
 
 class AboutPageForm(forms.ModelForm):
@@ -44,4 +57,3 @@ class SiteSettingForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['text_value'].required = False
         self.fields['file_value'].required = False
-        

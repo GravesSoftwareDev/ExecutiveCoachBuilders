@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.conf import settings
 from .models import SiteSetting, AboutPage
-from .forms import SiteSettingForm, ServiceForm, AboutPageForm
-from client_view.models import Service
+from .forms import SiteSettingForm, ServiceForm, AboutPageForm, TeamMemberForm
+from client_view.models import Service, TeamMember
 from django.urls import resolve
 
 
@@ -61,7 +61,6 @@ def admin_view(request):
     site_settings_model = SiteSetting.objects.all()
     site_settings = {s.name : s.get_value() for s in site_settings_model}
 
-    
     settings_form = {}
     for setting in site_settings_model:
         form = SiteSettingForm(instance=setting)
@@ -140,3 +139,54 @@ def service_delete(request, pk):
         messages.success(request, f'"{title}" has been removed.')
         return redirect('edit_site:service_list')
     return render(request, 'edit_site/service_confirm_delete.html', {'service': service})
+
+
+@staff_member_required(login_url='login')
+def team_member_list(request):
+    members = TeamMember.objects.all()
+    return render(request, 'edit_site/team_member_list.html', {'members': members})
+
+
+@staff_member_required(login_url='login')
+def team_member_add(request):
+    if request.method == 'POST':
+        form = TeamMemberForm(request.POST, request.FILES)
+        if form.is_valid():
+            member = form.save()
+            messages.success(request, f'"{member.name}" has been added to the team.')
+            return redirect('team:team_member_list')
+    else:
+        form = TeamMemberForm()
+    return render(request, 'edit_site/team_member_form.html', {
+        'form': form,
+        'action': 'Add Team Member',
+    })
+
+
+@staff_member_required(login_url='login')
+def team_member_edit(request, pk):
+    member = get_object_or_404(TeamMember, pk=pk)
+    if request.method == 'POST':
+        form = TeamMemberForm(request.POST, request.FILES, instance=member)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'"{member.name}" has been updated.')
+            return redirect('team:team_member_list')
+    else:
+        form = TeamMemberForm(instance=member)
+    return render(request, 'edit_site/team_member_form.html', {
+        'form': form,
+        'member': member,
+        'action': f'Edit — {member.name}',
+    })
+
+
+@staff_member_required(login_url='login')
+def team_member_delete(request, pk):
+    member = get_object_or_404(TeamMember, pk=pk)
+    if request.method == 'POST':
+        name = member.name
+        member.delete()
+        messages.success(request, f'"{name}" has been removed from the team.')
+        return redirect('team:team_member_list')
+    return render(request, 'edit_site/team_member_confirm_delete.html', {'member': member})

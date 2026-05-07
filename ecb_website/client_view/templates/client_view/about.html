@@ -31,4 +31,31 @@
   {{ about.body|linebreaks }}
 </section>
 
+
+{% if team_members %}
+<section class="team-section">
+  <h2 class="team-section-title">Meet the Team</h2>
+  <div class="team-grid">
+    {% for member in team_members %}
+    <div class="team-card">
+      {% if member.photo %}
+      <img src="{{ member.photo.url }}" alt="{{ member.name }}" class="team-card-photo">
+      {% else %}
+      <div class="team-card-photo-placeholder">
+        <i class="bi bi-person-fill"></i>
+      </div>
+      {% endif %}
+      <div class="team-card-body">
+        <h3 class="team-card-name">{{ member.name }}</h3>
+        <p class="team-card-role">{{ member.role }}</p>
+        {% if member.bio %}
+        <p class="team-card-bio">{{ member.bio }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
 {% endblock %}

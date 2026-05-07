@@ -48,6 +48,18 @@
             </a>
         </div>
 
+        {% comment %} Manage Team card {% endcomment %}
+        <div class="col-md-4">
+            <a href="{% url 'team:team_member_list' %}" class="dashboard-card">
+                <i class="bi bi-people dashboard-card-icon"></i>
+                <h2 class="dashboard-card-title">Manage Team</h2>
+                <p class="dashboard-card-text">
+                    Add, edit, or remove team members shown in the Meet the Team
+                    section on the About page.
+                </p>
+            </a>
+        </div>
+
     </div>
 </div>
 {% endblock %}

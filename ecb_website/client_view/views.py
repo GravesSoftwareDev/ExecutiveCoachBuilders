@@ -1,10 +1,12 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from edit_site.models import SiteSetting, AboutPage
 from .forms import ContactForm
+from .models import Service, TeamMember
 from garage.models import Vehicle
 from blog.models import Article
 from django.http import HttpResponseRedirect
-from .models import Service
+from django.conf import settings as Settings
+
 
 def home(request):
     published = Vehicle.objects.filter(is_published=True)
@@ -47,7 +49,8 @@ def vehicle_detail(request, slug):
 
 def about(request):
     about, _ = AboutPage.objects.get_or_create(pk=1)
-    return render(request, 'client_view/about.html', {'about': about})
+    team_members = TeamMember.objects.filter(is_active=True)
+    return render(request, 'client_view/about.html', {'about': about, 'team_members': team_members})
 
 def contact(request):
     if request.method == "POST":

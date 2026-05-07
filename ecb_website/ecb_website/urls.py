@@ -26,6 +26,7 @@ urlpatterns = [
     path('portal/fleet/', include('garage.urls')),
     path('portal/site/', include('edit_site.urls')),
     path('portal/blog/', include('blog.urls')),
+    path('portal/team/', include('edit_site.team_urls')),
     path('', include('client_view.urls')),
 ]
 

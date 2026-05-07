@@ -64,6 +64,11 @@
                         <i class="bi bi-briefcase me-1"></i>Services
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {% block nav_team %}{% endblock %}" href="{% url 'team:team_member_list' %}">
+                        <i class="bi bi-people me-1"></i>Manage Team
+                    </a>
+                </li>
             </ul>
             {% if user.is_authenticated %}
             <ul class="navbar-nav nav-auth flex-row align-items-center gap-3">
