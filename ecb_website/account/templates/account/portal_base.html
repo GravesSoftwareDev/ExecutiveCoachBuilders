@@ -59,6 +59,13 @@
                     </a>
                 </li>
                 {% endif %}
+                {% if user.is_portal_admin or user.can_edit_site %}
+                <li class="nav-item">
+                    <a class="nav-link {% block nav_edit_site %}{% endblock %}" href="{% url 'edit_site:site_changes' %}">
+                        <i class="bi bi-gear me-1" aria-hidden="true"></i>Edit Site
+                    </a>
+                </li>
+                {% endif %}
                 {% if user.is_portal_admin or user.can_edit_team %}
                 <li class="nav-item">
                     <a class="nav-link {% block nav_team %}{% endblock %}" href="{% url 'team:team_member_list' %}">

@@ -66,7 +66,7 @@
             <a href="/contact/" class="btn btn-gold w-100 text-center">
                 Request a Quote
             </a>
-            <a href="{% url 'client_view:home' %}" class="vd-back-link">
+            <a href="{% if vehicle.used_vehicle %} {% url 'client_view:used_vehicles' %} {% else %} {% url 'client_view:coaches' %} {% endif %}" class="vd-back-link">
                 <i class="bi bi-arrow-left me-1"></i> Back to Fleet
             </a>
         </div>
