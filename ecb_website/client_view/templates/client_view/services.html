@@ -33,6 +33,7 @@
 
 {% comment %} Dynamic Service Blocks {% endcomment %}
 {% for service in services %}
+{% if service.is_active %}
 
 <section class="service-block {% cycle 'service-section-white' 'service-section-light' %} service-animate {% cycle 'slide-from-left' 'slide-from-right' %} mb-5">
     <div class="container">
@@ -109,10 +110,11 @@
         </div>
     </div>
 </section>
-
-<hr class="services-divider my-5">
+{% endif %}
 
 {% empty %}
+
+<hr class="services-divider my-5">
 
 <section class="text-center my-5">
     <div class="container">

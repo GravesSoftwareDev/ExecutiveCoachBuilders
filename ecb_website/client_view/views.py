@@ -94,7 +94,7 @@ def used_vehicle(request):
 
 
 def services(request):
-    services_qs = Service.objects.all()
+    services_qs = Service.objects.all().order_by("display_order")
     return render(request, "client_view/services.html", {'services': services_qs})
 
 
