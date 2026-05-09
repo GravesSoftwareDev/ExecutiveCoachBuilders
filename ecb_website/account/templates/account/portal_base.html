@@ -98,13 +98,11 @@
                 {% endif %}
             </ul>
             {% if user.is_authenticated %}
-            <ul class="navbar-nav nav-auth align-items-center gap-2 mx-auto">
+            <ul class="navbar-nav nav-auth d-flex align-items-center gap-2 mx-2">
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'dashboard' %}">
                         <i class="bi bi-person-circle me-1" aria-hidden="true"></i>{{ user.first_name|default:user.username }}
                     </a>
-                </li>
-                <li class="nav-item">
                 </li>
                 <li class="nav-item">
                     <form method="post" action="{% url 'logout' %}" style="margin:0;">
@@ -113,7 +111,7 @@
                     </form>
                 </li>
             </ul>
-            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Switch to dark mode">
+            <button id="theme-toggle my-auto" class="theme-toggle-btn" aria-label="Switch to dark mode">
                 <i class="bi bi-moon" aria-hidden="true"></i>
             </button>
             {% endif %}
