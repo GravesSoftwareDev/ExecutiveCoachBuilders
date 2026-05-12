@@ -77,6 +77,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -198,8 +199,16 @@ else:
     MEDIA_ROOT = BASE_DIR / 'media'
 
 _static_root = os.environ.get('STATIC_ROOT', '').strip()
-if _static_root:
-    STATIC_ROOT = Path(_static_root)
+STATIC_ROOT = Path(_static_root) if _static_root else BASE_DIR / 'staticfiles'
+
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 # Media files — uploaded images (hero, gallery, CMS assets). Videos should live here too
 # (Django FileField / your templates) or on CDN later.
