@@ -49,10 +49,21 @@ else:
         'http://127.0.0.1:8000',
         'http://localhost:8000',
     ]
+if os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
+    _rpo = f"https://{os.environ['RAILWAY_PUBLIC_DOMAIN']}"
+    if _rpo not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(_rpo)
 
-ALLOWED_HOSTS = _split_csv(
+_allowed = _split_csv(
     os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost,3.83.45.207'),
 )
+# Always allow Railway's internal healthcheck host and any auto-provisioned domain.
+_railway_hosts = ['healthcheck.railway.app']
+if os.environ.get('RAILWAY_PUBLIC_DOMAIN'):
+    _railway_hosts.append(os.environ['RAILWAY_PUBLIC_DOMAIN'])
+if os.environ.get('RAILWAY_PRIVATE_DOMAIN'):
+    _railway_hosts.append(os.environ['RAILWAY_PRIVATE_DOMAIN'])
+ALLOWED_HOSTS = _allowed + [h for h in _railway_hosts if h not in _allowed]
 
 
 # Application definition
