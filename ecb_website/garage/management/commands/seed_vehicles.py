@@ -7,6 +7,22 @@ from django.core.management.base import BaseCommand
 
 from garage.models import Vehicle
 
+
+def find_static_image(relative_path):
+    """
+    Locate a static image file in both dev (finders) and production (STATIC_ROOT).
+    Returns a Path if found, otherwise None.
+    """
+    # Works in development (DEBUG=True)
+    result = finders.find(relative_path)
+    if result:
+        return Path(result)
+    # Works in production — collectstatic puts files here
+    candidate = Path(settings.STATIC_ROOT) / relative_path
+    if candidate.exists():
+        return candidate
+    return None
+
 VEHICLES = [
     # name, slug, category, passenger_capacity, image filename, display_order, used_vehicle
     ("Chevy EC33 Limo Bus - 25 Passenger",          "chevy-ec33-limo-bus-25-passenger",                "limo",       "25",    "CHEVY EC33 LIMO BUS 25 PASSENGER.jpg",          1,  False),
@@ -32,24 +48,42 @@ VEHICLES = [
 class Command(BaseCommand):
     help = "Seed the database with demo vehicles and copy their images to media."
 
-    def handle(self, *args, **options):
-        if Vehicle.objects.exists():
-            self.stdout.write("Vehicles already seeded — skipping.")
-            return
+    def _copy_image(self, image_file, media_vehicles):
+        src = find_static_image(f"images/{image_file}")
+        if src:
+            dst = media_vehicles / image_file
+            if not dst.exists():
+                shutil.copy2(src, dst)
+            return f"vehicles/{image_file}"
+        self.stderr.write(f"  Image not found: images/{image_file}")
+        return None
 
+    def _fix_images(self, media_vehicles):
+        """Update existing vehicles that have empty hero_image paths."""
+        media_vehicles.mkdir(parents=True, exist_ok=True)
+        for name, slug, category, capacity, image_file, order, used in VEHICLES:
+            try:
+                vehicle = Vehicle.objects.get(slug=slug)
+            except Vehicle.DoesNotExist:
+                continue
+            if not vehicle.hero_image:
+                path = self._copy_image(image_file, media_vehicles)
+                if path:
+                    vehicle.hero_image = path
+                    vehicle.save(update_fields=["hero_image"])
+                    self.stdout.write(f"  Fixed image: {slug}")
+
+    def handle(self, *args, **options):
         media_vehicles = Path(settings.MEDIA_ROOT) / "vehicles"
         media_vehicles.mkdir(parents=True, exist_ok=True)
 
+        if Vehicle.objects.exists():
+            self.stdout.write("Vehicles already exist — fixing any missing images.")
+            self._fix_images(media_vehicles)
+            return
+
         for name, slug, category, capacity, image_file, order, used in VEHICLES:
-            hero_image_field = ""
-            src = finders.find(f"images/{image_file}")
-            if src:
-                dst = media_vehicles / image_file
-                if not dst.exists():
-                    shutil.copy2(src, dst)
-                hero_image_field = f"vehicles/{image_file}"
-            else:
-                self.stderr.write(f"  Image not found in static: images/{image_file}")
+            hero_image_field = self._copy_image(image_file, media_vehicles) or ""
 
             Vehicle.objects.create(
                 name=name,
