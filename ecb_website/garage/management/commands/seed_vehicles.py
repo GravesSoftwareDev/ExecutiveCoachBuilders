@@ -59,19 +59,26 @@ class Command(BaseCommand):
         return None
 
     def _fix_images(self, media_vehicles):
-        """Update existing vehicles that have empty hero_image paths."""
+        """Ensure image files exist in media and that DB paths point to them."""
         media_vehicles.mkdir(parents=True, exist_ok=True)
         for name, slug, category, capacity, image_file, order, used in VEHICLES:
             try:
                 vehicle = Vehicle.objects.get(slug=slug)
             except Vehicle.DoesNotExist:
                 continue
-            if not vehicle.hero_image:
-                path = self._copy_image(image_file, media_vehicles)
-                if path:
-                    vehicle.hero_image = path
-                    vehicle.save(update_fields=["hero_image"])
-                    self.stdout.write(f"  Fixed image: {slug}")
+            expected_path = f"vehicles/{image_file}"
+            dst = media_vehicles / image_file
+            # Copy the file if it's missing from the media volume
+            if not dst.exists():
+                src = find_static_image(f"images/{image_file}")
+                if src:
+                    shutil.copy2(src, dst)
+                    self.stdout.write(f"  Copied image: {image_file}")
+            # Update the DB record if the path is wrong or empty
+            if str(vehicle.hero_image) != expected_path and dst.exists():
+                vehicle.hero_image = expected_path
+                vehicle.save(update_fields=["hero_image"])
+                self.stdout.write(f"  Fixed path: {slug}")
 
     def handle(self, *args, **options):
         media_vehicles = Path(settings.MEDIA_ROOT) / "vehicles"

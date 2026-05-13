@@ -31,6 +31,5 @@ urlpatterns = [
     path('', include('client_view.urls')),
 ]
 
-# Serve uploaded media files through the dev server (DEBUG mode only)
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve uploaded media files (gunicorn handles this fine for a small/demo site)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
