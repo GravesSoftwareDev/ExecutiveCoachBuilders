@@ -50,6 +50,11 @@ def site_changes(request, name = None):
     about, _ = AboutPage.objects.get_or_create(pk=1)
     about_form = AboutPageForm(instance=about)
 
+    theme_setting = SiteSetting.objects.filter(name='theme_palette').first()
+    theme_key = theme_setting.text_value if theme_setting and theme_setting.text_value else DEFAULT_PALETTE
+    if theme_key not in PALETTES:
+        theme_key = DEFAULT_PALETTE
+
     return render(request, "edit_site/site_changes.html", {
         'admin_site': True,
         'site_settings': site_settings,
@@ -58,6 +63,8 @@ def site_changes(request, name = None):
         'about_form': about_form,
         'about': about,
         'palettes': PALETTES,
+        'theme': PALETTES[theme_key],
+        'theme_key': theme_key,
     })
 
 

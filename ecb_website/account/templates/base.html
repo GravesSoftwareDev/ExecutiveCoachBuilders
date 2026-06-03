@@ -88,16 +88,7 @@
                         <a class="nav-link {% block nav_blog %}{% endblock %}" href="/blog/">News</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"
-                           href="/portal"
-                           tabindex="0"
-                           data-bs-toggle="popover"
-                           data-bs-trigger="hover focus"
-                           data-bs-placement="bottom"
-                           data-bs-html="true"
-                           data-bs-content="<strong>Demo credentials</strong><br>Username: <code>test_user</code><br>Password: <code>Test123!</code>">
-                            Employee Portal Demo
-                        </a>
+                        <a class="nav-link" href="/portal">Employee Portal</a>
                     </li>
                 </ul>
 
@@ -230,7 +221,7 @@
 
     {% comment %} Bootstrap JS {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => new bootstrap.Popover(el));</script>
+
     <script src="{% static 'js/theme.js' %}"></script>
     <script src="{% static 'js/public-chat.js' %}"></script>
 
