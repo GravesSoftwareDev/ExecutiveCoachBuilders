@@ -2824,6 +2824,60 @@ body {
     color: #d4a847;
 }
 
+/* ── Upgraded Contact Page (dark mode) ── */
+[data-theme="dark"] .contact-card,
+[data-theme="dark"] .contact-side-card {
+    background: var(--ecb-surface);
+    border-color: var(--ecb-border);
+}
+
+[data-theme="dark"] .contact-title {
+    color: var(--ecb-text);
+}
+
+[data-theme="dark"] .contact-lead {
+    color: var(--ecb-text-sub);
+}
+
+[data-theme="dark"] .contact-trust-row span {
+    background: var(--ecb-surface);
+    border-color: var(--ecb-border);
+    color: var(--ecb-text-sub);
+}
+
+[data-theme="dark"] .contact-form-section h2 {
+    color: var(--ecb-text);
+}
+
+[data-theme="dark"] .contact-form-section + .contact-form-section {
+    border-top-color: var(--ecb-border);
+}
+
+[data-theme="dark"] .contact-form-upgraded .form-label {
+    color: var(--ecb-text);
+}
+
+[data-theme="dark"] .contact-form-upgraded .form-control,
+[data-theme="dark"] .contact-form-upgraded .form-select {
+    background-color: var(--ecb-input-bg);
+    color: var(--ecb-text);
+    border-color: var(--ecb-border);
+}
+
+[data-theme="dark"] .contact-required {
+    color: var(--ecb-text-sub);
+}
+
+[data-theme="dark"] .contact-side-card address,
+[data-theme="dark"] .contact-side-card p {
+    color: var(--ecb-text-sub);
+}
+
+[data-theme="dark"] .contact-side-card a,
+[data-theme="dark"] .contact-side-link {
+    color: var(--ecb-gold);
+}
+
 /* ─── Upgraded Contact Page ───────────────────────────────── */
 .contact-page {
     padding: 18px 0 30px;
